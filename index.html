@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-Hant" data-theme="light">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <title>agentic24hr｜AI 自主代理人系統工程師的一天：Agentic IoT × Agentic RAG 雙模沉浸式模擬與技術簡報</title>
-  
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>agentic24hr｜AI 自主代理人系統工程師的一天Develop by 高望恆：Agentic IoT × Agentic RAG 雙模沉浸式模擬與技術簡報Reported by 高望恆</title>
+
   <!-- Font Preconnect & Google Fonts (fab24hr Typography) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
+    rel="stylesheet">
+
   <!-- FontAwesome 6.5.1 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
+
   <!-- Three.js 3D Engine for Animated Humanoid Puppets (Local & CDN) -->
   <script src="./three.min.js"></script>
   <script>
@@ -20,7 +24,7 @@
       document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
     }
   </script>
-  
+
   <style>
     /* ============================================================ */
     /* FAB24HR DESIGN TOKENS & COLOR SYSTEM                          */
@@ -32,44 +36,57 @@
       --ink: #12252c;
       --muted: #506a74;
       --line: #c5d3d8;
-      
+
       --amber: #f0a800;
       --amber-edge: #c98a00;
       --amber-ink: #2a1d00;
       --amber-tint: #fdf3d6;
-      
+
       --brand: #c1121f;
       --brand-edge: #930e18;
       --on-brand: #ffffff;
-      
-      --int: #2b6bd6;       /* 協商代理藍 */
-      --mod: #8748d1;       /* 邊緣 SLM 紫 */
-      --pc: #0b8f7d;        /* 動態檢索青 */
-      --boss: #a8327a;      /* 驗證反思紅粉 */
+
+      --int: #2b6bd6;
+      /* 協商代理藍 */
+      --mod: #8748d1;
+      /* 邊緣 SLM 紫 */
+      --pc: #0b8f7d;
+      /* 動態檢索青 */
+      --boss: #a8327a;
+      /* 驗證反思紅粉 */
       --on-role: #ffffff;
-      
+
       --ok: #1f7f45;
       --ok-tint: #e3f3e8;
       --bad: #c2352a;
       --bad-tint: #fbe7e4;
       --warn: #9a6200;
-      
+
       --c-work: #2f6fc9;
       --c-wait: #c27d00;
       --c-talk: #7a6fa8;
-      
+
       --scrim: rgba(18, 37, 44, .46);
       --shadow: 0 12px 34px rgba(18, 37, 44, .18);
       --lift: 0 -10px 14px -12px rgba(0, 0, 0, .45);
       --focus: #12252c;
-      
+
       --font-display: "IBM Plex Sans", "Noto Sans TC", system-ui, sans-serif;
       --font-body: "Noto Sans TC", system-ui, sans-serif;
       --font-data: "IBM Plex Mono", ui-monospace, Consolas, monospace;
     }
 
-    * { box-sizing: border-box; }
-    html, body { height: 100%; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
       background: var(--bg);
       color: var(--ink);
@@ -80,11 +97,33 @@
       -webkit-text-size-adjust: 100%;
     }
 
-    .mono { font-family: var(--font-data); font-variant-numeric: tabular-nums; }
-    h1, h2, h3, h4 { font-family: var(--font-display); line-height: 1.25; margin: 0; }
-    p { margin: 0; }
-    button { font: inherit; color: inherit; }
-    :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .mono {
+      font-family: var(--font-data);
+      font-variant-numeric: tabular-nums;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: var(--font-display);
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
 
     /* ============================================================ */
     /* FAB24HR ATOMS & BUTTONS                                      */
@@ -104,8 +143,16 @@
       gap: 6px;
       transition: all .12s ease;
     }
-    .btn:hover:not(:disabled) { border-color: var(--muted); background: var(--surface); }
-    .btn:disabled { opacity: .5; cursor: default; }
+
+    .btn:hover:not(:disabled) {
+      border-color: var(--muted);
+      background: var(--surface);
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: default;
+    }
 
     .btn-primary {
       background: var(--brand);
@@ -113,6 +160,7 @@
       color: var(--on-brand);
       font-weight: 700;
     }
+
     .btn-primary:hover:not(:disabled) {
       background: #a80f1b;
       border-color: var(--ink);
@@ -125,6 +173,7 @@
       color: var(--amber-ink);
       font-weight: 700;
     }
+
     .btn-amber:hover:not(:disabled) {
       background: #dba008;
       border-color: var(--amber-ink);
@@ -136,6 +185,7 @@
       background: transparent;
       border-color: transparent;
     }
+
     .btn-ghost:hover:not(:disabled) {
       background: var(--surface-2);
       border-color: var(--line);
@@ -149,11 +199,31 @@
       border-radius: 50%;
       margin-right: 5px;
     }
-    .lamp.r { background: var(--bad); box-shadow: 0 0 6px var(--bad); }
-    .lamp.a { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
-    .lamp.g { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
-    .lamp.pulse { animation: blink 1.2s steps(2, start) infinite; }
-    @keyframes blink { 50% { opacity: .2; } }
+
+    .lamp.r {
+      background: var(--bad);
+      box-shadow: 0 0 6px var(--bad);
+    }
+
+    .lamp.a {
+      background: var(--amber);
+      box-shadow: 0 0 6px var(--amber);
+    }
+
+    .lamp.g {
+      background: var(--ok);
+      box-shadow: 0 0 6px var(--ok);
+    }
+
+    .lamp.pulse {
+      animation: blink 1.2s steps(2, start) infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: .2;
+      }
+    }
 
     .rchip {
       font-family: var(--font-data);
@@ -168,16 +238,33 @@
       display: inline-flex;
       align-items: center;
     }
-    .rchip.st-ok { background: var(--ok-tint); border-color: var(--ok); color: var(--ok); }
-    .rchip.st-bad { background: var(--bad-tint); border-color: var(--bad); color: var(--bad); }
-    .rchip.st-warn { background: var(--amber-tint); border-color: var(--amber-edge); color: var(--warn); }
+
+    .rchip.st-ok {
+      background: var(--ok-tint);
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+
+    .rchip.st-bad {
+      background: var(--bad-tint);
+      border-color: var(--bad);
+      color: var(--bad);
+    }
+
+    .rchip.st-warn {
+      background: var(--amber-tint);
+      border-color: var(--amber-edge);
+      color: var(--warn);
+    }
 
     /* ============================================================ */
     /* TOP HUD BAR                                                  */
     /* ============================================================ */
     .hud {
       position: fixed;
-      top: 0; left: 0; right: 0;
+      top: 0;
+      left: 0;
+      right: 0;
       height: 54px;
       z-index: 50;
       display: flex;
@@ -189,6 +276,7 @@
       backdrop-filter: blur(8px);
       border-bottom: 1px solid var(--line);
     }
+
     .brand-name {
       font-family: var(--font-display);
       font-weight: 700;
@@ -199,22 +287,29 @@
       align-items: center;
       gap: 6px;
     }
+
     .brand-name em {
       font-style: normal;
       color: var(--brand);
     }
+
     .clockbox {
       display: flex;
       align-items: baseline;
       gap: 8px;
       line-height: 1;
     }
+
     .clock {
       font-size: 22px;
       font-weight: 700;
       color: var(--ink);
     }
-    .clock.ot { color: var(--bad); }
+
+    .clock.ot {
+      color: var(--bad);
+    }
+
     .clock-note {
       font-size: 11.5px;
       color: var(--muted);
@@ -275,18 +370,22 @@
       position: relative;
       transition: all .2s ease;
     }
+
     .node-card.active {
       border-color: var(--brand);
       box-shadow: 0 0 0 2px var(--brand-edge), 0 8px 24px rgba(193, 18, 31, .15);
     }
+
     .node-card.ok {
       border-color: var(--ok);
     }
+
     .node-h {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
+
     .node-title {
       font-weight: 700;
       font-size: 13.5px;
@@ -294,6 +393,7 @@
       align-items: center;
       gap: 6px;
     }
+
     .node-stat {
       font-family: var(--font-data);
       font-size: 11px;
@@ -311,8 +411,9 @@
       flex-direction: column;
       background: color-mix(in srgb, var(--surface) 98%, transparent);
       border-top: 2px solid var(--line);
-      box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
     }
+
     .sim-panel-rc {
       display: flex;
       align-items: center;
@@ -325,6 +426,7 @@
       color: var(--muted);
       background: var(--surface-2);
     }
+
     .sim-panel-body {
       padding: 14px 18px 20px;
       overflow-y: auto;
@@ -339,6 +441,7 @@
       align-items: flex-start;
       gap: 12px;
     }
+
     .sw-avatar {
       flex: none;
       width: 36px;
@@ -351,10 +454,22 @@
       font-weight: 700;
       color: #fff;
     }
-    .sw-mod { background: var(--mod); }
-    .sw-int { background: var(--int); }
-    .sw-pc  { background: var(--pc); }
-    .sw-boss{ background: var(--boss); }
+
+    .sw-mod {
+      background: var(--mod);
+    }
+
+    .sw-int {
+      background: var(--int);
+    }
+
+    .sw-pc {
+      background: var(--pc);
+    }
+
+    .sw-boss {
+      background: var(--boss);
+    }
 
     .talk-content {
       flex: 1;
@@ -362,6 +477,7 @@
       flex-direction: column;
       gap: 4px;
     }
+
     .talk-sender {
       font-weight: 700;
       font-size: 13px;
@@ -369,6 +485,7 @@
       align-items: center;
       gap: 6px;
     }
+
     .talk-text {
       font-size: 14px;
       line-height: 1.6;
@@ -384,7 +501,10 @@
       cursor: pointer;
       font-weight: 600;
     }
-    .term:hover { background: var(--amber-tint); }
+
+    .term:hover {
+      background: var(--amber-tint);
+    }
 
     .term-tooltip {
       padding: 8px 12px;
@@ -397,7 +517,12 @@
       flex-direction: column;
       gap: 2px;
     }
-    .term-tooltip b { font-family: var(--font-data); font-size: 11.5px; color: var(--warn); }
+
+    .term-tooltip b {
+      font-family: var(--font-data);
+      font-size: 11.5px;
+      color: var(--warn);
+    }
 
     /* Choices List */
     .choices-grid {
@@ -406,6 +531,7 @@
       gap: 8px;
       margin-top: 6px;
     }
+
     .choice-btn {
       padding: 10px 14px;
       border: 1px solid var(--line);
@@ -420,15 +546,18 @@
       gap: 3px;
       transition: all .15s ease;
     }
+
     .choice-btn:hover {
       border-color: var(--ink);
       background: var(--surface-2);
       box-shadow: inset 0 0 0 1px var(--ink);
     }
+
     .choice-btn b {
       color: var(--ink);
       font-size: 14px;
     }
+
     .choice-btn small {
       color: var(--muted);
       font-size: 12px;
@@ -445,8 +574,16 @@
       gap: 10px;
       align-items: flex-start;
     }
-    .fb-card.ok { background: var(--ok-tint); border-color: var(--ok); }
-    .fb-card.bad { background: var(--bad-tint); border-color: var(--bad); }
+
+    .fb-card.ok {
+      background: var(--ok-tint);
+      border-color: var(--ok);
+    }
+
+    .fb-card.bad {
+      background: var(--bad-tint);
+      border-color: var(--bad);
+    }
 
     /* ============================================================ */
     /* MULTI-AGENT SYSTEM (MAS) EXTENSIONS: TABS, MATRIX & PACKET   */
@@ -459,6 +596,7 @@
       gap: 6px;
       overflow-x: auto;
     }
+
     .sim-tab-btn {
       padding: 8px 14px;
       border: 0;
@@ -474,9 +612,11 @@
       transition: all .15s ease;
       white-space: nowrap;
     }
+
     .sim-tab-btn:hover {
       color: var(--ink);
     }
+
     .sim-tab-btn.active {
       color: var(--brand);
       border-bottom-color: var(--brand);
@@ -489,6 +629,7 @@
       flex-direction: column;
       gap: 10px;
     }
+
     .matrix-step {
       display: flex;
       gap: 12px;
@@ -500,10 +641,12 @@
       position: relative;
       transition: transform .12s ease;
     }
+
     .matrix-step:hover {
       transform: translateX(3px);
       border-color: var(--muted);
     }
+
     .matrix-step-badge {
       font-family: var(--font-data);
       font-size: 10px;
@@ -513,6 +656,7 @@
       text-transform: uppercase;
       letter-spacing: .05em;
     }
+
     .matrix-consensus {
       background: var(--ok-tint);
       border: 1.5px solid var(--ok);
@@ -522,6 +666,7 @@
       flex-direction: column;
       gap: 6px;
     }
+
     .matrix-consensus-title {
       font-weight: 700;
       color: var(--ok);
@@ -537,6 +682,7 @@
       flex-direction: column;
       gap: 8px;
     }
+
     .packet-bar {
       display: flex;
       align-items: center;
@@ -544,10 +690,12 @@
       gap: 8px;
       flex-wrap: wrap;
     }
+
     .packet-pills {
       display: flex;
       gap: 4px;
     }
+
     .packet-pill {
       font-family: var(--font-data);
       font-size: 11px;
@@ -560,15 +708,18 @@
       color: var(--muted);
       transition: all .12s ease;
     }
+
     .packet-pill:hover {
       border-color: var(--ink);
       color: var(--ink);
     }
+
     .packet-pill.active {
       background: var(--ink);
       color: #fff;
       border-color: var(--ink);
     }
+
     .packet-code {
       background: #0d171c;
       color: #7fe3c8;
@@ -582,10 +733,23 @@
       max-height: 280px;
       white-space: pre;
     }
-    .packet-code .key { color: #f0a800; font-weight: 600; }
-    .packet-code .str { color: #8cdcfe; }
-    .packet-code .num { color: #b5cea8; }
-    .packet-code .bool { color: #4fc1ff; }
+
+    .packet-code .key {
+      color: #f0a800;
+      font-weight: 600;
+    }
+
+    .packet-code .str {
+      color: #8cdcfe;
+    }
+
+    .packet-code .num {
+      color: #b5cea8;
+    }
+
+    .packet-code .bool {
+      color: #4fc1ff;
+    }
 
     /* Cloud Severed / Degraded State */
     .node-card.severed {
@@ -593,21 +757,33 @@
       background: #fff3f2 !important;
       box-shadow: 0 0 16px rgba(194, 53, 42, .2) !important;
     }
+
     .node-card.severed .node-title {
       color: var(--bad);
       text-decoration: line-through;
     }
+
     .btn-cloud-severed {
       background: var(--bad) !important;
       border-color: var(--bad-edge) !important;
       color: #fff !important;
       animation: pulse-severed 1.5s infinite;
     }
+
     @keyframes pulse-severed {
-      0% { box-shadow: 0 0 0 0 rgba(194, 53, 42, 0.6); }
-      70% { box-shadow: 0 0 0 8px rgba(194, 53, 42, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(194, 53, 42, 0); }
+      0% {
+        box-shadow: 0 0 0 0 rgba(194, 53, 42, 0.6);
+      }
+
+      70% {
+        box-shadow: 0 0 0 8px rgba(194, 53, 42, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(194, 53, 42, 0);
+      }
     }
+
     .offline-banner {
       background: var(--bad-tint);
       border: 1px solid var(--bad);
@@ -621,6 +797,7 @@
       font-weight: 600;
       line-height: 1.45;
     }
+
     .edge-autonomous-banner {
       background: var(--amber-tint);
       border: 1px solid var(--amber-edge);
@@ -660,11 +837,13 @@
       gap: 8px;
       flex-wrap: wrap;
     }
+
     .stage-nav-left {
       display: flex;
       align-items: center;
       gap: 8px;
     }
+
     .stage-nav-title {
       font-weight: 700;
       font-size: 13.5px;
@@ -673,6 +852,7 @@
       align-items: center;
       gap: 6px;
     }
+
     .stage-tab-group {
       display: inline-flex;
       background: var(--surface-2);
@@ -681,6 +861,7 @@
       padding: 2px;
       gap: 2px;
     }
+
     .stage-tab-btn {
       padding: 4px 10px;
       border: 0;
@@ -695,10 +876,11 @@
       gap: 5px;
       transition: all .15s ease;
     }
+
     .stage-tab-btn.active {
       background: var(--surface);
       color: var(--brand);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
     }
 
     /* 5D Dimensions Metadata Strip (人事時地物 標籤條) */
@@ -714,6 +896,7 @@
       white-space: nowrap;
       z-index: 9;
     }
+
     .dim-tag {
       display: inline-flex;
       align-items: center;
@@ -725,6 +908,7 @@
       font-weight: 600;
       color: var(--ink);
     }
+
     .dim-tag b {
       color: var(--brand);
     }
@@ -749,6 +933,7 @@
       display: none;
       overflow: hidden;
     }
+
     .scene-box.active {
       display: flex;
     }
@@ -764,18 +949,24 @@
       background: linear-gradient(135deg, #182836 0%, #0d1720 100%);
       overflow: hidden;
     }
+
     .s1-outdoor {
       position: absolute;
-      top: 0; bottom: 0; right: 0; width: 44%;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 44%;
       background: linear-gradient(to bottom, #15222c, #2a3c4c);
       overflow: hidden;
       border-left: 5px solid #20313f;
     }
+
     .s1-rain-canvas {
       position: absolute;
       inset: 0;
       pointer-events: none;
     }
+
     .rain-drop {
       position: absolute;
       width: 1.5px;
@@ -783,10 +974,19 @@
       background: linear-gradient(transparent, rgba(160, 210, 255, 0.85));
       animation: rainDrop 0.45s linear infinite;
     }
+
     @keyframes rainDrop {
-      0% { transform: translateY(-40px) translateX(0); opacity: 0.9; }
-      100% { transform: translateY(320px) translateX(-35px); opacity: 0.2; }
+      0% {
+        transform: translateY(-40px) translateX(0);
+        opacity: 0.9;
+      }
+
+      100% {
+        transform: translateY(320px) translateX(-35px);
+        opacity: 0.2;
+      }
     }
+
     .s1-lightning {
       position: absolute;
       inset: 0;
@@ -795,73 +995,121 @@
       pointer-events: none;
       animation: thunderFlash 7s infinite;
     }
+
     @keyframes thunderFlash {
-      0%, 93%, 100% { opacity: 0; }
-      94% { opacity: 0.7; }
-      95% { opacity: 0.2; }
-      96% { opacity: 0.85; }
-      97% { opacity: 0; }
+
+      0%,
+      93%,
+      100% {
+        opacity: 0;
+      }
+
+      94% {
+        opacity: 0.7;
+      }
+
+      95% {
+        opacity: 0.2;
+      }
+
+      96% {
+        opacity: 0.85;
+      }
+
+      97% {
+        opacity: 0;
+      }
     }
+
     .s1-indoor {
       position: absolute;
-      top: 0; bottom: 0; left: 0; width: 56%;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 56%;
       background: radial-gradient(circle at 40% 50%, #223747 0%, #111d26 100%);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 16px;
     }
+
     .s1-floor {
       position: absolute;
-      bottom: 0; left: 0; right: 0; height: 42px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 42px;
       background: linear-gradient(to top, #3b2818, #5a3e26);
       border-top: 2px solid #825a38;
-      box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
       z-index: 2;
     }
+
     /* Smart Window Frame & Sliding Pane */
     .s1-window-pane {
       position: absolute;
-      top: 15px; bottom: 15px; right: 15px; width: calc(44% - 30px);
+      top: 15px;
+      bottom: 15px;
+      right: 15px;
+      width: calc(44% - 30px);
       border: 3px solid #7a94a6;
       border-radius: 4px;
       background: rgba(140, 190, 230, 0.12);
       backdrop-filter: blur(1px);
       transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-      box-shadow: inset 0 0 15px rgba(255,255,255,0.15);
+      box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.15);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 8px;
     }
+
     .s1-window-pane.open {
       transform: translateX(45%);
       border-color: #f0a800;
     }
+
     .s1-window-pane.sealed {
       transform: translateX(0);
       border-color: #1f7f45;
       background: rgba(31, 127, 69, 0.15);
     }
+
     .s1-puddle {
       position: absolute;
-      bottom: 6px; right: 20px;
-      width: 140px; height: 16px;
+      bottom: 6px;
+      right: 20px;
+      width: 140px;
+      height: 16px;
       background: radial-gradient(ellipse at center, rgba(120, 180, 240, 0.7) 0%, transparent 80%);
       border-radius: 50%;
       opacity: 0;
       transition: opacity 0.5s ease;
     }
-    .s1-puddle.flooding { opacity: 1; animation: waterRipples 2s infinite; }
+
+    .s1-puddle.flooding {
+      opacity: 1;
+      animation: waterRipples 2s infinite;
+    }
+
     @keyframes waterRipples {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.08); }
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.08);
+      }
     }
 
     /* Alex Runner Character */
     .s1-person {
       position: absolute;
-      left: 18%; bottom: 42px;
+      left: 18%;
+      bottom: 42px;
       width: 90px;
       display: flex;
       flex-direction: column;
@@ -869,38 +1117,59 @@
       transition: transform 0.3s ease;
       z-index: 10;
     }
+
     .s1-treadmill {
-      width: 110px; height: 12px;
+      width: 110px;
+      height: 12px;
       background: #2a3d4c;
       border-radius: 6px;
       border-bottom: 3px solid #131c22;
       box-shadow: 0 0 10px rgba(0, 200, 255, 0.4);
       position: relative;
     }
+
     .s1-runner-figure {
       font-size: 46px;
       color: #ffaa33;
       animation: jogMotion 0.5s infinite alternate ease-in-out;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.7));
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7));
     }
+
     @keyframes jogMotion {
-      0% { transform: translateY(0) rotate(0deg); }
-      100% { transform: translateY(-8px) rotate(-3deg); }
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+
+      100% {
+        transform: translateY(-8px) rotate(-3deg);
+      }
     }
+
     .s1-person.shiver .s1-runner-figure {
       animation: shiverAnim 0.1s infinite !important;
       color: #9cd5ff !important;
     }
+
     @keyframes shiverAnim {
-      0% { transform: translate(1px, 1px) rotate(0deg); }
-      50% { transform: translate(-2px, -1px) rotate(-2deg); }
-      100% { transform: translate(1px, -2px) rotate(1deg); }
+      0% {
+        transform: translate(1px, 1px) rotate(0deg);
+      }
+
+      50% {
+        transform: translate(-2px, -1px) rotate(-2deg);
+      }
+
+      100% {
+        transform: translate(1px, -2px) rotate(1deg);
+      }
     }
+
     .s1-person.comfortable .s1-runner-figure {
       animation: none !important;
       transform: translateY(-2px);
       color: #55ffaa !important;
     }
+
     .s1-hr-badge {
       position: absolute;
       top: -24px;
@@ -918,25 +1187,36 @@
       animation: pulseHr 0.7s infinite alternate;
       box-shadow: 0 0 8px rgba(255, 51, 68, 0.5);
     }
+
     @keyframes pulseHr {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.08); box-shadow: 0 0 12px rgba(255, 51, 68, 0.8); }
+      0% {
+        transform: scale(1);
+      }
+
+      100% {
+        transform: scale(1.08);
+        box-shadow: 0 0 12px rgba(255, 51, 68, 0.8);
+      }
     }
+
     /* AC Unit & Airflow */
     .s1-ac {
       position: absolute;
-      top: 18px; left: 20px;
-      width: 140px; height: 38px;
+      top: 18px;
+      left: 20px;
+      width: 140px;
+      height: 38px;
       background: #f4f8fa;
       border-radius: 4px;
       border: 1px solid #c2d2dc;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 4px 8px;
       z-index: 8;
     }
+
     .s1-ac-display {
       font-family: var(--font-data);
       font-size: 10px;
@@ -945,6 +1225,7 @@
       display: flex;
       justify-content: space-between;
     }
+
     .s1-ac-vane {
       height: 4px;
       background: #7994a3;
@@ -952,23 +1233,30 @@
       transition: transform 0.6s ease;
       transform-origin: center;
     }
+
     .s1-ac-vane.freeze {
       transform: rotate(38deg);
       background: #2b6bd6;
     }
+
     .s1-ac-vane.upward {
       transform: rotate(-35deg);
       background: #0b8f7d;
     }
+
     .s1-ac-wind {
       position: absolute;
-      top: 42px; left: 30px;
+      top: 42px;
+      left: 30px;
       pointer-events: none;
       opacity: 0;
       transition: opacity 0.4s ease;
       z-index: 6;
     }
-    .s1-ac-wind.blowing { opacity: 1; }
+
+    .s1-ac-wind.blowing {
+      opacity: 1;
+    }
 
     /* ------------------------------------------------------------- */
     /* SCENE 2: 深夜 02:47 · 長廊與廚房防爆 (Corridor & Gas Purge)   */
@@ -981,14 +1269,20 @@
       display: flex;
       overflow: hidden;
     }
+
     .s2-moonlight {
       position: absolute;
-      top: 0; left: 0; right: 0; height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
       background: radial-gradient(ellipse at 75% 25%, rgba(120, 180, 255, 0.25) 0%, transparent 65%);
       pointer-events: none;
     }
+
     .s2-bedroom {
-      width: 25%; height: 100%;
+      width: 25%;
+      height: 100%;
       border-right: 2px solid #1a2c38;
       background: #0c1822;
       position: relative;
@@ -997,37 +1291,48 @@
       justify-content: flex-end;
       padding: 14px;
     }
+
     .s2-hallway {
-      flex: 1; height: 100%;
+      flex: 1;
+      height: 100%;
       position: relative;
       background: linear-gradient(to bottom, #132433 0%, #0a141d 100%);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
     }
+
     .s2-kitchen {
-      width: 35%; height: 100%;
+      width: 35%;
+      height: 100%;
       border-left: 2px solid #1a2c38;
       background: #09131a;
       position: relative;
       padding: 14px;
     }
+
     .s2-floor-strip {
       position: absolute;
-      bottom: 24px; left: 6px; right: 6px; height: 6px;
+      bottom: 24px;
+      left: 6px;
+      right: 6px;
+      height: 6px;
       border-radius: 3px;
       background: #1e3140;
       transition: all 0.6s ease;
       z-index: 5;
     }
+
     .s2-floor-strip.glow-amber {
       background: #ffc233;
       box-shadow: 0 0 16px #ffc233, 0 0 35px rgba(255, 194, 51, 0.85);
     }
+
     /* Grandpa Elder Character */
     .s2-elder {
       position: absolute;
-      bottom: 30px; left: 15%;
+      bottom: 30px;
+      left: 15%;
       width: 60px;
       display: flex;
       flex-direction: column;
@@ -1035,47 +1340,68 @@
       transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.4, 1);
       z-index: 10;
     }
+
     .s2-elder-figure {
       font-size: 46px;
       color: #d8ecff;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.9));
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.9));
     }
+
     .s2-elder.walk-to-kitchen {
       transform: translateX(110px);
     }
+
     .s2-elder.stopped-safe {
       transform: translateX(65px);
     }
+
     .s2-switch {
       position: absolute;
-      bottom: 95px; right: 18px;
-      width: 16px; height: 24px;
+      bottom: 95px;
+      right: 18px;
+      width: 16px;
+      height: 24px;
       background: #fff;
       border: 1px solid #777;
       border-radius: 2px;
       cursor: pointer;
     }
+
     .s2-spark-burst {
       position: absolute;
-      bottom: 85px; right: 8px;
+      bottom: 85px;
+      right: 8px;
       font-size: 30px;
       color: #ffdd33;
       opacity: 0;
       pointer-events: none;
     }
+
     .s2-spark-burst.active {
       opacity: 1;
       animation: sparkFlash 0.3s infinite alternate;
     }
+
     @keyframes sparkFlash {
-      0% { transform: scale(0.8) rotate(0deg); opacity: 1; }
-      100% { transform: scale(1.4) rotate(20deg); opacity: 0.8; filter: drop-shadow(0 0 10px #ffcc00); }
+      0% {
+        transform: scale(0.8) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1.4) rotate(20deg);
+        opacity: 0.8;
+        filter: drop-shadow(0 0 10px #ffcc00);
+      }
     }
+
     /* Methane Gas Smoke Particles */
     .s2-gas-cloud {
       position: absolute;
-      bottom: 50px; right: 28px;
-      width: 90px; height: 90px;
+      bottom: 50px;
+      right: 28px;
+      width: 90px;
+      height: 90px;
       background: radial-gradient(circle, rgba(160, 220, 80, 0.45) 0%, rgba(160, 220, 80, 0) 70%);
       border-radius: 50%;
       filter: blur(8px);
@@ -1083,18 +1409,31 @@
       opacity: 0.8;
       transition: opacity 0.8s ease, transform 0.8s ease;
     }
+
     @keyframes gasPulse {
-      0%, 100% { transform: scale(1) translate(0, 0); opacity: 0.6; }
-      50% { transform: scale(1.25) translate(-10px, -15px); opacity: 0.9; }
+
+      0%,
+      100% {
+        transform: scale(1) translate(0, 0);
+        opacity: 0.6;
+      }
+
+      50% {
+        transform: scale(1.25) translate(-10px, -15px);
+        opacity: 0.9;
+      }
     }
+
     .s2-gas-cloud.purged {
       opacity: 0;
       transform: scale(0.2) translate(40px, -60px);
     }
+
     /* Solenoid Valve & Fan */
     .s2-valve {
       position: absolute;
-      bottom: 120px; right: 38px;
+      bottom: 120px;
+      right: 38px;
       background: #1a2c38;
       border: 1.5px solid #4a687c;
       border-radius: 4px;
@@ -1105,20 +1444,29 @@
       align-items: center;
       gap: 4px;
     }
+
     .s2-fan {
       position: absolute;
-      top: 18px; right: 20px;
+      top: 18px;
+      right: 20px;
       font-size: 28px;
       color: #557788;
       transition: color 0.3s;
     }
+
     .s2-fan.spin {
       animation: fanSpinAnim 0.25s linear infinite;
       color: #1f7f45;
     }
+
     @keyframes fanSpinAnim {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     /* ------------------------------------------------------------- */
@@ -1132,8 +1480,10 @@
       display: flex;
       overflow: hidden;
     }
+
     .s3-clinic {
-      width: 48%; height: 100%;
+      width: 48%;
+      height: 100%;
       border-right: 2px solid #1a3344;
       display: flex;
       flex-direction: column;
@@ -1141,36 +1491,53 @@
       padding: 16px;
       position: relative;
     }
+
     .s3-metabolism {
-      flex: 1; height: 100%;
+      flex: 1;
+      height: 100%;
       background: radial-gradient(circle at 60% 40%, #132a38 0%, #09141c 100%);
       display: flex;
       flex-direction: column;
       padding: 14px;
       position: relative;
     }
+
     .s3-glass {
       font-size: 44px;
       transition: all 0.4s ease;
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
     }
+
     .s3-glass.prohibited {
       filter: grayscale(0.8) opacity(0.35);
       position: relative;
     }
+
     .s3-prohibit-stamp {
       position: absolute;
-      top: 20%; left: 20%;
+      top: 20%;
+      left: 20%;
       font-size: 32px;
       color: #c2352a;
       opacity: 0;
       transition: opacity 0.3s ease;
     }
-    .s3-prohibit-stamp.active { opacity: 1; animation: stampPop 0.3s ease; }
-    @keyframes stampPop {
-      0% { transform: scale(2) rotate(-20deg); }
-      100% { transform: scale(1) rotate(-10deg); }
+
+    .s3-prohibit-stamp.active {
+      opacity: 1;
+      animation: stampPop 0.3s ease;
     }
+
+    @keyframes stampPop {
+      0% {
+        transform: scale(2) rotate(-20deg);
+      }
+
+      100% {
+        transform: scale(1) rotate(-10deg);
+      }
+    }
+
     .s3-bp-display {
       background: rgba(10, 25, 35, 0.8);
       border: 1px solid #1f7f45;
@@ -1182,17 +1549,26 @@
       align-items: center;
       transition: all 0.4s;
     }
+
     .s3-bp-display.shock {
       border-color: #c2352a;
       background: rgba(194, 53, 42, 0.25);
       animation: pulseAlert 0.8s infinite alternate;
     }
+
     @keyframes pulseAlert {
-      0% { box-shadow: 0 0 4px rgba(194, 53, 42, 0.4); }
-      100% { box-shadow: 0 0 16px rgba(194, 53, 42, 0.9); }
+      0% {
+        box-shadow: 0 0 4px rgba(194, 53, 42, 0.4);
+      }
+
+      100% {
+        box-shadow: 0 0 16px rgba(194, 53, 42, 0.9);
+      }
     }
+
     .s3-enzyme-pocket {
-      width: 100%; height: 85px;
+      width: 100%;
+      height: 85px;
       background: rgba(20, 45, 60, 0.7);
       border: 2px dashed #0b8f7d;
       border-radius: 8px;
@@ -1202,14 +1578,17 @@
       position: relative;
       margin-top: 10px;
     }
+
     .s3-molecule {
       font-size: 26px;
       transition: transform 0.8s cubic-bezier(0.3, 1.2, 0.4, 1);
     }
+
     .s3-molecule.bound {
       transform: scale(1.3) translateY(12px);
       filter: drop-shadow(0 0 10px #ff3344);
     }
+
     .s3-guardrail {
       position: absolute;
       inset: 8px;
@@ -1226,13 +1605,22 @@
       letter-spacing: 0.05em;
       backdrop-filter: blur(2px);
     }
+
     .s3-guardrail.active {
       display: flex;
       animation: guardrailSlam 0.35s ease;
     }
+
     @keyframes guardrailSlam {
-      0% { transform: translateY(-100%); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     /* ------------------------------------------------------------- */
@@ -1246,8 +1634,10 @@
       display: flex;
       overflow: hidden;
     }
+
     .s4-warehouse {
-      width: 50%; height: 100%;
+      width: 50%;
+      height: 100%;
       border-right: 2px solid #1a2835;
       background: linear-gradient(to bottom, #0f1c26, #091219);
       display: flex;
@@ -1256,8 +1646,10 @@
       padding: 16px;
       position: relative;
     }
+
     .s4-forensic {
-      flex: 1; height: 100%;
+      flex: 1;
+      height: 100%;
       background: #09131a;
       display: flex;
       flex-direction: column;
@@ -1265,12 +1657,14 @@
       padding: 16px;
       position: relative;
     }
+
     .s4-box-pile {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 6px;
       margin-top: 10px;
     }
+
     .s4-box {
       height: 30px;
       background: #8b5a2b;
@@ -1281,17 +1675,25 @@
       justify-content: center;
       font-size: 14px;
       color: #ffeedd;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
+
     .s4-box.alert-stripes {
       background: repeating-linear-gradient(45deg, #c2352a, #c2352a 8px, #3a100d 8px, #3a100d 16px);
       border-color: #ff4455;
       animation: alertPulse 1.2s infinite alternate;
     }
+
     @keyframes alertPulse {
-      0% { box-shadow: 0 0 2px #ff4455; }
-      100% { box-shadow: 0 0 12px #ff4455; }
+      0% {
+        box-shadow: 0 0 2px #ff4455;
+      }
+
+      100% {
+        box-shadow: 0 0 12px #ff4455;
+      }
     }
+
     .s4-terminal {
       background: #050b0f;
       border: 1px solid #1f7f45;
@@ -1305,9 +1707,11 @@
       line-height: 1.5;
       position: relative;
     }
+
     .s4-stamp {
       position: absolute;
-      top: 35%; left: 20%;
+      top: 35%;
+      left: 20%;
       padding: 8px 14px;
       border: 3px solid;
       border-radius: 6px;
@@ -1320,6 +1724,7 @@
       transition: all 0.3s ease;
       pointer-events: none;
     }
+
     .s4-stamp.fraud {
       color: #ff3344;
       border-color: #ff3344;
@@ -1327,6 +1732,7 @@
       opacity: 1;
       transform: rotate(-12deg) scale(1);
     }
+
     .s4-stamp.bullish {
       color: #00dd88;
       border-color: #00dd88;
@@ -1338,7 +1744,8 @@
     /* Floating Environment Weather Badge */
     .env-weather-chip {
       position: absolute;
-      top: 12px; right: 12px;
+      top: 12px;
+      right: 12px;
       background: rgba(14, 28, 38, 0.85);
       border: 1px solid var(--line);
       border-radius: 20px;
@@ -1355,11 +1762,25 @@
 
     /* Responsive scaling for Diorama */
     @media (max-width: 768px) {
-      .s1-outdoor { width: 50%; }
-      .s1-indoor { width: 50%; }
-      .s2-elder { font-size: 32px; }
-      .five-dims-strip { font-size: 10.5px; }
-      .dim-tag { padding: 1px 5px; }
+      .s1-outdoor {
+        width: 50%;
+      }
+
+      .s1-indoor {
+        width: 50%;
+      }
+
+      .s2-elder {
+        font-size: 32px;
+      }
+
+      .five-dims-strip {
+        font-size: 10.5px;
+      }
+
+      .dim-tag {
+        padding: 1px 5px;
+      }
     }
 
     /* ============================================================ */
@@ -1376,6 +1797,7 @@
       backdrop-filter: blur(12px);
       padding: 16px;
     }
+
     .home-board {
       width: 100%;
       max-width: 580px;
@@ -1388,6 +1810,7 @@
       box-shadow: var(--shadow);
       overflow: hidden;
     }
+
     .board-scroll {
       padding: 16px 20px;
       overflow-y: auto;
@@ -1395,6 +1818,7 @@
       flex-direction: column;
       gap: 14px;
     }
+
     .board-foot {
       padding: 12px 20px;
       border-top: 1px solid var(--line);
@@ -1403,6 +1827,7 @@
       flex-direction: column;
       gap: 8px;
     }
+
     .led-strip {
       display: block;
       font-family: var(--font-data);
@@ -1414,16 +1839,19 @@
       background: #0d171c;
       color: #ffc94a;
     }
+
     .b-title {
       font-size: clamp(34px, 8vw, 48px);
       font-weight: 900;
       line-height: 1.08;
       letter-spacing: .01em;
     }
+
     .b-title em {
       font-style: normal;
       color: var(--brand);
     }
+
     .b-sub {
       font-family: var(--font-display);
       font-size: 14.5px;
@@ -1431,6 +1859,7 @@
       letter-spacing: .12em;
       color: var(--muted);
     }
+
     .cast-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1441,9 +1870,24 @@
       font-size: 12.5px;
       color: var(--muted);
     }
-    .cast-grid li { display: flex; align-items: center; gap: 6px; }
-    .cast-grid i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
-    .cast-grid b { color: var(--ink); font-weight: 700; }
+
+    .cast-grid li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cast-grid i {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+
+    .cast-grid b {
+      color: var(--ink);
+      font-weight: 700;
+    }
 
     /* ============================================================ */
     /* KEYNOTE PRESENTATION VIEW (MODE B)                           */
@@ -1471,6 +1915,7 @@
       margin: auto;
       padding: 20px 24px 12px;
     }
+
     .slide-frame.active-slide {
       display: flex;
       opacity: 1;
@@ -1500,7 +1945,11 @@
       justify-content: center;
       padding: 16px;
     }
-    .modal-overlay.open { display: flex; }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
     .modal-card {
       background: var(--surface);
       border: 1px solid var(--ink);
@@ -1513,6 +1962,7 @@
       box-shadow: var(--shadow);
       overflow: hidden;
     }
+
     .modal-top {
       padding: 12px 16px;
       border-bottom: 1px solid var(--line);
@@ -1521,6 +1971,7 @@
       justify-content: space-between;
       background: var(--surface-2);
     }
+
     .modal-tabs {
       display: flex;
       gap: 4px;
@@ -1529,6 +1980,7 @@
       overflow-x: auto;
       background: var(--surface-2);
     }
+
     .modal-tab {
       padding: 6px 14px;
       border: 1px solid transparent;
@@ -1541,12 +1993,14 @@
       color: var(--muted);
       white-space: nowrap;
     }
+
     .modal-tab.active {
       border-color: var(--line);
       background: var(--surface);
       color: var(--ink);
       font-weight: 700;
     }
+
     .modal-body {
       padding: 16px 20px;
       overflow-y: auto;
@@ -1567,30 +2021,58 @@
       flex-direction: column;
       gap: 10px;
     }
+
     .fin-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 8px;
     }
+
     .fin-item {
       padding: 8px 10px;
       border: 1px solid var(--line);
       border-radius: 4px;
       background: var(--surface-2);
     }
-    .fin-item dt { font-family: var(--font-data); font-size: 11px; color: var(--muted); }
-    .fin-item dd { font-size: 15px; font-weight: 700; margin: 2px 0 0; color: var(--ink); }
+
+    .fin-item dt {
+      font-family: var(--font-data);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .fin-item dd {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 2px 0 0;
+      color: var(--ink);
+    }
 
     /* Custom Responsive Styles */
     @media (max-width: 768px) {
-      .hud .brand-name { font-size: 14px; }
-      .clock { font-size: 18px; }
-      .cast-grid { grid-template-columns: 1fr; }
-      .sim-panel { max-height: 60%; }
-      .fin-grid { grid-template-columns: 1fr 1fr; }
+      .hud .brand-name {
+        font-size: 14px;
+      }
+
+      .clock {
+        font-size: 18px;
+      }
+
+      .cast-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sim-panel {
+        max-height: 60%;
+      }
+
+      .fin-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
+
 <body>
 
   <!-- ============================================================ -->
@@ -1615,7 +2097,8 @@
     <!-- Right Controls: Mode Toggle & Tools -->
     <div style="display: flex; align-items: center; gap: 6px;">
       <!-- Sound Toggle -->
-      <button class="btn btn-ghost" id="sndBtn" onclick="toggleSound()" type="button" title="聲音開關" style="padding: 4px 8px;">
+      <button class="btn btn-ghost" id="sndBtn" onclick="toggleSound()" type="button" title="聲音開關"
+        style="padding: 4px 8px;">
         <i class="fa-solid fa-volume-high" id="sndIcon"></i>
       </button>
 
@@ -1632,7 +2115,8 @@
       </button>
 
       <!-- Mode Switcher: Game ⇄ 12-Slide Keynote Deck -->
-      <button class="btn btn-amber" id="modeSwitchBtn" onclick="toggleDualMode()" type="button" style="font-weight: 700;">
+      <button class="btn btn-amber" id="modeSwitchBtn" onclick="toggleDualMode()" type="button"
+        style="font-weight: 700;">
         <i class="fa-solid fa-presentation" id="modeIcon"></i>
         <span id="modeBtnText">切換 12 頁簡報</span>
       </button>
@@ -1655,10 +2139,12 @@
             </span>
             <!-- Scene Switcher (智慧生活 ⇄ 智慧工程 ⇄ 節點遙測) -->
             <div class="stage-tab-group">
-              <button class="stage-tab-btn active" id="btnSceneLiving" onclick="switchPuppetScene('living')" type="button">
+              <button class="stage-tab-btn active" id="btnSceneLiving" onclick="switchPuppetScene('living')"
+                type="button">
                 <i class="fa-solid fa-house-chimney-user text-brand"></i> 🏠 智慧生活 (Smart Living)
               </button>
-              <button class="stage-tab-btn" id="btnSceneEngineering" onclick="switchPuppetScene('engineering')" type="button">
+              <button class="stage-tab-btn" id="btnSceneEngineering" onclick="switchPuppetScene('engineering')"
+                type="button">
                 <i class="fa-solid fa-industry text-int"></i> 🏭 智慧工程 (Smart Engineering)
               </button>
               <button class="stage-tab-btn" id="btnViewNoc" onclick="switchStageView('noc')" type="button">
@@ -1669,30 +2155,52 @@
 
           <!-- Quick Interactive Utility Bar -->
           <div style="display: flex; gap: 4px; flex-wrap: wrap; align-items: center;">
-            <div style="display: inline-flex; align-items: center; gap: 3px; background: rgba(18, 37, 44, 0.08); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line);">
-              <span style="font-size: 11px; color: var(--brand); font-weight: 700;"><i class="fa-solid fa-play"></i> 機電動作：</span>
-              <button class="btn btn-ghost" onclick="triggerDeviceAction('window')" style="font-size: 11px; padding: 2px 6px;" title="觸發氣密窗馬達滑動閉鎖、雨水隔絕"><i class="fa-solid fa-window-maximize text-blue-500"></i> 開/關氣密窗</button>
-              <button class="btn btn-ghost" onclick="triggerDeviceAction('ac')" style="font-size: 11px; padding: 2px 6px;" title="切換空調擺葉風向與18°C/26°C溫控氣流"><i class="fa-solid fa-wind text-cyan-500"></i> 空調風向溫控</button>
-              <button class="btn btn-ghost" onclick="triggerDeviceAction('valve')" style="font-size: 11px; padding: 2px 6px;" title="測試防爆電磁閥90度急停切斷、爐火與排風"><i class="fa-solid fa-fire-burner text-amber"></i> 瓦斯閥急停</button>
-              <button class="btn btn-ghost" onclick="triggerDeviceAction('shield')" style="font-size: 11px; padding: 2px 6px;" title="啟動CYP3A4酵素全息防護罩阻斷葡萄柚"><i class="fa-solid fa-shield-halved text-ok"></i> 酵素全息護欄</button>
-              <button class="btn btn-ghost" onclick="triggerDeviceAction('wafer')" style="font-size: 11px; padding: 2px 6px;" title="啟動晶圓旋轉與機械臂雷射掃描光束"><i class="fa-solid fa-microchip text-mod"></i> 晶圓雷射掃描</button>
+            <div
+              style="display: inline-flex; align-items: center; gap: 3px; background: rgba(18, 37, 44, 0.08); padding: 2px 6px; border-radius: 4px; border: 1px solid var(--line);">
+              <span style="font-size: 11px; color: var(--brand); font-weight: 700;"><i class="fa-solid fa-play"></i>
+                機電動作：</span>
+              <button class="btn btn-ghost" onclick="triggerDeviceAction('window')"
+                style="font-size: 11px; padding: 2px 6px;" title="觸發氣密窗馬達滑動閉鎖、雨水隔絕"><i
+                  class="fa-solid fa-window-maximize text-blue-500"></i> 開/關氣密窗</button>
+              <button class="btn btn-ghost" onclick="triggerDeviceAction('ac')"
+                style="font-size: 11px; padding: 2px 6px;" title="切換空調擺葉風向與18°C/26°C溫控氣流"><i
+                  class="fa-solid fa-wind text-cyan-500"></i> 空調風向溫控</button>
+              <button class="btn btn-ghost" onclick="triggerDeviceAction('valve')"
+                style="font-size: 11px; padding: 2px 6px;" title="測試防爆電磁閥90度急停切斷、爐火與排風"><i
+                  class="fa-solid fa-fire-burner text-amber"></i> 瓦斯閥急停</button>
+              <button class="btn btn-ghost" onclick="triggerDeviceAction('shield')"
+                style="font-size: 11px; padding: 2px 6px;" title="啟動CYP3A4酵素全息防護罩阻斷葡萄柚"><i
+                  class="fa-solid fa-shield-halved text-ok"></i> 酵素全息護欄</button>
+              <button class="btn btn-ghost" onclick="triggerDeviceAction('wafer')"
+                style="font-size: 11px; padding: 2px 6px;" title="啟動晶圓旋轉與機械臂雷射掃描光束"><i
+                  class="fa-solid fa-microchip text-mod"></i> 晶圓雷射掃描</button>
             </div>
 
             <div style="width: 1px; height: 16px; background: var(--line); margin: 0 2px;"></div>
             <span style="font-size: 11px; color: var(--muted); margin-right: 2px;">人偶走去：</span>
-            <button class="btn btn-ghost" onclick="walkPlayerTo('window')" style="font-size: 11px; padding: 2px 6px;"><i class="fa-solid fa-person-walking text-blue-500"></i> 窗/空調</button>
-            <button class="btn btn-ghost" onclick="walkPlayerTo('gas')" style="font-size: 11px; padding: 2px 6px;"><i class="fa-solid fa-person-walking text-amber"></i> 瓦斯</button>
-            <button class="btn btn-ghost" onclick="walkPlayerTo('clinic')" style="font-size: 11px; padding: 2px 6px;"><i class="fa-solid fa-person-walking text-ok"></i> 診所</button>
-            <button class="btn btn-ghost" onclick="walkPlayerTo('server')" style="font-size: 11px; padding: 2px 6px;"><i class="fa-solid fa-person-walking text-mod"></i> 機櫃</button>
-            <button class="btn btn-ghost" onclick="walkPlayerTo('center')" style="font-size: 11px; padding: 2px 6px;"><i class="fa-solid fa-crosshairs text-brand"></i> 中央</button>
+            <button class="btn btn-ghost" onclick="walkPlayerTo('window')" style="font-size: 11px; padding: 2px 6px;"><i
+                class="fa-solid fa-person-walking text-blue-500"></i> 窗/空調</button>
+            <button class="btn btn-ghost" onclick="walkPlayerTo('gas')" style="font-size: 11px; padding: 2px 6px;"><i
+                class="fa-solid fa-person-walking text-amber"></i> 瓦斯</button>
+            <button class="btn btn-ghost" onclick="walkPlayerTo('clinic')" style="font-size: 11px; padding: 2px 6px;"><i
+                class="fa-solid fa-person-walking text-ok"></i> 診所</button>
+            <button class="btn btn-ghost" onclick="walkPlayerTo('server')" style="font-size: 11px; padding: 2px 6px;"><i
+                class="fa-solid fa-person-walking text-mod"></i> 機櫃</button>
+            <button class="btn btn-ghost" onclick="walkPlayerTo('center')" style="font-size: 11px; padding: 2px 6px;"><i
+                class="fa-solid fa-crosshairs text-brand"></i> 中央</button>
             <div style="width: 1px; height: 16px; background: var(--line); margin: 0 2px;"></div>
-            <button class="btn btn-ghost" onclick="openShiftIncident(1)" id="inc-btn-1" style="font-size: 11px; padding: 2px 5px;">01:暴雨</button>
-            <button class="btn btn-ghost" onclick="openShiftIncident(2)" id="inc-btn-2" style="font-size: 11px; padding: 2px 5px;">02:瓦斯</button>
-            <button class="btn btn-ghost" onclick="openShiftIncident(3)" id="inc-btn-3" style="font-size: 11px; padding: 2px 5px;">03:用藥</button>
-            <button class="btn btn-ghost" onclick="openShiftIncident(4)" id="inc-btn-4" style="font-size: 11px; padding: 2px 5px;">04:審計</button>
+            <button class="btn btn-ghost" onclick="openShiftIncident(1)" id="inc-btn-1"
+              style="font-size: 11px; padding: 2px 5px;">01:暴雨</button>
+            <button class="btn btn-ghost" onclick="openShiftIncident(2)" id="inc-btn-2"
+              style="font-size: 11px; padding: 2px 5px;">02:瓦斯</button>
+            <button class="btn btn-ghost" onclick="openShiftIncident(3)" id="inc-btn-3"
+              style="font-size: 11px; padding: 2px 5px;">03:用藥</button>
+            <button class="btn btn-ghost" onclick="openShiftIncident(4)" id="inc-btn-4"
+              style="font-size: 11px; padding: 2px 5px;">04:審計</button>
             <div style="width: 1px; height: 16px; background: var(--line); margin: 0 2px;"></div>
             <!-- Offline Fault Injection Toggle -->
-            <button class="btn" id="cloudToggleBtn" onclick="toggleCloudConnection()" title="點擊模擬雲端斷網 / 恢復連線" style="background: var(--surface-2); font-weight: 700; font-size: 11px; padding: 2px 7px; border-color: var(--line);">
+            <button class="btn" id="cloudToggleBtn" onclick="toggleCloudConnection()" title="點擊模擬雲端斷網 / 恢復連線"
+              style="background: var(--surface-2); font-weight: 700; font-size: 11px; padding: 2px 7px; border-color: var(--line);">
               <i class="fa-solid fa-tower-broadcast text-ok" id="cloudToggleIcon"></i>
               <span id="cloudToggleText">雲端在線</span>
             </button>
@@ -1701,34 +2209,46 @@
 
         <!-- 5D Metadata Strip (人事時地物 實時解析) -->
         <div class="five-dims-strip">
-          <span class="dim-tag"><i class="fa-solid fa-user-tie text-brand"></i> <b>人</b>: <span id="dim-person">你 (AI 自主架構師) 協同阿凱、雅婷、小芸、陳課長</span></span>
-          <span class="dim-tag"><i class="fa-solid fa-clock text-amber"></i> <b>時</b>: <span id="dim-time">02:47 深夜 / 午後暴雨</span></span>
-          <span class="dim-tag"><i class="fa-solid fa-location-dot text-mod"></i> <b>地</b>: <span id="dim-place">智慧生活客廳空間 / 晶圓邊緣工程中心</span></span>
-          <span class="dim-tag"><i class="fa-solid fa-gear text-int"></i> <b>物</b>: <span id="dim-objects">氣密窗致動器、電磁閥、邊緣 SLM 伺服器</span></span>
-          <span class="dim-tag"><i class="fa-solid fa-bolt text-boss"></i> <b>事</b>: <span id="dim-event">巡檢中 · 點擊地面可控制人偶移動，或點擊下方決策觀察肢體反應</span></span>
+          <span class="dim-tag"><i class="fa-solid fa-user-tie text-brand"></i> <b>人</b>: <span id="dim-person">高望恆 (AI 自主架構師) 協同阿凱、雅婷、小芸、陳課長</span></span>
+          <span class="dim-tag"><i class="fa-solid fa-clock text-amber"></i> <b>時</b>: <span id="dim-time">02:47 深夜 /
+              午後暴雨</span></span>
+          <span class="dim-tag"><i class="fa-solid fa-location-dot text-mod"></i> <b>地</b>: <span
+              id="dim-place">智慧生活客廳空間 / 晶圓邊緣工程中心</span></span>
+          <span class="dim-tag"><i class="fa-solid fa-gear text-int"></i> <b>物</b>: <span id="dim-objects">氣密窗致動器、電磁閥、邊緣
+              SLM 伺服器</span></span>
+          <span class="dim-tag"><i class="fa-solid fa-bolt text-boss"></i> <b>事</b>: <span id="dim-event">巡檢中 ·
+              點擊地面可控制人偶移動，或點擊下方決策觀察肢體反應</span></span>
         </div>
 
         <!-- PHYSICAL 3D HUMANOID PUPPET STAGE VIEWPORT -->
-        <div class="diorama-viewport" id="diorama-viewport" style="position: relative; width: 100%; height: 380px; min-height: 340px; flex: 1; overflow: hidden; background: #0c151c;">
-          <canvas id="puppet-stage-canvas" tabindex="0" style="width: 100%; height: 100%; display: block; outline: none; cursor: crosshair;"></canvas>
+        <div class="diorama-viewport" id="diorama-viewport"
+          style="position: relative; width: 100%; height: 380px; min-height: 340px; flex: 1; overflow: hidden; background: #0c151c;">
+          <canvas id="puppet-stage-canvas" tabindex="0"
+            style="width: 100%; height: 100%; display: block; outline: none; cursor: crosshair;"></canvas>
 
           <!-- Floor Click Target Reticle -->
-          <div id="floor-target-reticle" style="position: absolute; width: 36px; height: 36px; margin-left: -18px; margin-top: -18px; border: 2.5px solid #00ffaa; border-radius: 50%; pointer-events: none; opacity: 0; transform: scale(1.6); transition: transform 0.25s ease-out, opacity 0.25s ease-out; box-shadow: 0 0 14px #00ffaa; z-index: 12;"></div>
+          <div id="floor-target-reticle"
+            style="position: absolute; width: 36px; height: 36px; margin-left: -18px; margin-top: -18px; border: 2.5px solid #00ffaa; border-radius: 50%; pointer-events: none; opacity: 0; transform: scale(1.6); transition: transform 0.25s ease-out, opacity 0.25s ease-out; box-shadow: 0 0 14px #00ffaa; z-index: 12;">
+          </div>
 
           <!-- Bottom-left Puppet Control & Status Bar -->
-          <div style="position: absolute; bottom: 8px; left: 12px; pointer-events: none; font-family: var(--font-data); font-size: 11px; color: #b4d8ec; background: rgba(9,20,28,0.88); padding: 5px 12px; border-radius: 4px; border: 1px solid #1f3b4d; display: flex; align-items: center; gap: 8px; z-index: 10; backdrop-filter: blur(4px);">
+          <div
+            style="position: absolute; bottom: 8px; left: 12px; pointer-events: none; font-family: var(--font-data); font-size: 11px; color: #b4d8ec; background: rgba(9,20,28,0.88); padding: 5px 12px; border-radius: 4px; border: 1px solid #1f3b4d; display: flex; align-items: center; gap: 8px; z-index: 10; backdrop-filter: blur(4px);">
             <span id="puppet-status-icon"><i class="fa-solid fa-person-walking text-ok"></i></span>
             <span id="puppet-status-text">角色狀態：巡檢待命中 · 支援點擊地面走動，或使用鍵盤 WASD / 方向鍵行走</span>
           </div>
 
           <!-- Physical Alert Stamp Banner Overlay -->
-          <div id="puppet-stamp-banner" style="position: absolute; top: 38%; left: 35%; transform: rotate(-10deg) scale(0); transition: all 0.35s cubic-bezier(0.2, 1.2, 0.4, 1); pointer-events: none; z-index: 15; font-weight: 900; font-size: 22px; padding: 8px 18px; border: 3px solid; border-radius: 6px; text-transform: uppercase; letter-spacing: .08em; opacity: 0; box-shadow: 0 0 25px rgba(0,0,0,0.6);"></div>
+          <div id="puppet-stamp-banner"
+            style="position: absolute; top: 38%; left: 35%; transform: rotate(-10deg) scale(0); transition: all 0.35s cubic-bezier(0.2, 1.2, 0.4, 1); pointer-events: none; z-index: 15; font-weight: 900; font-size: 22px; padding: 8px 18px; border: 3px solid; border-radius: 6px; text-transform: uppercase; letter-spacing: .08em; opacity: 0; box-shadow: 0 0 25px rgba(0,0,0,0.6);">
+          </div>
         </div>
 
         <!-- NOC TELEMETRY VIEWPORT (COLLAPSIBLE / ALTERNATIVE) -->
         <div class="noc-board" id="noc-board" style="display: none; height: 100%; overflow-y: auto;">
           <div style="text-align: center; margin-bottom: 10px;">
-            <span style="font-family: var(--font-data); font-size: 11px; letter-spacing: .15em; color: var(--muted); text-transform: uppercase;">
+            <span
+              style="font-family: var(--font-data); font-size: 11px; letter-spacing: .15em; color: var(--muted); text-transform: uppercase;">
               CENTRAL COGNITIVE CONTINUUM · LIVE NODE TELEMETRY
             </span>
             <h2 style="font-size: 16px; font-weight: 700; color: var(--ink); margin-top: 2px;" id="stage-title">
@@ -1746,7 +2266,9 @@
               <div style="font-size: 12px; color: var(--muted);" id="desc-t1">
                 智慧手錶 (148 bpm)、瓦斯甲烷 (65 ppm)、微波車聯網 (RSU)
               </div>
-              <div class="mono" style="font-size: 11px; background: var(--surface-2); padding: 4px 6px; border-radius: 3px;" id="data-t1">
+              <div class="mono"
+                style="font-size: 11px; background: var(--surface-2); padding: 4px 6px; border-radius: 3px;"
+                id="data-t1">
                 MQTT: raw_payload { hr:148, gas:65, rsu:18 }
               </div>
             </div>
@@ -1760,7 +2282,9 @@
               <div style="font-size: 12px; color: var(--muted);" id="desc-t2">
                 Jetson Orin / Phi-3.5 本地因果推理，防爆急停與多代理協商
               </div>
-              <div class="mono" style="font-size: 11px; background: var(--surface-2); padding: 4px 6px; border-radius: 3px;" id="data-t2">
+              <div class="mono"
+                style="font-size: 11px; background: var(--surface-2); padding: 4px 6px; border-radius: 3px;"
+                id="data-t2">
                 ECDSA Signed: contract_2026_storm_v1
               </div>
             </div>
@@ -1774,7 +2298,9 @@
               <div style="font-size: 12px; color: var(--muted);" id="desc-t3">
                 多代理人智囊團：RxNav 藥理檢索、Python 財務審計、反思驗證
               </div>
-              <div class="mono" style="font-size: 11px; background: var(--surface-2); padding: 4px 6px; border-radius: 3px;" id="data-t3">
+              <div class="mono"
+                style="font-size: 11px; background: var(--surface-2); padding: 4px 6px; border-radius: 3px;"
+                id="data-t3">
                 Verifier: CYP3A4 Red Flag Verified ✓
               </div>
             </div>
@@ -1788,7 +2314,8 @@
       <div class="sim-panel-rc">
         <span id="p-mission-id">INCIDENT 01 / 04 · SHIFT CRISIS</span>
         <span class="mono" id="p-agent-status">EDGE REASONING LOOP ACTIVE</span>
-        <button class="btn btn-ghost" onclick="togglePanelMin()" type="button" style="padding: 2px 6px; font-size: 11px;">
+        <button class="btn btn-ghost" onclick="togglePanelMin()" type="button"
+          style="padding: 2px 6px; font-size: 11px;">
           <i class="fa-solid fa-chevron-down" id="p-min-icon"></i>
         </button>
       </div>
@@ -1817,7 +2344,9 @@
   <!-- ============================================================ -->
   <div class="home-overlay" id="home-screen" onclick="if(event.target === this) startShift();">
     <main class="home-board" style="position: relative;">
-      <button class="btn btn-ghost" onclick="startShift()" style="position: absolute; top: 12px; right: 12px; z-index: 10; font-size: 13px; padding: 4px 10px; border: 1px solid var(--line); background: var(--surface);" title="略過進入模擬器">✕ 略過</button>
+      <button class="btn btn-ghost" onclick="startShift()"
+        style="position: absolute; top: 12px; right: 12px; z-index: 10; font-size: 13px; padding: 4px 10px; border: 1px solid var(--line); background: var(--surface);"
+        title="略過進入模擬器">✕ 略過</button>
       <div class="board-scroll">
         <span class="led-strip">
           <i class="lamp r pulse"></i>02:47 突發警報：午後暴雨進水、長輩瓦斯微洩、高血壓病患用藥衝突
@@ -1826,6 +2355,11 @@
         <div>
           <h1 class="b-title">agentic<em>24</em>hr</h1>
           <p class="b-sub">AI 自主代理人系統工程師的一天</p>
+          <div style="display: inline-flex; align-items: center; gap: 6px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 20px; padding: 4px 12px; margin-top: 8px;">
+            <i class="fa-solid fa-award text-amber"></i>
+            <span style="font-family: var(--font-data); font-size: 12px; font-weight: 700; color: var(--ink);">作者 / 系統開發：高望恆</span>
+            <span style="font-family: var(--font-data); font-size: 11px; color: var(--muted);">| Reported by 高望恆</span>
+          </div>
         </div>
 
         <p style="font-size: 13.5px; color: var(--muted); line-height: 1.6;">
@@ -1835,15 +2369,19 @@
 
         <!-- Engineer Identity -->
         <div>
-          <label style="font-family: var(--font-data); font-size: 11.5px; color: var(--muted); letter-spacing: .08em; display: block; margin-bottom: 4px;" for="engineer-name">
+          <label
+            style="font-family: var(--font-data); font-size: 11.5px; color: var(--muted); letter-spacing: .08em; display: block; margin-bottom: 4px;"
+            for="engineer-name">
             你的代號（工程師名稱）
           </label>
-          <input type="text" id="engineer-name" placeholder="例如：Alex / 邊緣首席架構師（可不填）" style="width: 100%; min-height: 40px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-2); font: inherit; font-size: 13.5px;">
+          <input type="text" id="engineer-name" value="高望恆" placeholder="預設：高望恆 / AI 自主架構師"
+            style="width: 100%; min-height: 40px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-2); font: inherit; font-size: 13.5px;">
         </div>
 
         <!-- Today's Characters / Guild Roles -->
         <div>
-          <span style="font-family: var(--font-data); font-size: 11.5px; color: var(--muted); letter-spacing: .08em; display: block; margin-bottom: 6px;">
+          <span
+            style="font-family: var(--font-data); font-size: 11.5px; color: var(--muted); letter-spacing: .08em; display: block; margin-bottom: 6px;">
             值班協同代理人公會成員
           </span>
           <ul class="cast-grid">
@@ -1857,10 +2395,12 @@
 
       <div class="board-foot">
         <div style="display: flex; gap: 8px;">
-          <button id="startShiftBtn" class="btn btn-primary" onclick="startShift()" type="button" style="flex: 1; min-height: 48px; font-size: 16px; letter-spacing: .05em;">
+          <button id="startShiftBtn" class="btn btn-primary" onclick="startShift()" type="button"
+            style="flex: 1; min-height: 48px; font-size: 16px; letter-spacing: .05em;">
             進廠值班 (START SHIFT)
           </button>
-          <button class="btn btn-amber" onclick="toggleDualMode()" type="button" style="min-height: 48px; font-size: 13.5px;">
+          <button class="btn btn-amber" onclick="toggleDualMode()" type="button"
+            style="min-height: 48px; font-size: 13.5px;">
             直接看 12 頁簡報
           </button>
         </div>
@@ -1875,14 +2415,22 @@
   <!-- MODE B: 12-SLIDE KEYNOTE PRESENTATION VIEW                   -->
   <!-- ============================================================ -->
   <div id="deck-container">
-    <main id="keynote-stage" style="flex: 1; overflow-y: hidden; display: flex; flex-direction: column; position: relative;">
-      
+    <main id="keynote-stage"
+      style="flex: 1; overflow-y: hidden; display: flex; flex-direction: column; position: relative;">
+
       <!-- Slide 01: Overview / Continuum -->
       <div id="slide-1" class="slide-frame active-slide">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; margin: auto; width: 100%;">
+        <div
+          style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; margin: auto; width: 100%;">
           <div>
-            <div style="font-family: var(--font-data); font-size: 11px; font-weight: 700; color: var(--brand); letter-spacing: .12em; margin-bottom: 8px;">
+            <div
+              style="font-family: var(--font-data); font-size: 11px; font-weight: 700; color: var(--brand); letter-spacing: .12em; margin-bottom: 8px;">
               FIELD GUIDE / 01 ──── INTERNET OF AGENTS
+            </div>
+            <div style="display: inline-flex; align-items: center; gap: 6px; margin-bottom: 12px; padding: 4px 10px; background: var(--surface-2); border-left: 3px solid var(--brand); border-radius: 3px;">
+              <i class="fa-solid fa-chalkboard-user text-brand" style="font-size: 11px;"></i>
+              <span class="mono" style="font-size: 11.5px; font-weight: 700; color: var(--ink);">主講與研究著作：高望恆</span>
+              <span class="mono" style="font-size: 10px; color: var(--muted);">(System Architect & Presenter)</span>
             </div>
             <h1 style="font-size: clamp(36px, 5vw, 54px); font-weight: 900; line-height: 1.1; color: var(--ink);">
               讓系統不只<br>
@@ -1905,22 +2453,26 @@
               <h3 style="font-size: 15px; font-weight: 700;">雲端智能層 (IoA 代理人公會)</h3>
               <span class="mono" style="font-size: 10px; color: var(--muted);">LONG-TERM MEMORY · LLM</span>
             </div>
-            <div class="card-deck" style="padding: 14px 18px; width: 340px; transform: rotate(-1deg); position: relative;">
+            <div class="card-deck"
+              style="padding: 14px 18px; width: 340px; transform: rotate(-1deg); position: relative;">
               <span class="mono" style="font-size: 10px; color: var(--brand); font-weight: 700;">TIER 02</span>
               <h3 style="font-size: 15px; font-weight: 700;">邊緣 / 霧層 (本地因果推理)</h3>
               <span class="mono" style="font-size: 10px; color: var(--muted);">LOCAL REASONING · BRIDGE</span>
-              <div style="position: absolute; right: -12px; top: -14px; width: 68px; height: 68px; border-radius: 50%; background: var(--brand); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--font-data); font-size: 9px; font-weight: 700; border: 2px solid #fff; box-shadow: var(--shadow);">
+              <div
+                style="position: absolute; right: -12px; top: -14px; width: 68px; height: 68px; border-radius: 50%; background: var(--brand); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--font-data); font-size: 9px; font-weight: 700; border: 2px solid #fff; box-shadow: var(--shadow);">
                 <span>AGENT</span><span>LOOP</span>
               </div>
             </div>
-            <div class="card-deck" style="padding: 14px 18px; width: 340px; background: #e3f3e8; transform: rotate(0.5deg);">
+            <div class="card-deck"
+              style="padding: 14px 18px; width: 340px; background: #e3f3e8; transform: rotate(0.5deg);">
               <span class="mono" style="font-size: 10px; color: var(--ok); font-weight: 700;">TIER 01</span>
               <h3 style="font-size: 15px; font-weight: 700;">物理設備層 (感測與微致動)</h3>
               <span class="mono" style="font-size: 10px; color: var(--muted);">SENSE · ACT · TINYML</span>
             </div>
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
           <span>SLIDE 01 / 12 — OVERVIEW</span>
           <span>按 [→ / 空白鍵] 翻頁</span>
         </div>
@@ -1949,7 +2501,8 @@
             </p>
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
           <span>SLIDE 02 / 12 — PARADIGM SHIFT</span>
           <span>按 [→] 前往連續體動態流</span>
         </div>
@@ -1959,24 +2512,29 @@
       <div id="slide-3" class="slide-frame">
         <div>
           <span class="mono" style="font-size: 11px; color: var(--int); font-weight: 700;">03 / DATA CONTRACTS</span>
-          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">真實代碼透視：MQTT 封包 vs 語意代理人合約</h2>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">真實代碼透視：MQTT 封包 vs 語意代理人合約
+          </h2>
           <p style="font-size: 13px; color: var(--muted);">看見「孤立數字」與「具備情境本體論與密碼學簽章之語意合約」的底層差異。</p>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: auto; width: 100%;">
           <div class="card-deck" style="padding: 14px;">
             <span class="mono" style="font-size: 11px; color: var(--brand); font-weight: 700;">傳統 MQTT 靜態封包</span>
-            <pre class="mono" style="font-size: 11px; background: var(--surface-2); padding: 10px; border-radius: 4px; overflow-x: auto; margin-top: 6px;"><code>{
+            <pre class="mono"
+              style="font-size: 11px; background: var(--surface-2); padding: 10px; border-radius: 4px; overflow-x: auto; margin-top: 6px;"><code>{
   "ts": 1728812400,
   "device_id": "temp_01",
   "temperature": 32.4,
   "humidity": 68.2,
   "motion": 1
 }</code></pre>
-            <p style="font-size: 11.5px; color: var(--bad); margin-top: 6px;">❌ 缺點：只有單純數值，無法感知「主人大量發熱中」、無法感知「窗外暴雨將至」，形成嚴重語意孤島。</p>
+            <p style="font-size: 11.5px; color: var(--bad); margin-top: 6px;">❌
+              缺點：只有單純數值，無法感知「主人大量發熱中」、無法感知「窗外暴雨將至」，形成嚴重語意孤島。</p>
           </div>
           <div class="card-deck" style="padding: 14px;">
-            <span class="mono" style="font-size: 11px; color: var(--ok); font-weight: 700;">IoA 語意合約 (JSON-LD Contract)</span>
-            <pre class="mono" style="font-size: 11px; background: var(--surface-2); padding: 10px; border-radius: 4px; overflow-x: auto; margin-top: 6px;"><code>{
+            <span class="mono" style="font-size: 11px; color: var(--ok); font-weight: 700;">IoA 語意合約 (JSON-LD
+              Contract)</span>
+            <pre class="mono"
+              style="font-size: 11px; background: var(--surface-2); padding: 10px; border-radius: 4px; overflow-x: auto; margin-top: 6px;"><code>{
   "@context": "https://w3id.org/ioa/v1",
   "contract_id": "cnt_climate_neg_88",
   "context_state": {
@@ -1993,7 +2551,8 @@
             <p style="font-size: 11.5px; color: var(--ok); margin-top: 6px;">✅ 優勢：自帶情境與協商條款，設備間具備自主談判與密碼學認證能力。</p>
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
           <span>SLIDE 03 / 12 — CONTRACT SPEC</span>
           <span>按 [→] 前往邊緣算力計算機</span>
         </div>
@@ -2002,15 +2561,18 @@
       <!-- Slide 04: Edge SLM Benchmark Calculator -->
       <div id="slide-4" class="slide-frame">
         <div>
-          <span class="mono" style="font-size: 11px; color: var(--mod); font-weight: 700;">04 / HARDWARE BENCHMARK</span>
-          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">邊緣 SLM 硬體算力、RAM 消耗與延遲計算機</h2>
+          <span class="mono" style="font-size: 11px; color: var(--mod); font-weight: 700;">04 / HARDWARE
+            BENCHMARK</span>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">邊緣 SLM 硬體算力、RAM 消耗與延遲計算機
+          </h2>
           <p style="font-size: 13px; color: var(--muted);">動態試算邊緣晶片是否能達成工業 50ms 硬即時防爆標準！</p>
         </div>
         <div class="card-deck" style="padding: 18px; margin: auto; width: 100%; max-width: 800px;">
           <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
             <div>
               <label class="mono" style="font-size: 11.5px; font-weight: 700;">選擇邊緣小模型 (Edge SLM)：</label>
-              <select id="deck-calc-model" onchange="runDeckBenchmark()" style="width: 100%; padding: 6px; font-family: var(--font-data); font-size: 12px; margin-top: 4px;">
+              <select id="deck-calc-model" onchange="runDeckBenchmark()"
+                style="width: 100%; padding: 6px; font-family: var(--font-data); font-size: 12px; margin-top: 4px;">
                 <option value="llama32_1b">Meta LLaMA-3.2 1B-Instruct (INT4) - 780 MB</option>
                 <option value="phi35_mini" selected>Microsoft Phi-3.5-mini 3.8B (INT4) - 2.2 GB</option>
                 <option value="qwen25_15b">Alibaba Qwen-2.5 1.5B (INT4) - 980 MB</option>
@@ -2018,7 +2580,8 @@
             </div>
             <div>
               <label class="mono" style="font-size: 11.5px; font-weight: 700;">選擇邊緣硬體晶片：</label>
-              <select id="deck-calc-device" onchange="runDeckBenchmark()" style="width: 100%; padding: 6px; font-family: var(--font-data); font-size: 12px; margin-top: 4px;">
+              <select id="deck-calc-device" onchange="runDeckBenchmark()"
+                style="width: 100%; padding: 6px; font-family: var(--font-data); font-size: 12px; margin-top: 4px;">
                 <option value="jetson_orin" selected>NVIDIA Jetson Orin Nano (40 TOPS, 8GB RAM)</option>
                 <option value="rpi5">Raspberry Pi 5 (8GB RAM, Broadcom 2.4GHz)</option>
                 <option value="intel_ipc">工業邊緣 IPC (Core i5, 16GB RAM)</option>
@@ -2026,29 +2589,36 @@
             </div>
           </div>
 
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; text-align: center;">
+          <div
+            style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; text-align: center;">
             <div style="background: var(--surface-2); padding: 10px; border-radius: 4px;">
               <span class="mono" style="font-size: 10px; color: var(--muted);">RAM 佔用</span>
-              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--int);" id="deck-res-ram">2.65 GB</div>
+              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--int);" id="deck-res-ram">2.65 GB
+              </div>
             </div>
             <div style="background: var(--surface-2); padding: 10px; border-radius: 4px;">
               <span class="mono" style="font-size: 10px; color: var(--muted);">首字延遲 (TTFT)</span>
-              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--amber-edge);" id="deck-res-ttft">32 ms</div>
+              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--amber-edge);" id="deck-res-ttft">
+                32 ms</div>
             </div>
             <div style="background: var(--surface-2); padding: 10px; border-radius: 4px;">
               <span class="mono" style="font-size: 10px; color: var(--muted);">生成速度 (TPS)</span>
-              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--ok);" id="deck-res-tps">18.5 tok/s</div>
+              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--ok);" id="deck-res-tps">18.5
+                tok/s</div>
             </div>
             <div style="background: var(--surface-2); padding: 10px; border-radius: 4px;">
               <span class="mono" style="font-size: 10px; color: var(--muted);">端到端決策耗時</span>
-              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--brand);" id="deck-res-lat">48 ms</div>
+              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--brand);" id="deck-res-lat">48 ms
+              </div>
             </div>
           </div>
-          <div style="margin-top: 12px; text-align: center; font-size: 12px; color: var(--ok); font-weight: 700;" id="deck-res-eval">
+          <div style="margin-top: 12px; text-align: center; font-size: 12px; color: var(--ok); font-weight: 700;"
+            id="deck-res-eval">
             ✓ 極致硬即時：滿足 50ms 工業急停標準（相較雲端 1,250ms 快 25 倍）
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
           <span>SLIDE 04 / 12 — EDGE BENCHMARK</span>
           <span>按 [→] 前往 RAG 雙雄架構對比</span>
         </div>
@@ -2057,28 +2627,34 @@
       <!-- Slide 05: RAG Comparison & Roles -->
       <div id="slide-5" class="slide-frame">
         <div>
-          <span class="mono" style="font-size: 11px; color: var(--boss); font-weight: 700;">05 / AGENTIC RAG ROLES</span>
-          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">Agentic RAG 核心角色公會：閉環控制迴路</h2>
+          <span class="mono" style="font-size: 11px; color: var(--boss); font-weight: 700;">05 / AGENTIC RAG
+            ROLES</span>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">Agentic RAG 核心角色公會：閉環控制迴路
+          </h2>
           <p style="font-size: 13px; color: var(--muted);">不再是一步到位的單次盲查，而是分工合作的自主調查小組。</p>
         </div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: auto; width: 100%;">
           <div class="card-deck" style="padding: 14px;">
-            <span class="mono" style="font-size: 10px; color: var(--int); font-weight: 700;">ROLE 01 · ROUTER & PLANNER</span>
+            <span class="mono" style="font-size: 10px; color: var(--int); font-weight: 700;">ROLE 01 · ROUTER &
+              PLANNER</span>
             <h4 style="font-size: 14px; font-weight: 700; margin-top: 2px;">意圖路由器與規劃者</h4>
             <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">分析複雜提問，分解成邏輯相依的子查詢樹，指派工具代理人。</p>
           </div>
           <div class="card-deck" style="padding: 14px;">
-            <span class="mono" style="font-size: 10px; color: var(--pc); font-weight: 700;">ROLE 02 · RETRIEVER & TOOLS</span>
+            <span class="mono" style="font-size: 10px; color: var(--pc); font-weight: 700;">ROLE 02 · RETRIEVER &
+              TOOLS</span>
             <h4 style="font-size: 14px; font-weight: 700; margin-top: 2px;">混合檢索與工具代理</h4>
             <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">調用向量庫、知識圖譜、即時匯率 API 與 Python 計算沙箱。</p>
           </div>
           <div class="card-deck" style="padding: 14px;">
-            <span class="mono" style="font-size: 10px; color: var(--brand); font-weight: 700;">ROLE 03 · REFLECTIVE VERIFIER</span>
+            <span class="mono" style="font-size: 10px; color: var(--brand); font-weight: 700;">ROLE 03 · REFLECTIVE
+              VERIFIER</span>
             <h4 style="font-size: 14px; font-weight: 700; margin-top: 2px;">反思查核與驗證者</h4>
             <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">事實驗證、偵測邏輯矛盾，若發現藥物相剋立刻駁回並重新查詢。</p>
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
           <span>SLIDE 05 / 12 — RAG ARCHITECTURE</span>
           <span>按 [→] 前往向量幾何斷層</span>
         </div>
@@ -2088,28 +2664,34 @@
       <div id="slide-6" class="slide-frame">
         <div>
           <span class="mono" style="font-size: 11px; color: var(--brand); font-weight: 700;">06 / GEOMETRIC PROOF</span>
-          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">為什麼 Cosine 0.142 會漏掉致命禁忌？</h2>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">為什麼 Cosine 0.142 會漏掉致命禁忌？
+          </h2>
           <p style="font-size: 13px; color: var(--muted);">數學幾何透視：高維語意空間的「因果斷層」只有圖譜與多跳代理能跨越。</p>
         </div>
         <div class="card-deck" style="padding: 18px; margin: auto; width: 100%; max-width: 800px;">
-          <div style="display: flex; justify-content: space-around; align-items: center; text-align: center; padding: 14px 0;">
+          <div
+            style="display: flex; justify-content: space-around; align-items: center; text-align: center; padding: 14px 0;">
             <div>
               <div class="mono" style="font-size: 13px; font-weight: 700;">脈優 (降血壓) ⇄ 感冒潤喉</div>
-              <div class="mono" style="font-size: 24px; font-weight: 900; color: var(--ok); margin-top: 4px;">0.812</div>
+              <div class="mono" style="font-size: 24px; font-weight: 900; color: var(--ok); margin-top: 4px;">0.812
+              </div>
               <span style="font-size: 11px; color: var(--muted);">字面相似度高（傳統 RAG 採納）</span>
             </div>
             <div style="font-size: 20px; color: var(--muted);">VS</div>
             <div>
               <div class="mono" style="font-size: 13px; font-weight: 700;">葡萄柚 ⇄ CYP3A4 抑制</div>
-              <div class="mono" style="font-size: 24px; font-weight: 900; color: var(--bad); margin-top: 4px;">0.142</div>
+              <div class="mono" style="font-size: 24px; font-weight: 900; color: var(--bad); margin-top: 4px;">0.142
+              </div>
               <span style="font-size: 11px; color: var(--bad); font-weight: 700;">相似度過低（傳統 RAG 丟棄！）</span>
             </div>
           </div>
-          <div style="background: var(--amber-tint); border: 1px solid var(--amber-edge); border-radius: 4px; padding: 10px; font-size: 12.5px; line-height: 1.5;">
+          <div
+            style="background: var(--amber-tint); border: 1px solid var(--amber-edge); border-radius: 4px; padding: 10px; font-size: 12.5px; line-height: 1.5;">
             💡 <strong>破局之道：</strong> Agentic RAG 透過知識圖譜進行多跳推理（脈優 ➔ 代謝酵素 CYP3A4 ➔ 葡萄柚強效抑制劑 ➔ 藥物濃度飆升 4 倍），成功跨越幾何斷層！
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
           <span>SLIDE 06 / 12 — GEOMETRIC PROOF</span>
           <span>按 [→] 前往 ReAct 思維鏈日誌</span>
         </div>
@@ -2119,20 +2701,24 @@
       <div id="slide-7" class="slide-frame">
         <div>
           <span class="mono" style="font-size: 11px; color: var(--ok); font-weight: 700;">07 / EXECUTION TRACE</span>
-          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">ReAct 思維鏈底層日誌：Thought, Action, Reflect</h2>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">ReAct 思維鏈底層日誌：Thought,
+            Action, Reflect</h2>
           <p style="font-size: 13px; color: var(--muted);">親眼見證 Agent 如何發現錯誤並自主修正！</p>
         </div>
-        <div class="card-deck mono" style="padding: 14px; font-size: 11px; line-height: 1.5; background: #0d171c; color: #cfe3e9; margin: auto; width: 100%; max-width: 820px; max-height: 340px; overflow-y: auto;">
+        <div class="card-deck mono"
+          style="padding: 14px; font-size: 11px; line-height: 1.5; background: #0d171c; color: #cfe3e9; margin: auto; width: 100%; max-width: 820px; max-height: 340px; overflow-y: auto;">
           <span style="color: #ffc94a;">[THOUGHT 1]</span> 使用者詢問降血壓藥脈優能否配葡萄柚汁與綜合感冒藥。需查詢代謝途徑。<br>
           <span style="color: #7fe3c8;">[ACTION 1]</span> call_tool: RxNav_API(drug="Amlodipine")<br>
           <span style="color: #8fa9b3;">[OBSERVATION 1]</span> 代謝途徑：肝臟 CYP3A4 微粒體酵素系統。<br>
           <span style="color: #ffc94a;">[THOUGHT 2]</span> 檢索葡萄柚汁對 CYP3A4 之影響。<br>
-          <span style="color: #7fe3c8;">[ACTION 2]</span> call_tool: Interaction_DB(substance="Grapefruit", target="CYP3A4")<br>
+          <span style="color: #7fe3c8;">[ACTION 2]</span> call_tool: Interaction_DB(substance="Grapefruit",
+          target="CYP3A4")<br>
           <span style="color: #f0796d;">[OBSERVATION 2]</span> 警報：呋喃香豆素不可逆抑制腸道 CYP3A4，生體可用率暴增 300%-400%！<br>
           <span style="color: #ffc94a;">[REFLECT & VERIFY]</span> 駁回所有允許飲用之生成建議，強制插入紅旗警告！<br>
           <span style="color: #58c483;">[FINAL ANSWER]</span> 🚨 嚴正警告：禁止飲用葡萄柚汁！可能引發急性低血壓休克昏迷！
         </div>
-        <div style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
           <span>SLIDE 07 / 12 — TRACE LOG</span>
           <span>按 [→] 前往垂直產業落地效益</span>
         </div>
@@ -2171,7 +2757,8 @@
             <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">威脅壓制時間 (MTTC) 從小時級壓制至秒級自主動態防護</p>
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
           <span>SLIDE 08 / 12 — INDUSTRY MATRIX</span>
           <span>按 [→] 前往隨堂測驗考核</span>
         </div>
@@ -2180,7 +2767,8 @@
       <!-- Slide 09 to 12 Summary (Quiz & Recap) -->
       <div id="slide-9" class="slide-frame">
         <div>
-          <span class="mono" style="font-size: 11px; color: var(--ok); font-weight: 700;">09 / SUMMARY & CERTIFICATION</span>
+          <span class="mono" style="font-size: 11px; color: var(--ok); font-weight: 700;">09 / SUMMARY &
+            CERTIFICATION</span>
           <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">雙核心技術精髓總結與專家結語</h2>
           <p style="font-size: 13px; color: var(--muted);">物聯網與知識檢索正在共同走向自主認知代理人時代。</p>
         </div>
@@ -2194,8 +2782,13 @@
             <button class="btn btn-primary" onclick="toggleDualMode()">進入值班模擬器實戰 🎮</button>
             <button class="btn" onclick="openReportModal('iot')">查閱完整學術研析報告 📑</button>
           </div>
+          <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--line); font-size: 12px; color: var(--muted); display: flex; justify-content: center; align-items: center; gap: 8px;">
+            <i class="fa-solid fa-certificate text-brand"></i>
+            <span>研究著作與系統開發：<strong style="color: var(--ink);">高望恆</strong>（Developed & Reported by 高望恆）</span>
+          </div>
         </div>
-        <div style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
           <span>SLIDE 09 / 12 — CONCLUSION</span>
           <span onclick="jumpToSlide(1)" style="cursor: pointer; text-decoration: underline;">回到第一頁 ⟳</span>
         </div>
@@ -2204,7 +2797,8 @@
     </main>
 
     <!-- Presentation Footer Controls -->
-    <footer style="height: 52px; background: var(--surface); border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 20px;">
+    <footer
+      style="height: 52px; background: var(--surface); border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 20px;">
       <button class="btn" onclick="prevSlide()"><i class="fa-solid fa-arrow-left"></i> 上一張 (Prev)</button>
       <div class="mono" style="font-size: 12px; font-weight: 700;">
         SLIDE <span id="deck-cur-num" style="color: var(--brand);">01</span> / 09
@@ -2255,7 +2849,8 @@
           <button class="btn btn-ghost" onclick="closeReportModal()">✕</button>
         </div>
       </div>
-      <div class="modal-body mono" style="font-size: 12px; line-height: 1.6; background: #fff;" id="report-modal-content">
+      <div class="modal-body mono" style="font-size: 12px; line-height: 1.6; background: #fff;"
+        id="report-modal-content">
         <!-- Formatted Report Content Injected Here -->
       </div>
     </div>
@@ -2387,7 +2982,7 @@
     function startShift() {
       playSfx('ok');
       const nameInput = document.getElementById('engineer-name').value.trim();
-      G.engineerName = nameInput || '你';
+      G.engineerName = nameInput || '高望恆';
       document.getElementById('home-screen').style.display = 'none';
       initPuppetStage();
       setTimeout(onPuppetStageResize, 100);
@@ -2923,7 +3518,7 @@
             btn.innerHTML = '<i class="fa-regular fa-copy"></i> 複製封包 JSON';
           }, 2000);
         }
-      }).catch(() => {});
+      }).catch(() => { });
     }
 
     function escapeHtml(str) {
@@ -3351,7 +3946,7 @@
       tagCanvas.width = 512;
       tagCanvas.height = 128;
       const tg = tagCanvas.getContext('2d');
-      
+
       // Rounded pill badge
       tg.fillStyle = cfg.tagBg || 'rgba(15, 23, 42, 0.9)';
       tg.strokeStyle = cfg.tagBorder || '#00e5ff';
@@ -3394,7 +3989,7 @@
         hop: 0,
         shiver: 0,
         isPlayer: !!cfg.isPlayer,
-        setTagLabel: function(newText, newBorder) {
+        setTagLabel: function (newText, newBorder) {
           tg.clearRect(0, 0, 512, 128);
           tg.fillStyle = cfg.tagBg || 'rgba(15, 23, 42, 0.9)';
           tg.strokeStyle = newBorder || cfg.tagBorder || '#00e5ff';
@@ -3682,7 +4277,7 @@
       P.windMat = windMat;
 
       // Function to refresh AC LED screen
-      puppetStage.updateAcDisplay = function() {
+      puppetStage.updateAcDisplay = function () {
         if (!P.acCtx) return;
         const d = puppetStage.deviceStates.ac;
         P.acCtx.fillStyle = '#05131e';
@@ -4088,7 +4683,7 @@
       // ==========================================================
       // INSTANTIATE CHARACTERS (PLAYER + 4 MULTI-AGENTS + NPC)
       // ==========================================================
-      
+
       // 1. Player Character (代表使用者: 你｜AI 自主架構師)
       const playerChar = createHumanoidPuppet({
         id: 'player',
@@ -4254,12 +4849,12 @@
     }
 
     const CAM_VIEWS = {
-      home:   { pos: [0, 7.6, 11.2],    look: [0, 1.3, 0] },
-      window: { pos: [-3.0, 4.6, 3.6],  look: [-2.6, 2.4, -4.0] },
-      ac:     { pos: [-2.0, 4.8, 3.4],  look: [-1.8, 2.8, -4.4] },
-      valve:  { pos: [4.2, 3.8, 2.2],   look: [4.2, 1.3, -3.2] },
-      shield: { pos: [0.4, 3.4, 1.8],   look: [0.1, 1.0, -2.1] },
-      wafer:  { pos: [-3.6, 3.6, 1.4],  look: [-3.8, 1.0, -2.8] }
+      home: { pos: [0, 7.6, 11.2], look: [0, 1.3, 0] },
+      window: { pos: [-3.0, 4.6, 3.6], look: [-2.6, 2.4, -4.0] },
+      ac: { pos: [-2.0, 4.8, 3.4], look: [-1.8, 2.8, -4.4] },
+      valve: { pos: [4.2, 3.8, 2.2], look: [4.2, 1.3, -3.2] },
+      shield: { pos: [0.4, 3.4, 1.8], look: [0.1, 1.0, -2.1] },
+      wafer: { pos: [-3.6, 3.6, 1.4], look: [-3.8, 1.0, -2.8] }
     };
     let camFocusTimer = null;
     function focusCamera(name, holdMs) {
@@ -5327,7 +5922,7 @@
           ]);
           academicReports.iot = academicReports.iot || rIot;
           academicReports.rag = academicReports.rag || rRag;
-        } catch (e) {}
+        } catch (e) { }
       }
       const modal = document.getElementById('report-modal');
       if (modal && modal.classList.contains('open')) {
@@ -5449,4 +6044,5 @@
     });
   </script>
 </body>
+
 </html>

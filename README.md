@@ -1,6 +1,7 @@
 # agentic24hr｜AI 自主代理人系統工程師的一天
 ## Agentic IoT × Agentic RAG 雙模沉浸式模擬與技術簡報系統
 
+**著作與系統架構開發 / 簡報主講**：高望恆 (Developed & Reported by 高望恆)  
 專為 AI 自主代理人、物聯網與邊緣運算設計的互動式實戰模擬器與技術演講簡報。
 
 ---

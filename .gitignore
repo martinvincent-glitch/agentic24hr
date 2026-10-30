@@ -1,0 +1,13 @@
+# Backup directories
+BACKUP DO NOT EDIT/
+*.backup.html
+*.zip
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE & Editor caches
+.vscode/
+.idea/
