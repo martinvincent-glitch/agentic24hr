@@ -1,0 +1,2154 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>agentic24hr｜AI 自主代理人系統工程師的一天Develop by 高望恆：Agentic IoT × Agentic RAG 雙模沉浸式模擬與技術簡報Reported by 高望恆</title>
+
+  <!-- Font Preconnect & Google Fonts (fab24hr Typography) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;700;900&display=swap"
+    rel="stylesheet">
+
+  <!-- FontAwesome 6.5.1 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    /* ============================================================ */
+    /* FAB24HR DESIGN TOKENS & COLOR SYSTEM                          */
+    /* ============================================================ */
+    :root {
+      --bg: #dde6ea;
+      --surface: #f8fbfb;
+      --surface-2: #edf2f4;
+      --ink: #12252c;
+      --muted: #506a74;
+      --line: #c5d3d8;
+
+      --amber: #f0a800;
+      --amber-edge: #c98a00;
+      --amber-ink: #2a1d00;
+      --amber-tint: #fdf3d6;
+
+      --brand: #c1121f;
+      --brand-edge: #930e18;
+      --on-brand: #ffffff;
+
+      --int: #2b6bd6;
+      /* 協商代理藍 */
+      --mod: #8748d1;
+      /* 邊緣 SLM 紫 */
+      --pc: #0b8f7d;
+      /* 動態檢索青 */
+      --boss: #a8327a;
+      /* 驗證反思紅粉 */
+      --on-role: #ffffff;
+
+      --ok: #1f7f45;
+      --ok-tint: #e3f3e8;
+      --bad: #c2352a;
+      --bad-tint: #fbe7e4;
+      --warn: #9a6200;
+
+      --c-work: #2f6fc9;
+      --c-wait: #c27d00;
+      --c-talk: #7a6fa8;
+
+      --scrim: rgba(18, 37, 44, .46);
+      --shadow: 0 12px 34px rgba(18, 37, 44, .18);
+      --lift: 0 -10px 14px -12px rgba(0, 0, 0, .45);
+      --focus: #12252c;
+
+      --font-display: "IBM Plex Sans", "Noto Sans TC", system-ui, sans-serif;
+      --font-body: "Noto Sans TC", system-ui, sans-serif;
+      --font-data: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 14.5px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .mono {
+      font-family: var(--font-data);
+      font-variant-numeric: tabular-nums;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-family: var(--font-display);
+      line-height: 1.25;
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    button {
+      font: inherit;
+      color: inherit;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* ============================================================ */
+    /* FAB24HR ATOMS & BUTTONS                                      */
+    /* ============================================================ */
+    .btn {
+      min-height: 40px;
+      padding: 7px 14px;
+      border: 1px solid var(--line);
+      background: var(--surface-2);
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      line-height: 1.3;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all .12s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+      border-color: var(--muted);
+      background: var(--surface);
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: default;
+    }
+
+    .btn-primary {
+      background: var(--brand);
+      border-color: var(--brand-edge);
+      color: var(--on-brand);
+      font-weight: 700;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #a80f1b;
+      border-color: var(--ink);
+      color: #fff;
+    }
+
+    .btn-amber {
+      background: var(--amber);
+      border-color: var(--amber-edge);
+      color: var(--amber-ink);
+      font-weight: 700;
+    }
+
+    .btn-amber:hover:not(:disabled) {
+      background: #dba008;
+      border-color: var(--amber-ink);
+    }
+
+    .btn-ghost {
+      min-height: 34px;
+      padding: 4px 10px;
+      background: transparent;
+      border-color: transparent;
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      background: var(--surface-2);
+      border-color: var(--line);
+    }
+
+    /* Status Lamp & Chips */
+    .lamp {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .lamp.r {
+      background: var(--bad);
+      box-shadow: 0 0 6px var(--bad);
+    }
+
+    .lamp.a {
+      background: var(--amber);
+      box-shadow: 0 0 6px var(--amber);
+    }
+
+    .lamp.g {
+      background: var(--ok);
+      box-shadow: 0 0 6px var(--ok);
+    }
+
+    .lamp.pulse {
+      animation: blink 1.2s steps(2, start) infinite;
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: .2;
+      }
+    }
+
+    .rchip {
+      font-family: var(--font-data);
+      font-size: 11.5px;
+      letter-spacing: .04em;
+      padding: 3px 8px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--ink);
+      background: var(--surface-2);
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .rchip.st-ok {
+      background: var(--ok-tint);
+      border-color: var(--ok);
+      color: var(--ok);
+    }
+
+    .rchip.st-bad {
+      background: var(--bad-tint);
+      border-color: var(--bad);
+      color: var(--bad);
+    }
+
+    .rchip.st-warn {
+      background: var(--amber-tint);
+      border-color: var(--amber-edge);
+      color: var(--warn);
+    }
+
+    /* ============================================================ */
+    /* TOP HUD BAR                                                  */
+    /* ============================================================ */
+    .hud {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 54px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 0 16px;
+      background: color-mix(in srgb, var(--surface) 97%, transparent);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: .02em;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-name em {
+      font-style: normal;
+      color: var(--brand);
+    }
+
+    .clockbox {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      line-height: 1;
+    }
+
+    .clock {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .clock.ot {
+      color: var(--bad);
+    }
+
+    .clock-note {
+      font-size: 11.5px;
+      color: var(--muted);
+      font-family: var(--font-data);
+    }
+
+    /* ============================================================ */
+    /* GAME VIEW / SHIFT SIMULATOR LAYOUT                           */
+    /* ============================================================ */
+    #game-container {
+      position: fixed;
+      inset: 54px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    /* Left or Top Simulation Stage */
+    .sim-viewport {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 30%, #eef5f8 0%, var(--bg) 70%);
+    }
+
+    /* Schematic NOC / Cleanroom Visualizer */
+    .noc-board {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .noc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .node-card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px 14px;
+      box-shadow: 0 4px 14px rgba(18, 37, 44, .06);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+      transition: all .2s ease;
+    }
+
+    .node-card.active {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 2px var(--brand-edge), 0 8px 24px rgba(193, 18, 31, .15);
+    }
+
+    .node-card.ok {
+      border-color: var(--ok);
+    }
+
+    .node-h {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .node-title {
+      font-weight: 700;
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .node-stat {
+      font-family: var(--font-data);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Incident Story & Action Panel */
+    .sim-panel {
+      position: fixed;
+      z-index: 20;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      max-height: 52%;
+      display: flex;
+      flex-direction: column;
+      background: color-mix(in srgb, var(--surface) 98%, transparent);
+      border-top: 1px solid var(--line);
+      box-shadow: var(--shadow);
+    }
+
+    .sim-panel-rc {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--line);
+      font-family: var(--font-data);
+      font-size: 11.5px;
+      letter-spacing: .08em;
+      color: var(--muted);
+      background: var(--surface-2);
+    }
+
+    .sim-panel-body {
+      padding: 14px 18px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .talk-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .sw-avatar {
+      flex: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      display: grid;
+      place-items: center;
+      font-family: var(--font-data);
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .sw-mod {
+      background: var(--mod);
+    }
+
+    .sw-int {
+      background: var(--int);
+    }
+
+    .sw-pc {
+      background: var(--pc);
+    }
+
+    .sw-boss {
+      background: var(--boss);
+    }
+
+    .talk-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .talk-sender {
+      font-weight: 700;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .talk-text {
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .term {
+      font: inherit;
+      color: inherit;
+      background: none;
+      border: 0;
+      border-bottom: 2px dotted var(--amber-edge);
+      padding: 0 1px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .term:hover {
+      background: var(--amber-tint);
+    }
+
+    .term-tooltip {
+      padding: 8px 12px;
+      background: var(--amber-tint);
+      border: 1px solid var(--amber-edge);
+      border-radius: 4px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .term-tooltip b {
+      font-family: var(--font-data);
+      font-size: 11.5px;
+      color: var(--warn);
+    }
+
+    /* Choices List */
+    .choices-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .choice-btn {
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: 4px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 13.5px;
+      line-height: 1.45;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: all .15s ease;
+    }
+
+    .choice-btn:hover {
+      border-color: var(--ink);
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--ink);
+    }
+
+    .choice-btn b {
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .choice-btn small {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    /* Feedback Box */
+    .fb-card {
+      padding: 10px 14px;
+      border-radius: 4px;
+      border: 1px solid var(--line);
+      font-size: 13px;
+      line-height: 1.55;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .fb-card.ok {
+      background: var(--ok-tint);
+      border-color: var(--ok);
+    }
+
+    .fb-card.bad {
+      background: var(--bad-tint);
+      border-color: var(--bad);
+    }
+
+    /* ============================================================ */
+    /* HOME ENTRANCE SCREEN (fab24hr BOARD)                         */
+    /* ============================================================ */
+    .home-overlay {
+      position: fixed;
+      inset: 54px 0 0 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--bg) 80%, transparent);
+      backdrop-filter: blur(12px);
+      padding: 16px;
+    }
+
+    .home-board {
+      width: 100%;
+      max-width: 580px;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .board-scroll {
+      padding: 16px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .board-foot {
+      padding: 12px 20px;
+      border-top: 1px solid var(--line);
+      background: var(--surface-2);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .led-strip {
+      display: block;
+      font-family: var(--font-data);
+      font-size: 12px;
+      letter-spacing: .06em;
+      line-height: 1.5;
+      padding: 7px 12px;
+      border-radius: 4px;
+      background: #0d171c;
+      color: #ffc94a;
+    }
+
+    .b-title {
+      font-size: clamp(34px, 8vw, 48px);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: .01em;
+    }
+
+    .b-title em {
+      font-style: normal;
+      color: var(--brand);
+    }
+
+    .b-sub {
+      font-family: var(--font-display);
+      font-size: 14.5px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      color: var(--muted);
+    }
+
+    .cast-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 14px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .cast-grid li {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cast-grid i {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+
+    .cast-grid b {
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    /* ============================================================ */
+    /* KEYNOTE PRESENTATION VIEW (MODE B)                           */
+    /* ============================================================ */
+    #deck-container {
+      position: fixed;
+      inset: 54px 0 0 0;
+      display: none;
+      flex-direction: column;
+      background: #f5f0e8;
+      z-index: 30;
+      overflow: hidden;
+    }
+
+    .slide-frame {
+      display: none;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .25s ease, transform .25s ease;
+      width: 100%;
+      height: 100%;
+      flex-direction: column;
+      justify-content: space-between;
+      max-width: 1280px;
+      margin: auto;
+      padding: 20px 24px 12px;
+    }
+
+    .slide-frame.active-slide {
+      display: flex;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 2D Deck Cards & Presentation Elements */
+    .card-deck {
+      background-color: #fbf8f3;
+      border: 1.5px solid #181b1b;
+      box-shadow: 3px 3px 0px #181b1b;
+      border-radius: 8px;
+      transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    /* ============================================================ */
+    /* CODEX ENCYCLOPEDIA & REPORT MODAL                            */
+    /* ============================================================ */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: var(--scrim);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: var(--surface);
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 860px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .modal-top {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-2);
+    }
+
+    .modal-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 8px 16px 0;
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+      background: var(--surface-2);
+    }
+
+    .modal-tab {
+      padding: 6px 14px;
+      border: 1px solid transparent;
+      border-bottom: 0;
+      background: transparent;
+      cursor: pointer;
+      border-radius: 4px 4px 0 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .modal-tab.active {
+      border-color: var(--line);
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .modal-body {
+      padding: 16px 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    /* End Shift Report Card (.fin) */
+    .fin-card {
+      border: 1px solid var(--ink);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .fin-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .fin-item {
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      background: var(--surface-2);
+    }
+
+    .fin-item dt {
+      font-family: var(--font-data);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .fin-item dd {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 2px 0 0;
+      color: var(--ink);
+    }
+
+    /* Custom Responsive Styles */
+    @media (max-width: 768px) {
+      .hud .brand-name {
+        font-size: 14px;
+      }
+
+      .clock {
+        font-size: 18px;
+      }
+
+      .cast-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sim-panel {
+        max-height: 60%;
+      }
+
+      .fin-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================ -->
+  <!-- TOP HUD BAR (fab24hr INSTRUMENTATION BAR)                    -->
+  <!-- ============================================================ -->
+  <header class="hud" id="hud">
+    <!-- Left Clock & Time Status -->
+    <div class="clockbox">
+      <span class="clock mono" id="clock" title="當前班次時間">02:47</span>
+      <span class="clock-note" id="clockNote">NIGHT SHIFT · 邊緣值班中</span>
+    </div>
+
+    <!-- Center Brand / Mode Indicator -->
+    <div class="brand-name">
+      <span>agentic<em>24</em>hr</span>
+      <span class="rchip st-ok" id="hud-chip">
+        <i class="lamp g pulse" id="hud-lamp"></i>
+        <span id="hud-chip-text">HUB-01 邊緣監控中</span>
+      </span>
+    </div>
+
+    <!-- Right Controls: Mode Toggle & Tools -->
+    <div style="display: flex; align-items: center; gap: 6px;">
+      <!-- Sound Toggle -->
+      <button class="btn btn-ghost" id="sndBtn" onclick="toggleSound()" type="button" title="聲音開關"
+        style="padding: 4px 8px;">
+        <i class="fa-solid fa-volume-high" id="sndIcon"></i>
+      </button>
+
+      <!-- Codex (圖鑑) -->
+      <button class="btn btn-ghost" onclick="openCodex()" type="button" title="查看技術圖鑑與白話名詞">
+        <i class="fa-solid fa-book-bookmark text-amber-edge"></i>
+        <span class="hidden sm:inline">圖鑑</span>
+      </button>
+
+      <!-- Academic Report Button -->
+      <button class="btn btn-ghost" onclick="openReportModal('iot')" type="button" title="閱讀學術研析報告全文">
+        <i class="fa-solid fa-file-contract text-blue-600"></i>
+        <span class="hidden sm:inline">報告</span>
+      </button>
+
+      <!-- Mode Switcher: Game ⇄ 12-Slide Keynote Deck -->
+      <button class="btn btn-amber" id="modeSwitchBtn" onclick="toggleDualMode()" type="button"
+        style="font-weight: 700;">
+        <i class="fa-solid fa-presentation" id="modeIcon"></i>
+        <span id="modeBtnText">切換 12 頁簡報</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============================================================ -->
+  <!-- MODE A: GAME VIEW / SHIFT SIMULATOR (FAB24HR INTERACTIVE)    -->
+  <!-- ============================================================ -->
+  <div id="game-container">
+    <!-- Simulation Stage (NOC Schematics & Visual Sensors) -->
+    <div class="sim-viewport">
+      <div class="noc-board">
+        <div style="text-align: center; margin-bottom: 14px;">
+          <span
+            style="font-family: var(--font-data); font-size: 11px; letter-spacing: .15em; color: var(--muted); text-transform: uppercase;">
+            CENTRAL COGNITIVE CONTINUUM · LIVE NODE TELEMETRY
+          </span>
+          <h2 style="font-size: 18px; font-weight: 700; color: var(--ink); margin-top: 2px;" id="stage-title">
+            全域邊緣感測與知識推理神經中樞
+          </h2>
+        </div>
+
+        <div class="noc-grid">
+          <!-- Node 1: Physical / TinyML Sensors -->
+          <div class="node-card" id="node-sensor">
+            <div class="node-h">
+              <span class="node-title"><i class="fa-solid fa-microchip text-mod"></i> 物理設備層 (Tier 1)</span>
+              <span class="rchip st-ok" id="stat-t1"><i class="lamp g"></i> TinyML</span>
+            </div>
+            <div style="font-size: 12px; color: var(--muted);" id="desc-t1">
+              智慧手錶 (148 bpm)、瓦斯甲烷 (65 ppm)、微波車聯網 (RSU)
+            </div>
+            <div class="mono"
+              style="font-size: 11px; background: var(--surface-2); padding: 4px 6px; border-radius: 3px;" id="data-t1">
+              MQTT: raw_payload { hr:148, gas:65, rsu:18 }
+            </div>
+          </div>
+
+          <!-- Node 2: Edge SLM Gateway -->
+          <div class="node-card" id="node-edge">
+            <div class="node-h">
+              <span class="node-title"><i class="fa-solid fa-server text-int"></i> 邊緣 / 霧層 (Tier 2)</span>
+              <span class="rchip st-ok" id="stat-t2"><i class="lamp g"></i> SLM 50ms</span>
+            </div>
+            <div style="font-size: 12px; color: var(--muted);" id="desc-t2">
+              Jetson Orin / Phi-3.5 本地因果推理，防爆急停與多代理協商
+            </div>
+            <div class="mono"
+              style="font-size: 11px; background: var(--surface-2); padding: 4px 6px; border-radius: 3px;" id="data-t2">
+              ECDSA Signed: contract_2026_storm_v1
+            </div>
+          </div>
+
+          <!-- Node 3: Cloud IoA & RAG Guild -->
+          <div class="node-card" id="node-rag">
+            <div class="node-h">
+              <span class="node-title"><i class="fa-solid fa-brain text-boss"></i> 雲端智能與 RAG (Tier 3)</span>
+              <span class="rchip st-ok" id="stat-t3"><i class="lamp g"></i> ReAct Loop</span>
+            </div>
+            <div style="font-size: 12px; color: var(--muted);" id="desc-t3">
+              多代理人智囊團：RxNav 藥理檢索、Python 財務審計、反思驗證
+            </div>
+            <div class="mono"
+              style="font-size: 11px; background: var(--surface-2); padding: 4px 6px; border-radius: 3px;" id="data-t3">
+              Verifier: CYP3A4 Red Flag Verified ✓
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Interactive Utility Bar -->
+        <div style="margin-top: 18px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+          <button class="btn" onclick="openShiftIncident(1)" id="inc-btn-1"><i
+              class="fa-solid fa-cloud-bolt text-brand"></i> 事件 1: 酷暑暴雨</button>
+          <button class="btn" onclick="openShiftIncident(2)" id="inc-btn-2"><i
+              class="fa-solid fa-fire-burner text-amber"></i> 事件 2: 瓦斯微洩</button>
+          <button class="btn" onclick="openShiftIncident(3)" id="inc-btn-3"><i
+              class="fa-solid fa-pills text-blue-600"></i> 事件 3: 葡萄柚藥物</button>
+          <button class="btn" onclick="openShiftIncident(4)" id="inc-btn-4"><i
+              class="fa-solid fa-calculator text-green-700"></i> 事件 4: 財報審計</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Incident Story & Action Panel (.sim-panel) -->
+    <div class="sim-panel" id="sim-panel">
+      <div class="sim-panel-rc">
+        <span id="p-mission-id">INCIDENT 01 / 04 · SHIFT CRISIS</span>
+        <span class="mono" id="p-agent-status">EDGE REASONING LOOP ACTIVE</span>
+        <button class="btn btn-ghost" onclick="togglePanelMin()" type="button"
+          style="padding: 2px 6px; font-size: 11px;">
+          <i class="fa-solid fa-chevron-down" id="p-min-icon"></i>
+        </button>
+      </div>
+
+      <div class="sim-panel-body" id="panel-body-content">
+        <!-- Dynamic Content Injected Here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- HOME ENTRY BOARD (START OF SHIFT OVERLAY)                    -->
+  <!-- ============================================================ -->
+  <div class="home-overlay" id="home-screen">
+    <main class="home-board">
+      <div class="board-scroll">
+        <span class="led-strip">
+          <i class="lamp r pulse"></i>02:47 突發警報：午後暴雨進水、長輩瓦斯微洩、高血壓病患用藥衝突
+        </span>
+
+        <div>
+          <h1 class="b-title">agentic<em>24</em>hr</h1>
+          <p class="b-sub">AI 自主代理人系統工程師的一天</p>
+        </div>
+
+        <p style="font-size: 13.5px; color: var(--muted); line-height: 1.6;">
+          免費、免安裝的互動教學模擬：當一天 Agentic IoT 與 Agentic RAG 的當班架構師。
+          從凌晨 02:47 感測器異響開始，親自調度邊緣小模型（SLM）、簽訂語意合約、指揮檢索智囊團阻斷幻覺！
+        </p>
+
+        <!-- Engineer Identity -->
+        <div>
+          <label
+            style="font-family: var(--font-data); font-size: 11.5px; color: var(--muted); letter-spacing: .08em; display: block; margin-bottom: 4px;"
+            for="engineer-name">
+            你的代號（工程師名稱）
+          </label>
+          <input type="text" id="engineer-name" placeholder="例如：Alex / 邊緣首席架構師（可不填）"
+            style="width: 100%; min-height: 40px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-2); font: inherit; font-size: 13.5px;">
+        </div>
+
+        <!-- Today's Characters / Guild Roles -->
+        <div>
+          <span
+            style="font-family: var(--font-data); font-size: 11.5px; color: var(--muted); letter-spacing: .08em; display: block; margin-bottom: 6px;">
+            值班協同代理人公會成員
+          </span>
+          <ul class="cast-grid">
+            <li><i style="background: var(--mod);"></i><b>阿凱</b>邊緣 SLM 代理（50ms 急停）</li>
+            <li><i style="background: var(--int);"></i><b>雅婷</b>IoA 協商代理（語意合約談判）</li>
+            <li><i style="background: var(--pc);"></i><b>小芸</b>動態檢索代理（藥理 / 財務 API）</li>
+            <li><i style="background: var(--boss);"></i><b>陳課長</b>反思驗證代理（紅旗查核）</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="board-foot">
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-primary" onclick="startShift()" type="button"
+            style="flex: 1; min-height: 48px; font-size: 16px; letter-spacing: .05em;">
+            進廠值班 (START SHIFT)
+          </button>
+          <button class="btn btn-amber" onclick="toggleDualMode()" type="button"
+            style="min-height: 48px; font-size: 13.5px;">
+            直接看 12 頁簡報
+          </button>
+        </div>
+        <p style="font-size: 11.5px; color: var(--muted); text-align: center; margin-top: 2px;">
+          行話點一下就有白話解釋 · 支持全設備自適應 · 支援鍵盤快速操作
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MODE B: 12-SLIDE KEYNOTE PRESENTATION VIEW                   -->
+  <!-- ============================================================ -->
+  <div id="deck-container">
+    <main id="keynote-stage"
+      style="flex: 1; overflow-y: hidden; display: flex; flex-direction: column; position: relative;">
+
+      <!-- Slide 01: Overview / Continuum -->
+      <div id="slide-1" class="slide-frame active-slide">
+        <div
+          style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: center; margin: auto; width: 100%;">
+          <div>
+            <div
+              style="font-family: var(--font-data); font-size: 11px; font-weight: 700; color: var(--brand); letter-spacing: .12em; margin-bottom: 8px;">
+              FIELD GUIDE / 01 ──── INTERNET OF AGENTS
+            </div>
+            <h1 style="font-size: clamp(36px, 5vw, 54px); font-weight: 900; line-height: 1.1; color: var(--ink);">
+              讓系統不只<br>
+              <span style="color: var(--brand);">感測，還能思</span><br>
+              考。
+            </h1>
+            <p style="font-size: 13.5px; color: var(--muted); margin-top: 14px; max-width: 460px;">
+              從感測器訊號出發，看見 Agentic IoT 如何在裝置、邊緣與雲端之間推理、協作；再用同一個任務拆解 Traditional RAG 與 Agentic RAG 的本質差異。
+            </p>
+            <div style="margin-top: 18px; display: flex; gap: 10px;">
+              <button class="btn btn-primary" onclick="toggleDualMode()">進入值班模擬器 ↗</button>
+              <button class="btn" onclick="jumpToSlide(2)">先看學習路徑 ↓</button>
+            </div>
+          </div>
+
+          <!-- Right 2D Diagram -->
+          <div style="position: relative; display: flex; flex-direction: column; gap: 12px; align-items: center;">
+            <div class="card-deck" style="padding: 14px 18px; width: 340px; transform: rotate(1deg);">
+              <span class="mono" style="font-size: 10px; color: var(--brand); font-weight: 700;">TIER 03</span>
+              <h3 style="font-size: 15px; font-weight: 700;">雲端智能層 (IoA 代理人公會)</h3>
+              <span class="mono" style="font-size: 10px; color: var(--muted);">LONG-TERM MEMORY · LLM</span>
+            </div>
+            <div class="card-deck"
+              style="padding: 14px 18px; width: 340px; transform: rotate(-1deg); position: relative;">
+              <span class="mono" style="font-size: 10px; color: var(--brand); font-weight: 700;">TIER 02</span>
+              <h3 style="font-size: 15px; font-weight: 700;">邊緣 / 霧層 (本地因果推理)</h3>
+              <span class="mono" style="font-size: 10px; color: var(--muted);">LOCAL REASONING · BRIDGE</span>
+              <div
+                style="position: absolute; right: -12px; top: -14px; width: 68px; height: 68px; border-radius: 50%; background: var(--brand); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: var(--font-data); font-size: 9px; font-weight: 700; border: 2px solid #fff; box-shadow: var(--shadow);">
+                <span>AGENT</span><span>LOOP</span>
+              </div>
+            </div>
+            <div class="card-deck"
+              style="padding: 14px 18px; width: 340px; background: #e3f3e8; transform: rotate(0.5deg);">
+              <span class="mono" style="font-size: 10px; color: var(--ok); font-weight: 700;">TIER 01</span>
+              <h3 style="font-size: 15px; font-weight: 700;">物理設備層 (感測與微致動)</h3>
+              <span class="mono" style="font-size: 10px; color: var(--muted);">SENSE · ACT · TINYML</span>
+            </div>
+          </div>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+          <span>SLIDE 01 / 12 — OVERVIEW</span>
+          <span>按 [→ / 空白鍵] 翻頁</span>
+        </div>
+      </div>
+
+      <!-- Slide 02: Paradigm Shift (Life Analogies) -->
+      <div id="slide-2" class="slide-frame">
+        <div>
+          <span class="mono" style="font-size: 11px; color: var(--brand); font-weight: 700;">02 / PARADIGM SHIFT</span>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">生活化比喻：傳統系統為什麼會在複雜環境窒息？</h2>
+          <p style="font-size: 13px; color: var(--muted);">缺乏情境感知與反思能力，感測器只是冰冷數字，檢索器只是死背課本。</p>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: auto; width: 100%;">
+          <div class="card-deck" style="padding: 18px;">
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">物聯網躍遷：自動灑水器 vs 智慧管家</h3>
+            <p style="font-size: 12.5px; line-height: 1.6; color: var(--muted);">
+              <strong>❌ 傳統 IoT：</strong>設定下午 2 點噴水的灑水器。哪怕颳大颱風、傾盆暴雨，它依然照開不誤，植物爛根；冷氣看到溫度高就強冷直吹，不管主人大汗淋漓！<br><br>
+              <strong>✅ Agentic IoT：</strong>手錶感知心率 145bpm 發熱，空調與窗戶主動協商：關迎風面擋暴雨、送 26.5°C 柔和微風，省電 38% 且保護身體。
+            </p>
+          </div>
+          <div class="card-deck" style="padding: 18px;">
+            <h3 style="font-size: 15px; font-weight: 700; margin-bottom: 8px;">檢索架構躍遷：死背書僮 vs 福爾摩斯智囊團</h3>
+            <p style="font-size: 12.5px; line-height: 1.6; color: var(--muted);">
+              <strong>❌ 傳統 RAG：</strong>死背課本的小學生。問高血壓藥能否配葡萄柚汁，字面比對段落未提及禁忌，便草率回答「可以喝」，引發致命休克！<br><br>
+              <strong>✅ Agentic RAG：</strong>規劃者拆解代謝酵素，工具調用 RxNav API 查出 CYP3A4 嚴重抑制禁忌，驗證者即刻亮起紅旗警告，給出救命回答。
+            </p>
+          </div>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+          <span>SLIDE 02 / 12 — PARADIGM SHIFT</span>
+          <span>按 [→] 前往連續體動態流</span>
+        </div>
+      </div>
+
+      <!-- Slide 03: Data X-Ray (MQTT vs Semantic Contract) -->
+      <div id="slide-3" class="slide-frame">
+        <div>
+          <span class="mono" style="font-size: 11px; color: var(--int); font-weight: 700;">03 / DATA CONTRACTS</span>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">真實代碼透視：MQTT 封包 vs 語意代理人合約
+          </h2>
+          <p style="font-size: 13px; color: var(--muted);">看見「孤立數字」與「具備情境本體論與密碼學簽章之語意合約」的底層差異。</p>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: auto; width: 100%;">
+          <div class="card-deck" style="padding: 14px;">
+            <span class="mono" style="font-size: 11px; color: var(--brand); font-weight: 700;">傳統 MQTT 靜態封包</span>
+            <pre class="mono"
+              style="font-size: 11px; background: var(--surface-2); padding: 10px; border-radius: 4px; overflow-x: auto; margin-top: 6px;"><code>{
+  "ts": 1728812400,
+  "device_id": "temp_01",
+  "temperature": 32.4,
+  "humidity": 68.2,
+  "motion": 1
+}</code></pre>
+            <p style="font-size: 11.5px; color: var(--bad); margin-top: 6px;">❌
+              缺點：只有單純數值，無法感知「主人大量發熱中」、無法感知「窗外暴雨將至」，形成嚴重語意孤島。</p>
+          </div>
+          <div class="card-deck" style="padding: 14px;">
+            <span class="mono" style="font-size: 11px; color: var(--ok); font-weight: 700;">IoA 語意合約 (JSON-LD
+              Contract)</span>
+            <pre class="mono"
+              style="font-size: 11px; background: var(--surface-2); padding: 10px; border-radius: 4px; overflow-x: auto; margin-top: 6px;"><code>{
+  "@context": "https://w3id.org/ioa/v1",
+  "contract_id": "cnt_climate_neg_88",
+  "context_state": {
+    "user_activity": "aerobic_workout",
+    "heart_rate_bpm": 145,
+    "storm_warning": true
+  },
+  "negotiated_terms": {
+    "hvac_celsius": 26.5,
+    "window": "seal_against_storm"
+  },
+  "ecdsa_sig": "0x4b7f...9e21"
+}</code></pre>
+            <p style="font-size: 11.5px; color: var(--ok); margin-top: 6px;">✅ 優勢：自帶情境與協商條款，設備間具備自主談判與密碼學認證能力。</p>
+          </div>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+          <span>SLIDE 03 / 12 — CONTRACT SPEC</span>
+          <span>按 [→] 前往邊緣算力計算機</span>
+        </div>
+      </div>
+
+      <!-- Slide 04: Edge SLM Benchmark Calculator -->
+      <div id="slide-4" class="slide-frame">
+        <div>
+          <span class="mono" style="font-size: 11px; color: var(--mod); font-weight: 700;">04 / HARDWARE
+            BENCHMARK</span>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">邊緣 SLM 硬體算力、RAM 消耗與延遲計算機
+          </h2>
+          <p style="font-size: 13px; color: var(--muted);">動態試算邊緣晶片是否能達成工業 50ms 硬即時防爆標準！</p>
+        </div>
+        <div class="card-deck" style="padding: 18px; margin: auto; width: 100%; max-width: 800px;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+            <div>
+              <label class="mono" style="font-size: 11.5px; font-weight: 700;">選擇邊緣小模型 (Edge SLM)：</label>
+              <select id="deck-calc-model" onchange="runDeckBenchmark()"
+                style="width: 100%; padding: 6px; font-family: var(--font-data); font-size: 12px; margin-top: 4px;">
+                <option value="llama32_1b">Meta LLaMA-3.2 1B-Instruct (INT4) - 780 MB</option>
+                <option value="phi35_mini" selected>Microsoft Phi-3.5-mini 3.8B (INT4) - 2.2 GB</option>
+                <option value="qwen25_15b">Alibaba Qwen-2.5 1.5B (INT4) - 980 MB</option>
+              </select>
+            </div>
+            <div>
+              <label class="mono" style="font-size: 11.5px; font-weight: 700;">選擇邊緣硬體晶片：</label>
+              <select id="deck-calc-device" onchange="runDeckBenchmark()"
+                style="width: 100%; padding: 6px; font-family: var(--font-data); font-size: 12px; margin-top: 4px;">
+                <option value="jetson_orin" selected>NVIDIA Jetson Orin Nano (40 TOPS, 8GB RAM)</option>
+                <option value="rpi5">Raspberry Pi 5 (8GB RAM, Broadcom 2.4GHz)</option>
+                <option value="intel_ipc">工業邊緣 IPC (Core i5, 16GB RAM)</option>
+              </select>
+            </div>
+          </div>
+
+          <div
+            style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; text-align: center;">
+            <div style="background: var(--surface-2); padding: 10px; border-radius: 4px;">
+              <span class="mono" style="font-size: 10px; color: var(--muted);">RAM 佔用</span>
+              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--int);" id="deck-res-ram">2.65 GB
+              </div>
+            </div>
+            <div style="background: var(--surface-2); padding: 10px; border-radius: 4px;">
+              <span class="mono" style="font-size: 10px; color: var(--muted);">首字延遲 (TTFT)</span>
+              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--amber-edge);" id="deck-res-ttft">
+                32 ms</div>
+            </div>
+            <div style="background: var(--surface-2); padding: 10px; border-radius: 4px;">
+              <span class="mono" style="font-size: 10px; color: var(--muted);">生成速度 (TPS)</span>
+              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--ok);" id="deck-res-tps">18.5
+                tok/s</div>
+            </div>
+            <div style="background: var(--surface-2); padding: 10px; border-radius: 4px;">
+              <span class="mono" style="font-size: 10px; color: var(--muted);">端到端決策耗時</span>
+              <div class="mono" style="font-size: 18px; font-weight: 700; color: var(--brand);" id="deck-res-lat">48 ms
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 12px; text-align: center; font-size: 12px; color: var(--ok); font-weight: 700;"
+            id="deck-res-eval">
+            ✓ 極致硬即時：滿足 50ms 工業急停標準（相較雲端 1,250ms 快 25 倍）
+          </div>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+          <span>SLIDE 04 / 12 — EDGE BENCHMARK</span>
+          <span>按 [→] 前往 RAG 雙雄架構對比</span>
+        </div>
+      </div>
+
+      <!-- Slide 05: RAG Comparison & Roles -->
+      <div id="slide-5" class="slide-frame">
+        <div>
+          <span class="mono" style="font-size: 11px; color: var(--boss); font-weight: 700;">05 / AGENTIC RAG
+            ROLES</span>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">Agentic RAG 核心角色公會：閉環控制迴路
+          </h2>
+          <p style="font-size: 13px; color: var(--muted);">不再是一步到位的單次盲查，而是分工合作的自主調查小組。</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: auto; width: 100%;">
+          <div class="card-deck" style="padding: 14px;">
+            <span class="mono" style="font-size: 10px; color: var(--int); font-weight: 700;">ROLE 01 · ROUTER &
+              PLANNER</span>
+            <h4 style="font-size: 14px; font-weight: 700; margin-top: 2px;">意圖路由器與規劃者</h4>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">分析複雜提問，分解成邏輯相依的子查詢樹，指派工具代理人。</p>
+          </div>
+          <div class="card-deck" style="padding: 14px;">
+            <span class="mono" style="font-size: 10px; color: var(--pc); font-weight: 700;">ROLE 02 · RETRIEVER &
+              TOOLS</span>
+            <h4 style="font-size: 14px; font-weight: 700; margin-top: 2px;">混合檢索與工具代理</h4>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">調用向量庫、知識圖譜、即時匯率 API 與 Python 計算沙箱。</p>
+          </div>
+          <div class="card-deck" style="padding: 14px;">
+            <span class="mono" style="font-size: 10px; color: var(--brand); font-weight: 700;">ROLE 03 · REFLECTIVE
+              VERIFIER</span>
+            <h4 style="font-size: 14px; font-weight: 700; margin-top: 2px;">反思查核與驗證者</h4>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">事實驗證、偵測邏輯矛盾，若發現藥物相剋立刻駁回並重新查詢。</p>
+          </div>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+          <span>SLIDE 05 / 12 — RAG ARCHITECTURE</span>
+          <span>按 [→] 前往向量幾何斷層</span>
+        </div>
+      </div>
+
+      <!-- Slide 06: Vector Geometry Blindspot -->
+      <div id="slide-6" class="slide-frame">
+        <div>
+          <span class="mono" style="font-size: 11px; color: var(--brand); font-weight: 700;">06 / GEOMETRIC PROOF</span>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">為什麼 Cosine 0.142 會漏掉致命禁忌？
+          </h2>
+          <p style="font-size: 13px; color: var(--muted);">數學幾何透視：高維語意空間的「因果斷層」只有圖譜與多跳代理能跨越。</p>
+        </div>
+        <div class="card-deck" style="padding: 18px; margin: auto; width: 100%; max-width: 800px;">
+          <div
+            style="display: flex; justify-content: space-around; align-items: center; text-align: center; padding: 14px 0;">
+            <div>
+              <div class="mono" style="font-size: 13px; font-weight: 700;">脈優 (降血壓) ⇄ 感冒潤喉</div>
+              <div class="mono" style="font-size: 24px; font-weight: 900; color: var(--ok); margin-top: 4px;">0.812
+              </div>
+              <span style="font-size: 11px; color: var(--muted);">字面相似度高（傳統 RAG 採納）</span>
+            </div>
+            <div style="font-size: 20px; color: var(--muted);">VS</div>
+            <div>
+              <div class="mono" style="font-size: 13px; font-weight: 700;">葡萄柚 ⇄ CYP3A4 抑制</div>
+              <div class="mono" style="font-size: 24px; font-weight: 900; color: var(--bad); margin-top: 4px;">0.142
+              </div>
+              <span style="font-size: 11px; color: var(--bad); font-weight: 700;">相似度過低（傳統 RAG 丟棄！）</span>
+            </div>
+          </div>
+          <div
+            style="background: var(--amber-tint); border: 1px solid var(--amber-edge); border-radius: 4px; padding: 10px; font-size: 12.5px; line-height: 1.5;">
+            💡 <strong>破局之道：</strong> Agentic RAG 透過知識圖譜進行多跳推理（脈優 ➔ 代謝酵素 CYP3A4 ➔ 葡萄柚強效抑制劑 ➔ 藥物濃度飆升 4 倍），成功跨越幾何斷層！
+          </div>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+          <span>SLIDE 06 / 12 — GEOMETRIC PROOF</span>
+          <span>按 [→] 前往 ReAct 思維鏈日誌</span>
+        </div>
+      </div>
+
+      <!-- Slide 07: ReAct Trace Log -->
+      <div id="slide-7" class="slide-frame">
+        <div>
+          <span class="mono" style="font-size: 11px; color: var(--ok); font-weight: 700;">07 / EXECUTION TRACE</span>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">ReAct 思維鏈底層日誌：Thought,
+            Action, Reflect</h2>
+          <p style="font-size: 13px; color: var(--muted);">親眼見證 Agent 如何發現錯誤並自主修正！</p>
+        </div>
+        <div class="card-deck mono"
+          style="padding: 14px; font-size: 11px; line-height: 1.5; background: #0d171c; color: #cfe3e9; margin: auto; width: 100%; max-width: 820px; max-height: 340px; overflow-y: auto;">
+          <span style="color: #ffc94a;">[THOUGHT 1]</span> 使用者詢問降血壓藥脈優能否配葡萄柚汁與綜合感冒藥。需查詢代謝途徑。<br>
+          <span style="color: #7fe3c8;">[ACTION 1]</span> call_tool: RxNav_API(drug="Amlodipine")<br>
+          <span style="color: #8fa9b3;">[OBSERVATION 1]</span> 代謝途徑：肝臟 CYP3A4 微粒體酵素系統。<br>
+          <span style="color: #ffc94a;">[THOUGHT 2]</span> 檢索葡萄柚汁對 CYP3A4 之影響。<br>
+          <span style="color: #7fe3c8;">[ACTION 2]</span> call_tool: Interaction_DB(substance="Grapefruit",
+          target="CYP3A4")<br>
+          <span style="color: #f0796d;">[OBSERVATION 2]</span> 警報：呋喃香豆素不可逆抑制腸道 CYP3A4，生體可用率暴增 300%-400%！<br>
+          <span style="color: #ffc94a;">[REFLECT & VERIFY]</span> 駁回所有允許飲用之生成建議，強制插入紅旗警告！<br>
+          <span style="color: #58c483;">[FINAL ANSWER]</span> 🚨 嚴正警告：禁止飲用葡萄柚汁！可能引發急性低血壓休克昏迷！
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+          <span>SLIDE 07 / 12 — TRACE LOG</span>
+          <span>按 [→] 前往垂直產業落地效益</span>
+        </div>
+      </div>
+
+      <!-- Slide 08: 11 Vertical Industries Matrix -->
+      <div id="slide-8" class="slide-frame">
+        <div>
+          <span class="mono" style="font-size: 11px; color: var(--int); font-weight: 700;">08 / INDUSTRY MATRIX</span>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">11 大垂直產業落地效益矩陣</h2>
+          <p style="font-size: 13px; color: var(--muted);">醫療、金融、製造、智慧城市、資安等數據實證突破。</p>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: auto; width: 100%;">
+          <div class="card-deck" style="padding: 12px;">
+            <strong style="color: var(--brand);">智慧醫療</strong>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">用藥不良事件降低 70%，護理假警報過濾達 85%</p>
+          </div>
+          <div class="card-deck" style="padding: 12px;">
+            <strong style="color: var(--amber-edge);">金融智慧審計</strong>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">財報造假 M-Score 辨識提升 3 倍，審計取證時間縮短 80%</p>
+          </div>
+          <div class="card-deck" style="padding: 12px;">
+            <strong style="color: var(--ok);">智慧製造預測維護</strong>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">非預期停機損失減少 45%，MTTR 修復時間縮短 60%</p>
+          </div>
+          <div class="card-deck" style="padding: 12px;">
+            <strong style="color: var(--int);">智慧交通車聯網</strong>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">救護車綠波通行時間縮短 35%，路口事故率降低 90%</p>
+          </div>
+          <div class="card-deck" style="padding: 12px;">
+            <strong style="color: var(--boss);">法律推理檢索</strong>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">判決爭點準確率 98%，徹底消除過期法條與捏造引文</p>
+          </div>
+          <div class="card-deck" style="padding: 12px;">
+            <strong style="color: var(--pc);">主動式網路資安</strong>
+            <p style="font-size: 12px; color: var(--muted); margin-top: 4px;">威脅壓制時間 (MTTC) 從小時級壓制至秒級自主動態防護</p>
+          </div>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+          <span>SLIDE 08 / 12 — INDUSTRY MATRIX</span>
+          <span>按 [→] 前往隨堂測驗考核</span>
+        </div>
+      </div>
+
+      <!-- Slide 09 to 12 Summary (Quiz & Recap) -->
+      <div id="slide-9" class="slide-frame">
+        <div>
+          <span class="mono" style="font-size: 11px; color: var(--ok); font-weight: 700;">09 / SUMMARY &
+            CERTIFICATION</span>
+          <h2 style="font-size: 26px; font-weight: 700; color: var(--ink); margin-top: 2px;">雙核心技術精髓總結與專家結語</h2>
+          <p style="font-size: 13px; color: var(--muted);">物聯網與知識檢索正在共同走向自主認知代理人時代。</p>
+        </div>
+        <div class="card-deck" style="padding: 24px; text-align: center; margin: auto; max-width: 680px;">
+          <div style="font-size: 36px; margin-bottom: 8px;">🚀</div>
+          <h3 style="font-size: 18px; font-weight: 700;">Agentic Systems Lab 結業認證</h3>
+          <p style="font-size: 13px; color: var(--muted); margin: 8px 0 16px;">
+            您已完整了解 Agentic IoT 的連續體協商，以及 Agentic RAG 的閉環反思架構。
+          </p>
+          <div style="display: flex; justify-content: center; gap: 12px;">
+            <button class="btn btn-primary" onclick="toggleDualMode()">進入值班模擬器實戰 🎮</button>
+            <button class="btn" onclick="openReportModal('iot')">查閱完整學術研析報告 📑</button>
+          </div>
+        </div>
+        <div
+          style="display: flex; justify-content: space-between; font-family: var(--font-data); font-size: 11px; color: var(--muted);">
+          <span>SLIDE 09 / 12 — CONCLUSION</span>
+          <span onclick="jumpToSlide(1)" style="cursor: pointer; text-decoration: underline;">回到第一頁 ⟳</span>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Presentation Footer Controls -->
+    <footer
+      style="height: 52px; background: var(--surface); border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 20px;">
+      <button class="btn" onclick="prevSlide()"><i class="fa-solid fa-arrow-left"></i> 上一張 (Prev)</button>
+      <div class="mono" style="font-size: 12px; font-weight: 700;">
+        SLIDE <span id="deck-cur-num" style="color: var(--brand);">01</span> / 09
+      </div>
+      <button class="btn btn-primary" onclick="nextSlide()">下一張 (Next) <i class="fa-solid fa-arrow-right"></i></button>
+    </footer>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- CODEX ENCYCLOPEDIA MODAL (TABBED WIKI)                       -->
+  <!-- ============================================================ -->
+  <div class="modal-overlay" id="codex-modal">
+    <div class="modal-card">
+      <div class="modal-top">
+        <h3 style="font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-book-bookmark text-amber-edge"></i>
+          <span>Agentic 系統技術圖鑑 (CODEX)</span>
+        </h3>
+        <button class="btn btn-ghost" onclick="closeCodex()" style="font-size: 16px;">✕</button>
+      </div>
+
+      <div class="modal-tabs">
+        <button class="modal-tab active" onclick="switchCodexTab('roles')" id="ctab-roles">四大代理人角色</button>
+        <button class="modal-tab" onclick="switchCodexTab('payload')" id="ctab-payload">截獲數據封包</button>
+        <button class="modal-tab" onclick="switchCodexTab('hardware')" id="ctab-hardware">邊緣算力矩陣</button>
+        <button class="modal-tab" onclick="switchCodexTab('glossary')" id="ctab-glossary">行話名詞白話字典</button>
+      </div>
+
+      <div class="modal-body" id="codex-body">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- ACADEMIC REPORT MODAL                                        -->
+  <!-- ============================================================ -->
+  <div class="modal-overlay" id="report-modal">
+    <div class="modal-card" style="max-width: 900px; height: 85vh;">
+      <div class="modal-top">
+        <div>
+          <h3 style="font-size: 15px; font-weight: 700;" id="report-modal-title">學術研析報告全文檢視器</h3>
+          <span class="mono" style="font-size: 11px; color: var(--muted);">IEEE / ACM 標準學術架構與規格對照</span>
+        </div>
+        <div style="display: flex; gap: 6px;">
+          <button class="btn" onclick="switchReportDoc('iot')" id="btn-rep-iot">Agentic IoT 報告</button>
+          <button class="btn" onclick="switchReportDoc('rag')" id="btn-rep-rag">RAG 對比報告</button>
+          <button class="btn btn-ghost" onclick="closeReportModal()">✕</button>
+        </div>
+      </div>
+      <div class="modal-body mono" style="font-size: 12px; line-height: 1.6; background: #fff;"
+        id="report-modal-content">
+        <!-- Formatted Report Content Injected Here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- JAVASCRIPT: UNIFIED ENGINE (DUAL-MODE + INCIDENTS + AUDIO)   -->
+  <!-- ============================================================ -->
+  <script>
+    /* ------------------------------------------------------------- */
+    /* STATE MANAGEMENT                                              */
+    /* ------------------------------------------------------------- */
+    const G = {
+      isDeckMode: false,
+      soundEnabled: true,
+      currentSlide: 1,
+      totalSlides: 9,
+      currentIncident: 1,
+      engineerName: '工程師',
+      shiftMinutes: 167,     // 02:47
+      shiftTimer: null,
+      stats: {
+        overtimeMinutes: 0,
+        solvedIncidents: 0,
+        interceptedErrors: 0,
+        slmRealtimeRate: '100%'
+      }
+    };
+
+    /* ------------------------------------------------------------- */
+    /* SYNTHESIZED SOUND EFFECTS (WEB AUDIO API)                     */
+    /* ------------------------------------------------------------- */
+    let audioCtx = null;
+    function getAudioCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      return audioCtx;
+    }
+
+    function playSfx(type) {
+      if (!G.soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        const now = ctx.currentTime;
+        if (type === 'click') {
+          osc.frequency.setValueAtTime(620, now);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (type === 'ok') {
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+          osc.start(now);
+          osc.stop(now + 0.22);
+        } else if (type === 'bad') {
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(180, now + 0.1);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'alarm') {
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.setValueAtTime(740, now + 0.08);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+          osc.start(now);
+          osc.stop(now + 0.18);
+        }
+      } catch (e) {
+        // Audio policy ignore
+      }
+    }
+
+    function toggleSound() {
+      G.soundEnabled = !G.soundEnabled;
+      const icon = document.getElementById('sndIcon');
+      if (G.soundEnabled) {
+        icon.className = 'fa-solid fa-volume-high';
+        playSfx('click');
+      } else {
+        icon.className = 'fa-solid fa-volume-xmark text-muted';
+      }
+    }
+
+    /* ------------------------------------------------------------- */
+    /* DUAL MODE CONTROLLER (GAME ⇄ 12-SLIDE DECK)                  */
+    /* ------------------------------------------------------------- */
+    function toggleDualMode() {
+      playSfx('click');
+      G.isDeckMode = !G.isDeckMode;
+      const deckEl = document.getElementById('deck-container');
+      const gameEl = document.getElementById('game-container');
+      const homeEl = document.getElementById('home-screen');
+      const btnText = document.getElementById('modeBtnText');
+      const modeIcon = document.getElementById('modeIcon');
+      const hudChipText = document.getElementById('hud-chip-text');
+
+      if (G.isDeckMode) {
+        deckEl.style.display = 'flex';
+        gameEl.style.display = 'none';
+        homeEl.style.display = 'none';
+        btnText.innerText = '返回值班模擬器';
+        modeIcon.className = 'fa-solid fa-gamepad';
+        hudChipText.innerText = 'KEYNOTE PRESENTATION';
+        updateDeckSlide();
+      } else {
+        deckEl.style.display = 'none';
+        gameEl.style.display = 'flex';
+        btnText.innerText = '切換 12 頁簡報';
+        modeIcon.className = 'fa-solid fa-presentation';
+        hudChipText.innerText = 'HUB-01 邊緣監控中';
+      }
+    }
+
+    function startShift() {
+      playSfx('ok');
+      const nameInput = document.getElementById('engineer-name').value.trim();
+      G.engineerName = nameInput || '工程師';
+      document.getElementById('home-screen').style.display = 'none';
+      openShiftIncident(1);
+      startClockTicker();
+    }
+
+    function startClockTicker() {
+      if (G.shiftTimer) clearInterval(G.shiftTimer);
+      G.shiftTimer = setInterval(() => {
+        G.shiftMinutes += 1;
+        const hrs = Math.floor(G.shiftMinutes / 60) % 24;
+        const mins = G.shiftMinutes % 60;
+        const hh = hrs < 10 ? `0${hrs}` : `${hrs}`;
+        const mm = mins < 10 ? `0${mins}` : `${mins}`;
+        document.getElementById('clock').innerText = `${hh}:${mm}`;
+      }, 5000);
+    }
+
+    /* ------------------------------------------------------------- */
+    /* INCIDENT MISSIONS & NARRATIVE CHOICES                         */
+    /* ------------------------------------------------------------- */
+    const incidents = {
+      1: {
+        id: "INCIDENT 01 / 04 · CLIMATE & WORKOUT",
+        title: "酷暑突降午後暴雨，主人在家進行激烈有氧運動",
+        sender: "阿凱（邊緣 SLM 代理）",
+        avatar: "sw-mod",
+        text: "報告！<button class='term' onclick=\"explainTerm('TinyML')\">TinyML 設備層</button> 回傳主人心率高達 148 bpm，大量出汗發熱中！但戶外氣象窗戶感測到 <button class='term' onclick=\"explainTerm('StormAlert')\">突發強雷暴雨</button>，氣溫驟降至 23°C！傳統規則預設要開 18°C 強冷直吹，要怎麼處置？",
+        choices: [
+          {
+            title: "選項 A：維持傳統靜態規則 (IF 溫度超標 THEN 18°C 強冷)",
+            sub: "盲目遵循既定溫度閾值，不理會外界環境與生理情境",
+            result: "bad",
+            feedback: "❌ 災難發生！強冷風直吹大汗淋漓的主人引發肌肉痙攣，暴雨同時灌入未關閉的客廳窗戶淹水！",
+            points: -1
+          },
+          {
+            title: "選項 B：啟動 Agentic IoT 邊緣協商合約 (關窗避雨 + 26.5°C 柔和風)",
+            sub: "邊緣 SLM 簽訂 JSON-LD 語意合約，空調與窗戶自主協調最佳解",
+            result: "ok",
+            feedback: "✓ 處置完美！外窗 4 秒內密封防雨，引入微風將室溫調節至舒適的 26.5°C，省電 38% 且守護主人心血管健康！",
+            points: 1
+          }
+        ]
+      },
+      2: {
+        id: "INCIDENT 02 / 04 · GAS LEAK & NIGHT SHIFT",
+        title: "深夜瓦斯微洩漏與獨居老人起夜走向廚房",
+        sender: "雅婷（IoA 協商代理）",
+        avatar: "sw-int",
+        text: "警報！廚房感測到甲烷濃度 65 ppm 微超標，同時智慧床墊偵測到 78 歲長輩心率 68 bpm 剛下床走向廚房！若此時長輩按下機械電燈開關，可能引發閃燃！",
+        choices: [
+          {
+            title: "選項 A：傳統方式：讓警報器立刻響起 110 分貝刺耳蜂鳴",
+            sub: "直接全功率警報，未考慮老人心臟承受度與黑暗盲開燈風險",
+            result: "bad",
+            feedback: "❌ 失敗！長輩半夜受驚在黑暗中摔倒，摸黑開啟傳統電燈，電氣火花引燃微量瓦斯！",
+            points: -1
+          },
+          {
+            title: "選項 B：邊緣多代理閉環（0.2s 切斷瓦斯 + 防爆排風 + 柔光指引）",
+            sub: "切斷閥瞬時斷氣，防爆排風機靜音排氣，智慧燈具柔光亮起語音提醒",
+            result: "ok",
+            feedback: "✓ 危機化解！防爆電磁閥 0.2 秒關閉，濃度在 2 分鐘內歸零；走廊柔光照亮長輩，成功阻止按壓開關！",
+            points: 1
+          }
+        ]
+      },
+      3: {
+        id: "INCIDENT 03 / 04 · RAG DRUG CONTRAINDICATION",
+        title: "高血壓病患發燒，詢問「脈優能否配葡萄柚汁與感冒藥」",
+        sender: "小芸（RAG 檢索代理）",
+        avatar: "sw-pc",
+        text: "急診室轉來一筆複雜諮詢：病患每天服用降血壓藥脈優 (Amlodipine 5mg)，今天喉嚨痛想吃市售感冒藥搭配現榨葡萄柚汁潤喉。傳統檢索器在向量庫比對「感冒藥」與「葡萄柚」，相似度高且隻字未提禁忌，正打算回答可以喝！",
+        choices: [
+          {
+            title: "選項 A：採用傳統單次向量檢索回答「可以適量飲用」",
+            sub: "依賴字面 Cosine 相似度，忽視跨實體代謝酵素衝突",
+            result: "bad",
+            feedback: "❌ 致命醫療疏失！葡萄柚中的呋喃香豆素強效抑制 CYP3A4，將導致脈優血中濃度暴增 4 倍引發嚴重低血壓休克！",
+            points: -1
+          },
+          {
+            title: "選項 B：啟動 Agentic RAG 規劃反思鏈 (調用 RxNav API + 亮紅旗警告)",
+            sub: "規劃者拆解代謝途徑，發現 CYP3A4 嚴重禁忌，驗證者強制駁回允許回答",
+            result: "ok",
+            feedback: "✓ 救命處置！反思驗證代理立刻攔截危險回答，亮起【🚨 嚴正禁止葡萄柚汁】警告，並建議改溫開水與單純乙醯胺酚！",
+            points: 1
+          }
+        ]
+      },
+      4: {
+        id: "INCIDENT 04 / 04 · FINANCIAL FORENSICS",
+        title: "科技公司財報獲利年增 45%，應收帳款暴增 130%",
+        sender: "陳課長（反思驗證代理）",
+        avatar: "sw-boss",
+        text: "最後一案！某供應鏈大廠 Q3 財報獲利大幅成長 45%，但自由現金流為負。傳統 RAG 僅擷取財報公關稿正面文字準備出具看好報告，我們要怎麼審計？",
+        choices: [
+          {
+            title: "選項 A：直接採納公關財報正面結論「獲利亮眼，前景看好」",
+            sub: "單純相信正面情緒詞彙，忽視應收帳款暴增與壞帳前兆",
+            result: "bad",
+            feedback: "❌ 審計失敗！這家公司在進行典型的通路塞貨 (Channel Stuffing)，紙上富貴但現金流枯竭，下個月即爆發跳票！",
+            points: -1
+          },
+          {
+            title: "選項 B：調用 Python 沙箱計算 Beneish M-Score 造假評分",
+            sub: "代理人執行法證模型，得出 M-Score = -1.45 (高於危險線)，揭發虛假營收",
+            result: "ok",
+            feedback: "✓ 審計專家級表現！沙箱精確抓出應收帳款週轉天數失控，成功預警造假，為投資機構避免數億元壞帳損失！",
+            points: 1
+          }
+        ]
+      }
+    };
+
+    function openShiftIncident(num) {
+      playSfx('click');
+      G.currentIncident = num;
+      const inc = incidents[num];
+      document.getElementById('p-mission-id').innerText = inc.id;
+      document.getElementById('stage-title').innerText = inc.title;
+
+      // Update Node Highlight
+      const nSensor = document.getElementById('node-sensor');
+      const nEdge = document.getElementById('node-edge');
+      const nRag = document.getElementById('node-rag');
+      nSensor.className = 'node-card' + (num <= 2 ? ' active' : '');
+      nEdge.className = 'node-card' + (num <= 2 ? ' active' : '');
+      nRag.className = 'node-card' + (num >= 3 ? ' active' : '');
+
+      // Render Dialogue & Choices
+      const panel = document.getElementById('panel-body-content');
+      panel.innerHTML = `
+        <div class="talk-box">
+          <div class="sw-avatar ${inc.avatar}">${inc.sender.slice(0, 2)}</div>
+          <div class="talk-content">
+            <span class="talk-sender">${inc.sender}</span>
+            <div class="talk-text">${inc.text}</div>
+          </div>
+        </div>
+
+        <div id="term-box-area"></div>
+
+        <div class="choices-grid">
+          ${inc.choices.map((c, idx) => `
+            <button class="choice-btn" onclick="makeChoice(${idx})">
+              <b>${c.title}</b>
+              <small>${c.sub}</small>
+            </button>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function makeChoice(idx) {
+      const inc = incidents[G.currentIncident];
+      const ch = inc.choices[idx];
+      const panel = document.getElementById('panel-body-content');
+
+      if (ch.result === 'ok') {
+        playSfx('ok');
+        G.stats.solvedIncidents += 1;
+        G.stats.interceptedErrors += 1;
+      } else {
+        playSfx('bad');
+      }
+
+      panel.innerHTML = `
+        <div class="talk-box">
+          <div class="sw-avatar ${inc.avatar}">${inc.sender.slice(0, 2)}</div>
+          <div class="talk-content">
+            <span class="talk-sender">${inc.sender} · 處置結果回報</span>
+            <div class="fb-card ${ch.result}">
+              <div>
+                <strong>${ch.feedback}</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 12px; display: flex; justify-content: flex-end; gap: 8px;">
+          ${G.currentIncident < 4 ? `
+            <button class="btn btn-primary" onclick="openShiftIncident(${G.currentIncident + 1})">
+              推進至下一事件 (${G.currentIncident + 1}/4) →
+            </button>
+          ` : `
+            <button class="btn btn-amber" onclick="showShiftSettlement()">
+              完成今日班次，查看下班結算單 🏆
+            </button>
+          `}
+        </div>
+      `;
+    }
+
+    function showShiftSettlement() {
+      playSfx('ok');
+      const panel = document.getElementById('panel-body-content');
+      document.getElementById('p-mission-id').innerText = "SHIFT SUMMARY · 下班結算單";
+      document.getElementById('clock').className = "clock mono ot";
+      document.getElementById('clockNote').innerText = "OFF-WORK · 順利交班";
+
+      panel.innerHTML = `
+        <div class="fin-card">
+          <div style="display: flex; justify-content: space-between; align-items: baseline;">
+            <h3 style="font-size: 16px; font-weight: 700; color: var(--ink);">
+              值班結算：🏆 零事故 Agentic 首席系統架構師
+            </h3>
+            <span class="mono" style="font-size: 11.5px; color: var(--ok); font-weight: 700;">班次評定：S 級特優</span>
+          </div>
+          <p style="font-size: 13px; color: var(--muted);">
+            工程師 <strong>${G.engineerName}</strong> 在突發暴雨、瓦斯微洩、藥物衝突與財報造假四重危機中，精準調用邊緣小模型與自主反思智囊團，成功守護系統連續體！
+          </p>
+
+          <dl class="fin-grid">
+            <div class="fin-item"><dt>成功處置危機</dt><dd>4 / 4 案件</dd></div>
+            <div class="fin-item"><dt>攔截致命幻覺</dt><dd>2 次致命風險</dd></div>
+            <div class="fin-item"><dt>SLM 50ms 達標率</dt><dd>100% 硬即時</dd></div>
+          </dl>
+
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;">
+            <button class="btn btn-amber" onclick="toggleDualMode()" style="flex: 1;">切換觀看 12 頁簡報模式</button>
+            <button class="btn" onclick="openCodex()">查閱技術圖鑑</button>
+            <button class="btn" onclick="openShiftIncident(1)">再上一天班 ⟳</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function togglePanelMin() {
+      const p = document.getElementById('panel-body-content');
+      const icon = document.getElementById('p-min-icon');
+      if (p.style.display === 'none') {
+        p.style.display = 'flex';
+        icon.className = 'fa-solid fa-chevron-down';
+      } else {
+        p.style.display = 'none';
+        icon.className = 'fa-solid fa-chevron-up';
+      }
+    }
+
+    /* ------------------------------------------------------------- */
+    /* TERM EXPLANATIONS (FAB24HR GLOSSARY TOOLTIPS)                */
+    /* ------------------------------------------------------------- */
+    const termDict = {
+      TinyML: "【微型機器學習】：在極低功耗 MCU 晶片（毫瓦級）上運行的輕量模型，專職微秒級訊號異常濾波。",
+      StormAlert: "【突發強雷暴雨】：極端天氣會引發驟降氣溫與瞬態進水，若傳統空調只看溫度，會將室溫降過頭引起痙攣。"
+    };
+
+    function explainTerm(k) {
+      playSfx('click');
+      const box = document.getElementById('term-box-area');
+      if (!box) return;
+      box.innerHTML = `
+        <div class="term-tooltip">
+          <b>行話白話解釋 (CODEX QUICK VIEW)</b>
+          <span>${termDict[k] || "技術規格釋義"}</span>
+        </div>
+      `;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* DECK PRESENTATION SLIDE CONTROLLER                           */
+    /* ------------------------------------------------------------- */
+    function updateDeckSlide() {
+      for (let i = 1; i <= G.totalSlides; i++) {
+        const el = document.getElementById(`slide-${i}`);
+        if (el) {
+          if (i === G.currentSlide) el.classList.add('active-slide');
+          else el.classList.remove('active-slide');
+        }
+      }
+      const pad = G.currentSlide < 10 ? `0${G.currentSlide}` : `${G.currentSlide}`;
+      document.getElementById('deck-cur-num').innerText = pad;
+    }
+
+    function nextSlide() {
+      playSfx('click');
+      if (G.currentSlide < G.totalSlides) G.currentSlide++;
+      else G.currentSlide = 1;
+      updateDeckSlide();
+    }
+
+    function prevSlide() {
+      playSfx('click');
+      if (G.currentSlide > 1) G.currentSlide--;
+      else G.currentSlide = G.totalSlides;
+      updateDeckSlide();
+    }
+
+    function jumpToSlide(num) {
+      playSfx('click');
+      G.currentSlide = num;
+      updateDeckSlide();
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (G.isDeckMode) {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') nextSlide();
+        else if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
+      }
+      if (e.key === 'Escape') {
+        closeCodex();
+        closeReportModal();
+      }
+    });
+
+    /* Edge SLM Benchmark Calculator in Deck Slide 4 */
+    function runDeckBenchmark() {
+      const model = document.getElementById('deck-calc-model').value;
+      const device = document.getElementById('deck-calc-device').value;
+
+      let ram = '2.65 GB', ttft = '32 ms', tps = '18.5 tok/s', lat = '48 ms';
+      let evalText = '✓ 極致硬即時：滿足 50ms 工業急停標準（相較雲端 1,250ms 快 25 倍）';
+
+      if (model === 'llama32_1b') {
+        ram = '1.45 GB'; ttft = '18 ms'; tps = '38.0 tok/s'; lat = '28 ms';
+      } else if (model === 'qwen25_15b') {
+        ram = '1.85 GB'; ttft = '24 ms'; tps = '28.5 tok/s'; lat = '36 ms';
+      }
+
+      if (device === 'rpi5') {
+        ttft = '78 ms'; tps = '9.2 tok/s'; lat = '145 ms';
+        evalText = '✓ 準即時：滿足智慧生活與車聯網協商需求';
+      }
+
+      document.getElementById('deck-res-ram').innerText = ram;
+      document.getElementById('deck-res-ttft').innerText = ttft;
+      document.getElementById('deck-res-tps').innerText = tps;
+      document.getElementById('deck-res-lat').innerText = lat;
+      document.getElementById('deck-res-eval').innerText = evalText;
+    }
+
+    /* ------------------------------------------------------------- */
+    /* CODEX MODAL & TABS                                            */
+    /* ------------------------------------------------------------- */
+    function openCodex() {
+      playSfx('click');
+      document.getElementById('codex-modal').classList.add('open');
+      switchCodexTab('roles');
+    }
+
+    function closeCodex() {
+      document.getElementById('codex-modal').classList.remove('open');
+    }
+
+    function switchCodexTab(tab) {
+      playSfx('click');
+      ['roles', 'payload', 'hardware', 'glossary'].forEach(t => {
+        const b = document.getElementById(`ctab-${t}`);
+        if (b) b.className = (t === tab) ? 'modal-tab active' : 'modal-tab';
+      });
+
+      const body = document.getElementById('codex-body');
+      if (tab === 'roles') {
+        body.innerHTML = `
+          <h4 style="font-weight:700;">四大核心代理人職責規範</h4>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div style="background:var(--surface-2); padding:10px; border-radius:4px;">
+              <strong style="color:var(--mod);">1. 邊緣 SLM 代理 (Local Reasoner)</strong>
+              <p style="font-size:12px; margin-top:2px; color:var(--muted);">運行在 Jetson/樹莓派等終端，負責 50ms 斷網硬急停、因果推理與即時特徵提煉。</p>
+            </div>
+            <div style="background:var(--surface-2); padding:10px; border-radius:4px;">
+              <strong style="color:var(--int);">2. 協商公會代理 (IoA Negotiator)</strong>
+              <p style="font-size:12px; margin-top:2px; color:var(--muted);">基於 W3C 本體論簽訂 JSON-LD 語意合約，跨設備自主談判（如空調與窗戶）。</p>
+            </div>
+            <div style="background:var(--surface-2); padding:10px; border-radius:4px;">
+              <strong style="color:var(--pc);">3. 動態工具檢索代理 (Retriever)</strong>
+              <p style="font-size:12px; margin-top:2px; color:var(--muted);">打破死板單次查詢，動態呼叫藥理 API、匯率接口與 Python 代碼沙箱。</p>
+            </div>
+            <div style="background:var(--surface-2); padding:10px; border-radius:4px;">
+              <strong style="color:var(--boss);">4. 反思驗證代理 (Verifier)</strong>
+              <p style="font-size:12px; margin-top:2px; color:var(--muted);">事實驗證、偵測邏輯矛盾，若發現藥物交互或財報異常，即刻亮起紅旗警告！</p>
+            </div>
+          </div>
+        `;
+      } else if (tab === 'payload') {
+        body.innerHTML = `
+          <h4 style="font-weight:700;">截獲數據封包對比 (Data Packets)</h4>
+          <div style="background:#0d171c; color:#7fe3c8; padding:12px; border-radius:4px; font-family:var(--font-data); font-size:11.5px;">
+            // 傳統 MQTT 靜態封包 (缺乏情境)<br>
+            {"ts": 1728812400, "temperature": 32.4, "motion": 1}<br><br>
+            // IoA 語意合約封包 (具備情境、協商條款與 ECDSA 簽名)<br>
+            {<br>
+            &nbsp;&nbsp;"@context": "https://w3id.org/ioa/v1",<br>
+            &nbsp;&nbsp;"intent": "physiological_comfort_optimization",<br>
+            &nbsp;&nbsp;"context": {"user_activity": "aerobic_workout", "heart_rate": 145},<br>
+            &nbsp;&nbsp;"negotiated": {"hvac_celsius": 26.5, "window": "seal_storm"},<br>
+            &nbsp;&nbsp;"ecdsa_signature": "0x4b7f...9e21"<br>
+            }
+          </div>
+        `;
+      } else if (tab === 'hardware') {
+        body.innerHTML = `
+          <h4 style="font-weight:700;">邊緣 SLM 硬體晶片實測矩陣</h4>
+          <table style="width:100%; border-collapse:collapse; font-size:12.5px; font-family:var(--font-data);">
+            <thead>
+              <tr style="border-bottom:1px solid var(--line); text-align:left; color:var(--muted);">
+                <th style="padding:6px;">晶片硬體</th>
+                <th>模型規格</th>
+                <th>RAM 負載</th>
+                <th>首字延遲 (TTFT)</th>
+                <th>是否達標 50ms</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:6px;">Jetson Orin Nano</td>
+                <td>Phi-3.5-mini (INT4)</td>
+                <td>2.65 GB</td>
+                <td>32 ms</td>
+                <td style="color:var(--ok); font-weight:700;">✓ 極致硬即時</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--line);">
+                <td style="padding:6px;">Raspberry Pi 5</td>
+                <td>LLaMA-3.2 1B (INT4)</td>
+                <td>1.45 GB</td>
+                <td>78 ms</td>
+                <td style="color:var(--int); font-weight:700;">✓ 準即時</td>
+              </tr>
+              <tr>
+                <td style="padding:6px;">ESP32-S3 (MCU)</td>
+                <td>TinyML 特徵模型</td>
+                <td>8 MB</td>
+                <td>3 ms</td>
+                <td style="color:var(--ok); font-weight:700;">✓ 微秒級急停</td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      } else if (tab === 'glossary') {
+        body.innerHTML = `
+          <h4 style="font-weight:700;">行話名詞白話字典</h4>
+          <dl style="display:grid; grid-template-columns:auto 1fr; gap:6px 14px; font-size:13px; margin:0;">
+            <dt style="font-weight:700; color:var(--int);">ReAct</dt>
+            <dd style="margin:0; color:var(--muted);">Reason + Act，代理人結合「思考」與「調用工具行動」的閉環框架。</dd>
+            <dt style="font-weight:700; color:var(--mod);">IoA</dt>
+            <dd style="margin:0; color:var(--muted);">Internet of Agents，代理人物聯網，設備從被動傳數據轉為自主協商主體。</dd>
+            <dt style="font-weight:700; color:var(--brand);">CYP3A4</dt>
+            <dd style="margin:0; color:var(--muted);">人體肝臟最重要的藥物代謝酵素，葡萄柚會抑制它導致藥物濃度飆升釀休克。</dd>
+            <dt style="font-weight:700; color:var(--ok);">M-Score</dt>
+            <dd style="margin:0; color:var(--muted);">Beneish 財務操縱指數，大於 -1.78 代表財報造假機率極高。</dd>
+          </dl>
+        `;
+      }
+    }
+
+    /* ------------------------------------------------------------- */
+    /* ACADEMIC REPORTS LOADER                                       */
+    /* ------------------------------------------------------------- */
+    let academicReports = { iot: '', rag: '' };
+    async function loadAcademicReports() {
+      try {
+        const [rIot, rRag] = await Promise.all([
+          fetch('./Agentic_IoT_Academic_Report.md').then(r => r.ok ? r.text() : ''),
+          fetch('./Traditional_vs_Agentic_RAG_Academic_Report.md').then(r => r.ok ? r.text() : '')
+        ]);
+        academicReports.iot = rIot;
+        academicReports.rag = rRag;
+      } catch (e) { }
+    }
+
+    function openReportModal(type) {
+      playSfx('click');
+      document.getElementById('report-modal').classList.add('open');
+      switchReportDoc(type);
+    }
+
+    function closeReportModal() {
+      document.getElementById('report-modal').classList.remove('open');
+    }
+
+    function switchReportDoc(type) {
+      playSfx('click');
+      const bIot = document.getElementById('btn-rep-iot');
+      const bRag = document.getElementById('btn-rep-rag');
+      const title = document.getElementById('report-modal-title');
+      const content = document.getElementById('report-modal-content');
+
+      if (type === 'iot') {
+        bIot.className = 'btn btn-primary';
+        bRag.className = 'btn';
+        title.innerText = '學術研析報告：《Agentic IoT: Architectures, Applications, and Challenges》';
+        content.innerHTML = formatMarkdown(academicReports.iot || fallbackIotMd);
+      } else {
+        bIot.className = 'btn';
+        bRag.className = 'btn btn-primary';
+        title.innerText = '學術研析報告：《Traditional RAG vs. Agentic RAG: A Comparative Study》';
+        content.innerHTML = formatMarkdown(academicReports.rag || fallbackRagMd);
+      }
+    }
+
+    function formatMarkdown(md) {
+      return md
+        .replace(/^# (.*$)/gim, '<h2 style="font-size:18px; font-weight:700; color:var(--ink); border-bottom:1px solid var(--line); padding-bottom:4px; margin-top:14px;">$1</h2>')
+        .replace(/^## (.*$)/gim, '<h3 style="font-size:15px; font-weight:700; color:var(--brand); margin-top:12px;">$1</h3>')
+        .replace(/^### (.*$)/gim, '<h4 style="font-size:13.5px; font-weight:700; color:var(--int); margin-top:8px;">$1</h4>')
+        .replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>')
+        .replace(/```([\s\S]*?)```/gim, '<pre style="background:var(--surface-2); padding:8px; border-radius:4px; font-size:11px; overflow-x:auto;"><code>$1</code></pre>')
+        .replace(/^- (.*$)/gim, '<li style="margin-left:16px;">$1</li>');
+    }
+
+    const fallbackIotMd = `# Agentic IoT：架構、應用、協定與挑戰技術研析報告\n物聯網正歷經從「感知互聯」到「自主認知代理 (Agentic IoT)」的歷史躍升。`;
+    const fallbackRagMd = `# 傳統 RAG 與智能代理 RAG（Agentic RAG）技術比較研析報告\nAgentic RAG 將檢索置於具備規劃、反思、工具調用與錯誤修正的閉環迴路中。`;
+
+    /* ------------------------------------------------------------- */
+    /* INITIALIZATION                                                */
+    /* ------------------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadAcademicReports();
+      runDeckBenchmark();
+      openShiftIncident(1);
+    });
+  </script>
+</body>
+
+</html>

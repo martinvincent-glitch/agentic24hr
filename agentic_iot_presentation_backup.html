@@ -1,0 +1,2276 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AGENTIC SYSTEMS LAB | 雙核心技術視覺化教學與發表會簡報平台</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6.5.1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts: Inter, Outfit, JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    },
+                    colors: {
+                        paperBg: '#f5f0e8',
+                        paperCard: '#fbf8f3',
+                        paperCardAlt: '#ede7dc',
+                        inkBlack: '#181b1b',
+                        inkMuted: '#5d6462',
+                        terracotta: '#d9532f',
+                        terracottaDark: '#be4321',
+                        terracottaLight: '#fbeee9',
+                        sageGreen: '#4a7c59',
+                        sageLight: '#e4eee7',
+                        slateBlue: '#3b6e8c',
+                        slateBlueLight: '#d8e7ee',
+                        sandYellow: '#d4a34b',
+                        sandLight: '#faeed7'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-paper: #f5f0e8;
+            --ink: #181b1b;
+            --terracotta: #d9532f;
+        }
+
+        body {
+            background-color: var(--bg-paper);
+            color: var(--ink);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* 2D Paper Card Style with Crisp Ink Borders & Flat Drop Shadows */
+        .card-2d {
+            background-color: #fbf8f3;
+            border: 1.5px solid #181b1b;
+            box-shadow: 3px 3px 0px #181b1b;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .card-2d:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px #181b1b;
+        }
+
+        .card-2d-soft {
+            background-color: #fbf8f3;
+            border: 1px solid rgba(24, 27, 27, 0.2);
+            box-shadow: 2px 2px 0px rgba(24, 27, 27, 0.12);
+        }
+
+        .btn-2d {
+            background-color: #181b1b;
+            color: #ffffff;
+            border: 1.5px solid #181b1b;
+            box-shadow: 2px 2px 0px #d9532f;
+            transition: all 0.15s ease;
+        }
+        .btn-2d:hover {
+            background-color: #d9532f;
+            border-color: #d9532f;
+            box-shadow: 3px 3px 0px #181b1b;
+            color: #ffffff;
+        }
+
+        .btn-2d-outline {
+            background-color: transparent;
+            color: #181b1b;
+            border: 1.5px solid #181b1b;
+            box-shadow: 2px 2px 0px #181b1b;
+            transition: all 0.15s ease;
+        }
+        .btn-2d-outline:hover {
+            background-color: #181b1b;
+            color: #ffffff;
+        }
+
+        /* Slide Frame Transitions */
+        .slide-frame {
+            display: none;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .slide-frame.active-slide {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Marquee Ticker Bar */
+        @keyframes tickerMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+            display: flex;
+            width: 200%;
+            animation: tickerMove 28s linear infinite;
+        }
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f0e8;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c7beaf;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d9532f;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col selection:bg-terracotta selection:text-white">
+
+    <!-- ============================================================ -->
+    <!-- TOP NAVIGATION BAR (BRIGHT 2D EDITORIAL STYLE)               -->
+    <!-- ============================================================ -->
+    <header class="h-16 bg-[#f5f0e8] border-b border-[#181b1b]/15 px-4 sm:px-8 flex items-center justify-between z-50 flex-shrink-0">
+        <!-- Brand Lab Identifier (Matches Image!) -->
+        <div class="flex items-center gap-3">
+            <span class="w-1.5 h-6 bg-terracotta rounded-full inline-block"></span>
+            <div>
+                <a href="#slide-1" onclick="jumpToSlide(1)" class="font-mono text-xs sm:text-sm font-black tracking-widest text-inkBlack uppercase hover:text-terracotta transition-colors flex items-center gap-1.5">
+                    <span>AGENTIC</span>
+                    <span class="text-terracotta">SYSTEMS LAB</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Center Links -->
+        <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-inkBlack">
+            <button onclick="jumpToSlide(2)" class="hover:text-terracotta transition-colors">學習路徑</button>
+            <button onclick="jumpToSlide(4)" class="hover:text-terracotta transition-colors">互動模擬</button>
+            <button onclick="jumpToSlide(7)" class="hover:text-terracotta transition-colors">RAG 對照</button>
+            <button onclick="jumpToSlide(5)" class="hover:text-terracotta transition-colors">底層代碼</button>
+            <button onclick="jumpToSlide(11)" class="hover:text-terracotta transition-colors">生活場景</button>
+        </nav>
+
+        <!-- Right Controls & Status Pill (Matches Image!) -->
+        <div class="flex items-center gap-3">
+            <!-- Sandbox Status Badge -->
+            <div class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sageLight text-sageGreen border border-sageGreen/30 text-[11px] font-mono font-bold">
+                <span class="w-2 h-2 rounded-full bg-sageGreen animate-pulse"></span>
+                <span>LOCAL SANDBOX · READY</span>
+            </div>
+
+            <!-- Slide Drawer Button -->
+            <button onclick="toggleSlideDrawer()" class="px-2.5 py-1.5 rounded-lg border border-inkBlack text-inkBlack text-xs font-mono font-bold hover:bg-inkBlack hover:text-white transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-bars-staggered text-terracotta"></i>
+                <span class="hidden lg:inline">大綱</span>
+            </button>
+
+            <!-- Mode Switcher -->
+            <button onclick="toggleScrollMode()" id="btn-toggle-mode" class="px-2.5 py-1.5 rounded-lg border border-inkBlack/30 text-inkBlack text-xs font-mono hover:border-inkBlack transition-all">
+                <span id="mode-label">PPT 模式</span>
+            </button>
+
+            <!-- Academic Report Button -->
+            <button onclick="openReportModal('iot')" class="px-2.5 py-1.5 rounded-lg bg-terracotta text-white text-xs font-mono font-bold hover:bg-terracottaDark transition-all">
+                報告
+            </button>
+        </div>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- SLIDE DRAWER / THUMBNAILS OVERVIEW MODAL                     -->
+    <!-- ============================================================ -->
+    <div id="slide-drawer" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#fbf8f3] border-2 border-inkBlack w-full max-w-4xl max-h-[85vh] rounded-2xl flex flex-col overflow-hidden shadow-[8px_8px_0px_#181b1b]">
+            <div class="p-5 border-b border-inkBlack/15 flex items-center justify-between bg-[#f5f0e8]">
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-4 bg-terracotta inline-block"></span>
+                    <h3 class="font-display font-black text-base text-inkBlack tracking-wide">投影片目錄全覽 (KEYNOTE INDEX)</h3>
+                </div>
+                <button onclick="toggleSlideDrawer(false)" class="w-8 h-8 rounded-lg border border-inkBlack hover:bg-inkBlack hover:text-white flex items-center justify-center text-sm font-bold">
+                    ✕
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs">
+                <button onclick="jumpToSlide(1)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-terracotta font-mono font-bold block mb-1">01 / FIELD GUIDE</span>
+                    <strong class="text-inkBlack block text-sm">讓系統不只感測，還能思考</strong>
+                    <span class="text-inkMuted text-[11px]">雙核心概念導覽</span>
+                </button>
+                <button onclick="jumpToSlide(2)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-terracotta font-mono font-bold block mb-1">02 / PARADIGM SHIFT</span>
+                    <strong class="text-inkBlack block text-sm">生活化比喻與傳統系統痛點</strong>
+                    <span class="text-inkMuted text-[11px]">自動灑水器 vs 智慧管家</span>
+                </button>
+                <button onclick="jumpToSlide(3)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-terracotta font-mono font-bold block mb-1">03 / CONTINUUM</span>
+                    <strong class="text-inkBlack block text-sm">Agentic IoT 三層連續體動態流</strong>
+                    <span class="text-inkMuted text-[11px]">邊緣 SLM 與雲端 IoA 公會</span>
+                </button>
+                <button onclick="jumpToSlide(4)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-terracotta font-mono font-bold block mb-1">04 / LIVE DEMO A</span>
+                    <strong class="text-inkBlack block text-sm">智慧生活多代理人互動沙盒</strong>
+                    <span class="text-inkMuted text-[11px]">暴雨運動、瓦斯微洩、救護車</span>
+                </button>
+                <button onclick="jumpToSlide(5)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-slateBlue font-mono font-bold block mb-1">05 / DATA X-RAY</span>
+                    <strong class="text-inkBlack block text-sm">真實代碼：MQTT vs 語意合約</strong>
+                    <span class="text-inkMuted text-[11px]">JSON-LD 與 Function Calling</span>
+                </button>
+                <button onclick="jumpToSlide(6)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-slateBlue font-mono font-bold block mb-1">06 / BENCHMARK</span>
+                    <strong class="text-inkBlack block text-sm">邊緣 SLM 算力與延遲真實計算機</strong>
+                    <span class="text-inkMuted text-[11px]">RAM、TTFT、TPS 與 50ms 判定</span>
+                </button>
+                <button onclick="jumpToSlide(7)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-terracotta font-mono font-bold block mb-1">07 / ARCHITECTURE</span>
+                    <strong class="text-inkBlack block text-sm">Traditional vs Agentic RAG 對照</strong>
+                    <span class="text-inkMuted text-[11px]">線性管道 vs 閉環反思 6 大角色</span>
+                </button>
+                <button onclick="jumpToSlide(8)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-terracotta font-mono font-bold block mb-1">08 / LIVE DEMO B</span>
+                    <strong class="text-inkBlack block text-sm">RAG 智慧偵探生活對決沙盒</strong>
+                    <span class="text-inkMuted text-[11px]">降壓藥葡萄柚、滑雪退稅、財報</span>
+                </button>
+                <button onclick="jumpToSlide(9)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-slateBlue font-mono font-bold block mb-1">09 / GEOMETRY</span>
+                    <strong class="text-inkBlack block text-sm">數學透視：向量相似度斷層與圖譜</strong>
+                    <span class="text-inkMuted text-[11px]">為什麼 Cosine 0.142 會漏掉禁忌？</span>
+                </button>
+                <button onclick="jumpToSlide(10)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-sageGreen font-mono font-bold block mb-1">10 / EXECUTION TRACE</span>
+                    <strong class="text-inkBlack block text-sm">ReAct 思維鏈底層日誌</strong>
+                    <span class="text-inkMuted text-[11px]">Thought, Action, Observation, Reflect</span>
+                </button>
+                <button onclick="jumpToSlide(11)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-terracotta font-mono font-bold block mb-1">11 / MATRIX</span>
+                    <strong class="text-inkBlack block text-sm">11 大垂直產業落地效益矩陣</strong>
+                    <span class="text-inkMuted text-[11px]">醫療、金融、製造、資安等數據</span>
+                </button>
+                <button onclick="jumpToSlide(12)" class="p-3.5 rounded-xl text-left bg-white border border-inkBlack/20 hover:border-terracotta hover:shadow-[3px_3px_0px_#d9532f] transition-all">
+                    <span class="text-sageGreen font-mono font-bold block mb-1">12 / QUIZ & RECAP</span>
+                    <strong class="text-inkBlack block text-sm">現場隨堂快測與榮譽考核</strong>
+                    <span class="text-inkMuted text-[11px]">5 題闖關考核與成就結算</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- MAIN PRESENTATION STAGE (BRIGHT 2D EDITORIAL VIEWPORT)       -->
+    <!-- ============================================================ -->
+    <main id="keynote-stage" class="flex-1 bg-[#f5f0e8] relative overflow-hidden flex flex-col p-4 sm:p-6 lg:p-8">
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 01: HERO / FIELD GUIDE 01 (MATCHES USER IMAGE!)    -->
+        <!-- ======================================================== -->
+        <div id="slide-1" class="slide-frame active-slide w-full h-full flex-col justify-between max-w-7xl mx-auto my-auto py-2">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center flex-1 my-auto">
+                <!-- Left Editorial Headline (Matches Image!) -->
+                <div class="lg:col-span-6 space-y-5">
+                    <div class="flex items-center gap-2 font-mono text-xs tracking-wider text-terracotta font-bold">
+                        <span>FIELD GUIDE / 01</span>
+                        <span class="w-8 h-[1.5px] bg-terracotta inline-block"></span>
+                        <span>Internet of Agents</span>
+                    </div>
+
+                    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-display font-black tracking-tight text-inkBlack leading-[1.08]">
+                        讓系統不只<br>
+                        <span class="text-terracotta">感測，還能思</span><br>
+                        考。
+                    </h1>
+
+                    <p class="text-inkMuted text-xs sm:text-sm leading-relaxed max-w-lg">
+                        一個可以操作的視覺教學實驗室。從感測器訊號出發，看見 Agentic IoT 如何在裝置、邊緣與雲端之間推理、協作；再用同一個任務拆解 Traditional RAG 與 Agentic RAG 的差異。
+                    </p>
+
+                    <!-- Buttons (Matches Image!) -->
+                    <div class="flex items-center gap-4 pt-2">
+                        <button onclick="jumpToSlide(4)" class="btn-2d px-6 py-3 rounded-lg text-xs font-mono font-bold flex items-center gap-2">
+                            <span>啟動互動模擬</span>
+                            <span>↗</span>
+                        </button>
+                        <button onclick="jumpToSlide(2)" class="btn-2d-outline px-5 py-3 rounded-lg text-xs font-mono font-bold flex items-center gap-1.5">
+                            <span>先看學習路徑</span>
+                            <span>↓</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right 2D Diagram Graphic (Matches Image!) -->
+                <div class="lg:col-span-6 relative flex items-center justify-center min-h-[380px]">
+                    <!-- Dashed Orbital Circles -->
+                    <div class="absolute w-80 h-80 rounded-full border border-dashed border-inkBlack/20"></div>
+                    <div class="absolute w-[420px] h-[420px] rounded-full border border-dashed border-inkBlack/15"></div>
+
+                    <!-- Label Connectors -->
+                    <span class="absolute right-10 top-24 font-mono text-[10px] text-slateBlue font-bold tracking-wider">MQTT</span>
+                    <span class="absolute right-6 bottom-16 font-mono text-[10px] text-terracotta font-bold tracking-wider">MCP / A2A</span>
+
+                    <!-- Card Stack Container -->
+                    <div class="relative w-full max-w-md space-y-4">
+                        <!-- Tier 03 Card (Matches Image!) -->
+                        <div class="card-2d p-5 rounded-xl ml-12 rotate-[1deg] bg-white">
+                            <span class="font-mono text-[10px] text-terracotta font-bold block uppercase tracking-wider">TIER 03</span>
+                            <h3 class="text-base font-bold text-inkBlack mt-0.5">雲端智能層</h3>
+                            <span class="font-mono text-[10px] text-inkMuted uppercase tracking-wider block mt-1">LONG-TERM MEMORY · LLM</span>
+                        </div>
+
+                        <!-- Tier 02 Card with Terracotta Circular Agent Loop Badge (Matches Image!) -->
+                        <div class="relative">
+                            <div class="card-2d p-5 rounded-xl mr-8 -rotate-[1deg] bg-white">
+                                <span class="font-mono text-[10px] text-terracotta font-bold block uppercase tracking-wider">TIER 02</span>
+                                <h3 class="text-base font-bold text-inkBlack mt-0.5">邊緣 / 霧層</h3>
+                                <span class="font-mono text-[10px] text-inkMuted uppercase tracking-wider block mt-1">LOCAL REASONING · BRIDGE</span>
+                            </div>
+
+                            <!-- Terracotta Circular AGENT LOOP Badge (Matches Image!) -->
+                            <div class="absolute right-2 -top-4 w-20 h-20 rounded-full bg-terracotta text-white flex flex-col items-center justify-center font-mono text-[10px] font-bold shadow-lg border-2 border-white ring-4 ring-terracotta/20 text-center leading-tight">
+                                <span>AGENT</span>
+                                <span>LOOP</span>
+                            </div>
+                        </div>
+
+                        <!-- Tier 01 Card (Matches Image!) -->
+                        <div class="card-2d p-5 rounded-xl ml-6 rotate-[0.5deg] bg-slateBlueLight border-inkBlack">
+                            <span class="font-mono text-[10px] text-terracotta font-bold block uppercase tracking-wider">TIER 01</span>
+                            <h3 class="text-base font-bold text-inkBlack mt-0.5">物理設備層</h3>
+                            <span class="font-mono text-[10px] text-inkMuted uppercase tracking-wider block mt-1">SENSE · ACT · TINYML</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 01 Quick Note -->
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 01 / 12 — OVERVIEW</span>
+                <span class="text-terracotta font-bold">按鍵盤 [→ / 空白鍵] 前往下一頁 →</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 02: PARADIGM SHIFT & LIFE ANALOGIES                -->
+        <!-- ======================================================== -->
+        <div id="slide-2" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div>
+                <span class="font-mono text-xs text-terracotta font-bold uppercase tracking-wider">FIELD GUIDE / 02 ──── PARADIGM SHIFT</span>
+                <h2 class="text-3xl sm:text-4xl font-display font-black text-inkBlack mt-1">
+                    生活化比喻：為什麼傳統系統會在複雜環境窒息？
+                </h2>
+                <p class="text-inkMuted text-xs sm:text-sm mt-1">
+                    若是缺乏語意上下文與自我反思能力，感測器只是一堆數字，檢索器只是一台字面搜尋機。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-auto">
+                <!-- Analogy 1: IoT -->
+                <div class="card-2d p-6 rounded-2xl bg-[#fbf8f3] space-y-4">
+                    <div class="flex items-center justify-between border-b border-inkBlack/10 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-lg bg-terracottaLight text-terracotta flex items-center justify-center font-bold text-sm">01</span>
+                            <h3 class="text-base font-bold text-inkBlack">物聯網的革命性躍遷</h3>
+                        </div>
+                        <span class="font-mono text-[11px] text-terracotta font-bold">IoT ➔ Agentic IoT</span>
+                    </div>
+
+                    <div class="space-y-3 text-xs leading-relaxed">
+                        <div class="p-3 rounded-xl bg-white border border-inkBlack/15">
+                            <strong class="text-terracotta block mb-1">❌ 傳統 IoT (呆板自動開關)：</strong>
+                            像設定每天下午 2 點噴水的自動灑水器。哪怕外面正颳大颱風、傾盆大雨，它依然照噴不誤，導致植物淹死爛根；冷氣只看溫度超標就吹 18°C 強風，不管主人正在做劇烈運動或發燒。
+                        </div>
+                        <div class="p-3 rounded-xl bg-sageLight border border-sageGreen/30">
+                            <strong class="text-sageGreen block mb-1">✅ Agentic IoT (懂思考的管家公會)：</strong>
+                            手錶感測到主人心率 145bpm 發熱出汗，空調代理與窗戶代理主動「協商」：關閉迎風面防暴雨，送 26.5°C 柔和微風，省電 38% 且保護神經！
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analogy 2: RAG -->
+                <div class="card-2d p-6 rounded-2xl bg-[#fbf8f3] space-y-4">
+                    <div class="flex items-center justify-between border-b border-inkBlack/10 pb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-8 rounded-lg bg-slateBlueLight text-slateBlue flex items-center justify-center font-bold text-sm">02</span>
+                            <h3 class="text-base font-bold text-inkBlack">知識檢索的架構革命</h3>
+                        </div>
+                        <span class="font-mono text-[11px] text-slateBlue font-bold">RAG ➔ Agentic RAG</span>
+                    </div>
+
+                    <div class="space-y-3 text-xs leading-relaxed">
+                        <div class="p-3 rounded-xl bg-white border border-inkBlack/15">
+                            <strong class="text-terracotta block mb-1">❌ 傳統 RAG (死背書僮盲查)：</strong>
+                            像死背課本的小學生。問他「高血壓藥能不能配葡萄柚汁？」，因字面向量距離遠，檢索出的段落隻字未提禁忌，模型便草率回答「可以喝」，險些造成低血壓休克！
+                        </div>
+                        <div class="p-3 rounded-xl bg-slateBlueLight border border-slateBlue/30">
+                            <strong class="text-slateBlue block mb-1">✅ Agentic RAG (福爾摩斯智囊團)：</strong>
+                            規劃者拆解為代謝酵素查詢，工具代理調用藥理 API 查出 CYP3A4 嚴重抑制禁忌，驗證者及時亮起紅旗警告，給出救命級回答！
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 02 / 12 — PARADIGM SHIFT</span>
+                <span class="text-terracotta font-bold">按 [→] 前往連續體架構</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 03: AGENTIC IOT CONTINUUM & CANVAS                 -->
+        <!-- ======================================================== -->
+        <div id="slide-3" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="font-mono text-xs text-terracotta font-bold uppercase tracking-wider">FIELD GUIDE / 03 ──── CONTINUUM</span>
+                    <h2 class="text-2xl sm:text-3xl font-display font-black text-inkBlack mt-0.5">
+                        Agentic IoT 三層連續體動態數據流
+                    </h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleCanvasAnim('iot')" id="btn-anim-iot" class="btn-2d-outline px-3 py-1 rounded-lg text-xs font-mono font-bold">
+                        暫停 / 播放
+                    </button>
+                    <button onclick="triggerAnomalyPulse()" class="btn-2d px-3 py-1 rounded-lg text-xs font-mono font-bold">
+                        注入異常脈衝 ⚡
+                    </button>
+                </div>
+            </div>
+
+            <!-- Canvas Viewport with Clean 2D Border -->
+            <div class="card-2d rounded-2xl bg-white overflow-hidden my-3 h-64 sm:h-72 relative">
+                <canvas id="canvas-iot-flow" class="w-full h-full block"></canvas>
+            </div>
+
+            <!-- 3 Tiers Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                <div class="card-2d-soft p-3.5 rounded-xl bg-white">
+                    <div class="flex items-center gap-2 font-bold text-slateBlue mb-1 font-mono">
+                        <span class="w-5 h-5 rounded bg-slateBlueLight flex items-center justify-center text-xs">1</span>
+                        物理感知致動層 (SENSE & ACT)
+                    </div>
+                    <p class="text-inkMuted text-[11px] leading-relaxed">
+                        溫濕度、震動、雷達點雲，透過低功耗 MQTT/CoAP 協定採樣，轉化為具備語意的前置命題。
+                    </p>
+                </div>
+                <div class="card-2d-soft p-3.5 rounded-xl bg-white">
+                    <div class="flex items-center gap-2 font-bold text-terracotta mb-1 font-mono">
+                        <span class="w-5 h-5 rounded bg-terracottaLight flex items-center justify-center text-xs">2</span>
+                        邊緣網關 SLM 認知層 (LOCAL REASONING)
+                    </div>
+                    <p class="text-inkMuted text-[11px] leading-relaxed">
+                        部署 1B~3B 小模型（如 Phi-3.5, LLaMA-3.2），實現本地 10~50ms 超低延遲因果推理與急停保護。
+                    </p>
+                </div>
+                <div class="card-2d-soft p-3.5 rounded-xl bg-white">
+                    <div class="flex items-center gap-2 font-bold text-sageGreen mb-1 font-mono">
+                        <span class="w-5 h-5 rounded bg-sageLight flex items-center justify-center text-xs">3</span>
+                        雲端 IoA 代理人公會 (INTERNET OF AGENTS)
+                    </div>
+                    <p class="text-inkMuted text-[11px] leading-relaxed">
+                        多特化專家代理人，藉由語意代理合約（Semantic Contracts）進行跨域任務分解與資源調度。
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 03 / 12 — THREE-TIER CONTINUUM</span>
+                <span class="text-terracotta font-bold">按 [→] 前往生活模擬沙盒</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 04: LIVE DEMO A - SMART LIVING SANDBOX             -->
+        <!-- ======================================================== -->
+        <div id="slide-4" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-inkBlack/15 pb-2">
+                <div>
+                    <span class="font-mono text-xs text-terracotta font-bold uppercase tracking-wider">LIVE DEMO 01 ──── SMART LIVING</span>
+                    <h2 class="text-2xl font-display font-black text-inkBlack">
+                        實境展示：Agentic IoT 智慧生活沙盒演繹
+                    </h2>
+                </div>
+                <div class="flex gap-2 text-xs font-mono font-bold">
+                    <button onclick="loadIotScenario('storm')" id="scen-btn-storm" class="px-3 py-1 rounded-lg bg-terracotta text-white border border-terracotta">1. 暴雨運動</button>
+                    <button onclick="loadIotScenario('gas')" id="scen-btn-gas" class="px-3 py-1 rounded-lg bg-white border border-inkBlack/30 text-inkBlack hover:border-inkBlack">2. 瓦斯微洩</button>
+                    <button onclick="loadIotScenario('ambulance')" id="scen-btn-ambulance" class="px-3 py-1 rounded-lg bg-white border border-inkBlack/30 text-inkBlack hover:border-inkBlack">3. 救護車綠廊</button>
+                </div>
+            </div>
+
+            <!-- Two Column Comparison -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 my-2 flex-1 items-stretch">
+                <!-- Left: Legacy -->
+                <div class="card-2d p-4 rounded-xl bg-white flex flex-col justify-between text-xs">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-inkBlack/10 pb-2 mb-2 font-mono">
+                            <span class="font-bold text-terracotta">✕ 傳統物聯網 (死板閾值)</span>
+                            <span class="text-[10px] text-inkMuted">If-Else 規則</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="bg-paperBg p-2.5 rounded-lg border border-inkBlack/10">
+                                <span class="text-inkMuted block text-[11px]">採樣數值：</span>
+                                <span class="text-inkBlack font-mono font-bold" id="iot-trad-sensor">室內 32°C (超標)</span>
+                            </div>
+                            <div class="bg-paperBg p-2.5 rounded-lg border border-inkBlack/10">
+                                <span class="text-inkMuted block text-[11px]">執行動作：</span>
+                                <span class="text-terracotta font-mono font-bold" id="iot-trad-action">冷氣強冷 18°C 直吹</span>
+                            </div>
+                            <div class="bg-terracottaLight p-3 rounded-lg border border-terracotta/30 text-inkBlack">
+                                <strong class="text-terracotta block mb-0.5 font-bold">造成的災難：</strong>
+                                <span id="iot-trad-consequence" class="leading-relaxed">暴雨灌入地板淹水，強風直吹大汗主人導致肌肉痙攣感冒！</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-[10px] text-inkMuted text-center pt-2 font-mono">缺乏語意上下文 · 設備互不溝通</div>
+                </div>
+
+                <!-- Right: Agentic IoT -->
+                <div class="card-2d p-4 rounded-xl bg-[#fbf8f3] border-terracotta flex flex-col justify-between text-xs">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-inkBlack/10 pb-2 mb-2 font-mono">
+                            <span class="font-bold text-sageGreen">✓ Agentic IoT 自主協商公會</span>
+                            <span class="text-[10px] text-sageGreen font-bold">COGNITIVE LOOP</span>
+                        </div>
+
+                        <!-- Stepper -->
+                        <div class="grid grid-cols-4 gap-1 mb-2 text-center text-[10px] font-mono">
+                            <div id="iot-step-1" class="py-1 rounded bg-terracotta text-white font-bold">1. 感知</div>
+                            <div id="iot-step-2" class="py-1 rounded bg-paperBg text-inkMuted">2. 推理</div>
+                            <div id="iot-step-3" class="py-1 rounded bg-paperBg text-inkMuted">3. 協商</div>
+                            <div id="iot-step-4" class="py-1 rounded bg-paperBg text-inkMuted">4. 行動</div>
+                        </div>
+
+                        <!-- Dialog Log -->
+                        <div id="iot-agent-dialog" class="space-y-2 flex-1 min-h-[180px] max-h-[340px] overflow-y-auto pr-1 text-xs">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Step Controls -->
+                    <div class="pt-2 border-t border-inkBlack/10 flex items-center justify-between">
+                        <span id="iot-step-caption" class="text-[11px] font-mono font-bold text-terracotta">階段 1：情境感知</span>
+                        <div class="flex items-center gap-1.5 font-mono">
+                            <button onclick="prevIotStep()" class="btn-2d-outline px-2.5 py-1 rounded text-xs">上一步</button>
+                            <button onclick="nextIotStep()" class="btn-2d px-3 py-1 rounded text-xs font-bold">下一步</button>
+                            <button onclick="autoPlayIot()" id="btn-iot-autoplay" class="px-2.5 py-1 rounded bg-sageGreen text-white text-xs font-bold">自動播放</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 04 / 12 — LIVE DEMO A</span>
+                <span class="text-terracotta font-bold">按 [→] 前往底層代碼透視</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 05: CODE X-RAY 1 - RAW MQTT VS SEMANTIC CONTRACT   -->
+        <!-- ======================================================== -->
+        <div id="slide-5" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div>
+                <span class="font-mono text-xs text-slateBlue font-bold uppercase tracking-wider">CODE & DATA X-RAY / 01 ──── CONTRACTS</span>
+                <h2 class="text-2xl sm:text-3xl font-display font-black text-inkBlack mt-0.5">
+                    底層代碼透視：傳統 MQTT 遙測 vs. IoA 語意代理人合約
+                </h2>
+                <p class="text-inkMuted text-xs mt-0.5">親眼看見「冰冷孤立數字」與「具備 W3C 本體論與多代理協商能力之語意數據」的結構差異。</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 my-2 flex-1">
+                <!-- Left: MQTT -->
+                <div class="card-2d p-4 rounded-xl bg-white flex flex-col justify-between text-xs">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-inkBlack/10 pb-1.5 mb-2 font-mono">
+                            <span class="font-bold text-terracotta">傳統 MQTT 靜態封包</span>
+                            <span class="text-[10px] text-inkMuted">Topic: sensor/living_room</span>
+                        </div>
+                        <pre class="bg-paperBg p-3 rounded-lg border border-inkBlack/15 text-[11px] font-mono text-inkBlack overflow-x-auto leading-relaxed"><code>{
+  "ts": 1728812400,
+  "device_id": "temp_sensor_01",
+  "temperature": 32.4,
+  "humidity": 68.2,
+  "motion": 1
+}</code></pre>
+                        <div class="mt-3 p-2.5 rounded bg-terracottaLight border border-terracotta/20 text-[11px] leading-relaxed">
+                            <strong class="text-terracotta block mb-0.5 font-bold font-mono">❌ 為什麼無法自癒？</strong>
+                            只有單純數值，雲端無法感知「主人心率飆升發熱」、無法感知「窗外即將暴雨」，形成嚴重的語意孤島 (Data Silo)。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Semantic Contract -->
+                <div class="card-2d p-4 rounded-xl bg-white border-terracotta flex flex-col justify-between text-xs">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-inkBlack/10 pb-1.5 mb-2 font-mono">
+                            <span class="font-bold text-slateBlue">IoA 語意合約 (JSON-LD Contract)</span>
+                            <span class="text-[10px] text-slateBlue font-bold">Topic: ioa/guild/v1/contract</span>
+                        </div>
+                        <pre class="bg-paperBg p-3 rounded-lg border border-inkBlack/15 text-[11px] font-mono text-inkBlack overflow-x-auto leading-relaxed"><code>{
+  "@context": "https://w3id.org/ioa/sem-contract/v1",
+  "contract_id": "cnt_2026_climate_negotiation_88",
+  "initiator": "urn:agent:wearable:user_watch",
+  "intent": "physiological_comfort_optimization",
+  "context_state": {
+    "user_activity": "aerobic_workout",
+    "heart_rate_bpm": 145,
+    "outdoor_storm_warning": true
+  },
+  "negotiated_terms": {
+    "hvac_setpoint_celsius": 26.5,
+    "airflow_mode": "diffuse_swing_breeze",
+    "window_actuation": "seal_against_storm"
+  },
+  "ecdsa_signature": "0x4b7f...9e21"
+}</code></pre>
+                        <div class="mt-3 p-2.5 rounded bg-slateBlueLight border border-slateBlue/20 text-[11px] leading-relaxed">
+                            <strong class="text-slateBlue block mb-0.5 font-bold font-mono">✅ 語意合約優勢：</strong>
+                            自帶情境（<code>user_activity</code>）、協商條款與 ECDSA 密碼學簽章，設備間能像專業工會一樣自主談判協同！
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 05 / 12 — CONTRACT SPEC</span>
+                <span class="text-terracotta font-bold">按 [→] 前往邊緣算力計算機</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 06: BENCHMARK CALCULATOR                           -->
+        <!-- ======================================================== -->
+        <div id="slide-6" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div>
+                <span class="font-mono text-xs text-slateBlue font-bold uppercase tracking-wider">COMPUTE BENCHMARK / 02 ──── HARDWARE</span>
+                <h2 class="text-2xl sm:text-3xl font-display font-black text-inkBlack mt-0.5">
+                    邊緣 SLM 硬體算力、RAM 消耗與延遲真實計算機
+                </h2>
+                <p class="text-inkMuted text-xs mt-0.5">切換真實邊緣小模型與硬體晶片，動態試算是否能達到工業 50ms 硬即時標準！</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-2 text-xs">
+                <div class="card-2d p-3.5 rounded-xl bg-white space-y-1.5">
+                    <label class="font-bold text-inkBlack font-mono">1. 選擇邊緣小語言模型 (Edge SLM)：</label>
+                    <select id="calc-model" onchange="runEdgeBenchmark()" class="w-full bg-paperBg border border-inkBlack/30 rounded-lg p-2 text-xs text-inkBlack font-mono font-bold">
+                        <option value="llama32_1b">Meta LLaMA-3.2 1B-Instruct (INT4) - 780 MB</option>
+                        <option value="qwen25_15b">Alibaba Qwen-2.5 1.5B-Instruct (INT4) - 980 MB</option>
+                        <option value="phi35_mini" selected>Microsoft Phi-3.5-mini 3.8B-Instruct (INT4) - 2.2 GB</option>
+                        <option value="gemma2_2b">Google Gemma-2 2.6B-IT (INT4) - 1.6 GB</option>
+                    </select>
+                </div>
+
+                <div class="card-2d p-3.5 rounded-xl bg-white space-y-1.5">
+                    <label class="font-bold text-inkBlack font-mono">2. 選擇目標邊緣硬體晶片 (Edge Device)：</label>
+                    <select id="calc-device" onchange="runEdgeBenchmark()" class="w-full bg-paperBg border border-inkBlack/30 rounded-lg p-2 text-xs text-inkBlack font-mono font-bold">
+                        <option value="jetson_orin">NVIDIA Jetson Orin Nano (40 TOPS, 8GB RAM)</option>
+                        <option value="rpi5" selected>Raspberry Pi 5 (8GB RAM, Broadcom 2.4GHz)</option>
+                        <option value="intel_ipc">工業邊緣 IPC (Intel Core i5-1345UE, 16GB RAM)</option>
+                        <option value="mcu_esp32">ESP32-S3 (MCU 微控制器 - TinyML 極限測試)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dynamic Metrics Output -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs my-2">
+                <div class="card-2d p-3.5 rounded-xl bg-white">
+                    <span class="text-inkMuted block text-[11px] font-mono mb-1">RAM 記憶體負載</span>
+                    <div id="res-ram" class="text-xl font-mono font-black text-slateBlue">2.65 GB</div>
+                    <span class="text-[10px] text-sageGreen mt-0.5 block font-bold font-mono">8GB RAM 安全餘裕</span>
+                </div>
+                <div class="card-2d p-3.5 rounded-xl bg-white">
+                    <span class="text-inkMuted block text-[11px] font-mono mb-1">首字延遲 (TTFT)</span>
+                    <div id="res-prefill" class="text-xl font-mono font-black text-sandYellow">32 ms</div>
+                    <span class="text-[10px] text-inkMuted mt-0.5 block font-mono">128 tokens 上下文</span>
+                </div>
+                <div class="card-2d p-3.5 rounded-xl bg-white">
+                    <span class="text-inkMuted block text-[11px] font-mono mb-1">生成速度 (TPS)</span>
+                    <div id="res-tps" class="text-xl font-mono font-black text-sageGreen">18.5 tok/s</div>
+                    <span class="text-[10px] text-inkMuted mt-0.5 block font-mono">結構化指令輸出</span>
+                </div>
+                <div class="card-2d p-3.5 rounded-xl bg-white">
+                    <span class="text-inkMuted block text-[11px] font-mono mb-1">端到端決策耗時</span>
+                    <div id="res-latency" class="text-xl font-mono font-black text-terracotta">48 ms</div>
+                    <span id="res-eval" class="text-[10px] text-sageGreen mt-0.5 block font-bold font-mono">✓ 滿足 50ms 工業急停標準</span>
+                </div>
+            </div>
+
+            <div class="card-2d-soft p-3 rounded-xl bg-white text-xs flex items-center justify-between font-mono">
+                <span>雲端大模型 5G 來回延遲約 <strong>1,250 ms</strong>（慢 25 倍且有斷網風險）</span>
+                <span class="text-terracotta font-bold">邊緣 SLM 是工廠防爆與車聯網的關鍵！</span>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 06 / 12 — EDGE BENCHMARK</span>
+                <span class="text-terracotta font-bold">按 [→] 前往 RAG 雙雄對照</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 07: TOPIC 2 - RAG COMPARISON CANVAS & ROLES         -->
+        <!-- ======================================================== -->
+        <div id="slide-7" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="font-mono text-xs text-terracotta font-bold uppercase tracking-wider">FIELD GUIDE / 07 ──── RAG PARADIGM</span>
+                    <h2 class="text-2xl sm:text-3xl font-display font-black text-inkBlack mt-0.5">
+                        Traditional RAG vs. Agentic RAG：單向管道 vs. 閉環控制迴路
+                    </h2>
+                </div>
+                <button onclick="toggleCanvasAnim('rag')" id="btn-anim-rag" class="btn-2d-outline px-3 py-1 rounded-lg text-xs font-mono font-bold">
+                    暫停 / 播放
+                </button>
+            </div>
+
+            <!-- Canvas Viewport -->
+            <div class="card-2d rounded-2xl bg-white overflow-hidden my-3 h-64 sm:h-72 relative">
+                <canvas id="canvas-rag-flow" class="w-full h-full block"></canvas>
+            </div>
+
+            <!-- 6 Roles Badge Summary -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 text-[11px] font-mono">
+                <div class="card-2d-soft p-2.5 rounded-xl bg-white text-center">
+                    <strong class="text-terracotta block font-bold">1. 規劃者</strong>
+                    <span class="text-inkMuted text-[10px]">拆解任務樹 DAG</span>
+                </div>
+                <div class="card-2d-soft p-2.5 rounded-xl bg-white text-center">
+                    <strong class="text-slateBlue block font-bold">2. 檢索者</strong>
+                    <span class="text-inkMuted text-[10px]">多輪混合檢索</span>
+                </div>
+                <div class="card-2d-soft p-2.5 rounded-xl bg-white text-center">
+                    <strong class="text-sandYellow block font-bold">3. 工具代理</strong>
+                    <span class="text-inkMuted text-[10px]">API / 計算沙箱</span>
+                </div>
+                <div class="card-2d-soft p-2.5 rounded-xl bg-white text-center">
+                    <strong class="text-terracotta block font-bold">4. 驗證者</strong>
+                    <span class="text-inkMuted text-[10px]">防偽與一致性查核</span>
+                </div>
+                <div class="card-2d-soft p-2.5 rounded-xl bg-white text-center">
+                    <strong class="text-sageGreen block font-bold">5. 記憶代理</strong>
+                    <span class="text-inkMuted text-[10px]">長期情節記憶</span>
+                </div>
+                <div class="card-2d-soft p-2.5 rounded-xl bg-white text-center">
+                    <strong class="text-inkBlack block font-bold">6. 整合問答</strong>
+                    <span class="text-inkMuted text-[10px]">高保真引文輸出</span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 07 / 12 — RAG ARCHITECTURE</span>
+                <span class="text-terracotta font-bold">按 [→] 前往 RAG 偵探對決</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 08: LIVE DEMO B - RAG DETECTIVE BATTLE SANDBOX     -->
+        <!-- ======================================================== -->
+        <div id="slide-8" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-inkBlack/15 pb-2">
+                <div>
+                    <span class="font-mono text-xs text-terracotta font-bold uppercase tracking-wider">LIVE DEMO 02 ──── RAG ARENA</span>
+                    <h2 class="text-2xl font-display font-black text-inkBlack">
+                        實境展示：RAG 智慧偵探對決沙盒
+                    </h2>
+                </div>
+                <div class="flex gap-2 text-xs font-mono font-bold">
+                    <button onclick="loadRagQuestion('med')" id="rag-btn-med" class="px-3 py-1 rounded-lg bg-terracotta text-white border border-terracotta">1. 降壓藥葡萄柚</button>
+                    <button onclick="loadRagQuestion('travel')" id="rag-btn-travel" class="px-3 py-1 rounded-lg bg-white border border-inkBlack/30 text-inkBlack hover:border-inkBlack">2. 三代滑雪退稅</button>
+                    <button onclick="loadRagQuestion('finance')" id="rag-btn-finance" class="px-3 py-1 rounded-lg bg-white border border-inkBlack/30 text-inkBlack hover:border-inkBlack">3. 財報詐欺審計</button>
+                </div>
+            </div>
+
+            <!-- Query Banner -->
+            <div class="card-2d-soft p-2.5 rounded-xl bg-white text-xs flex items-center gap-2">
+                <span class="font-mono text-terracotta font-bold flex-shrink-0">複合問題：</span>
+                <span id="rag-current-query" class="text-inkBlack font-medium truncate">「我父親每天服用降血壓藥脈優 (Amlodipine 5mg)，今天喉嚨痛發燒，可以吃市售綜合感冒藥搭配現榨葡萄柚汁潤喉嗎？」</span>
+            </div>
+
+            <!-- Two Column Arena -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 my-2 flex-1 items-stretch">
+                <!-- Left: Traditional RAG -->
+                <div class="card-2d p-4 rounded-xl bg-white flex flex-col justify-between text-xs">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-inkBlack/10 pb-2 mb-2 font-mono">
+                            <span class="font-bold text-sandYellow">✕ 傳統 RAG (單次線性檢索)</span>
+                            <span class="text-[10px] text-inkMuted">Top-2 Chunks</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="bg-paperBg p-2 rounded border border-inkBlack/10 text-[11px] text-inkMuted font-mono" id="rag-trad-chunks">
+                                [段落 1] 感冒藥含乙醯胺酚... [段落 2] 葡萄柚汁富含維他命 C...
+                            </div>
+                            <div class="bg-sandLight p-2 rounded border border-sandYellow/30 text-[11px] text-inkBlack" id="rag-trad-answer">
+                                「可以適量飲用！葡萄柚能補充維他命 C...」
+                            </div>
+                            <div class="bg-terracottaLight p-2.5 rounded-lg border border-terracotta/30 text-inkBlack">
+                                <strong class="text-terracotta block mb-0.5 font-bold font-mono">致命危機：</strong>
+                                <span id="rag-trad-flaw" class="text-[11px]">遺漏葡萄柚抑制 CYP3A4 禁忌，導致血壓暴跌休克！</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-[10px] text-inkMuted text-center pt-1 font-mono">字面相似度陷阱 · 缺乏多跳因果關聯</div>
+                </div>
+
+                <!-- Right: Agentic RAG -->
+                <div class="card-2d p-4 rounded-xl bg-[#fbf8f3] border-terracotta flex flex-col justify-between text-xs">
+                    <div>
+                        <div class="flex items-center justify-between border-b border-inkBlack/10 pb-2 mb-2 font-mono">
+                            <span class="font-bold text-terracotta">✓ Agentic RAG (多代理自主推理)</span>
+                            <span class="text-[10px] text-terracotta font-bold">ReAct Loop</span>
+                        </div>
+
+                        <!-- Stepper -->
+                        <div class="grid grid-cols-4 gap-1 mb-2 text-center text-[10px] font-mono">
+                            <div id="rag-step-1" class="py-1 rounded bg-terracotta text-white font-bold">1. 規劃</div>
+                            <div id="rag-step-2" class="py-1 rounded bg-paperBg text-inkMuted">2. 工具</div>
+                            <div id="rag-step-3" class="py-1 rounded bg-paperBg text-inkMuted">3. 驗證</div>
+                            <div id="rag-step-4" class="py-1 rounded bg-paperBg text-inkMuted">4. 整合</div>
+                        </div>
+
+                        <!-- Dialog Log -->
+                        <div id="rag-agent-dialog" class="space-y-2 flex-1 min-h-[180px] max-h-[340px] overflow-y-auto pr-1 text-xs">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Step Controls -->
+                    <div class="pt-2 border-t border-inkBlack/10 flex items-center justify-between">
+                        <span id="rag-step-caption" class="text-[11px] font-mono font-bold text-terracotta">階段 1：規劃者拆解子任務</span>
+                        <div class="flex items-center gap-1.5 font-mono">
+                            <button onclick="prevRagStep()" class="btn-2d-outline px-2.5 py-1 rounded text-xs">上一步</button>
+                            <button onclick="nextRagStep()" class="btn-2d px-3 py-1 rounded text-xs font-bold">下一步</button>
+                            <button onclick="autoPlayRag()" id="btn-rag-autoplay" class="px-2.5 py-1 rounded bg-slateBlue text-white text-xs font-bold">自動播放</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 08 / 12 — RAG ARENA</span>
+                <span class="text-terracotta font-bold">按 [→] 前往向量幾何透視</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 09: VECTOR GEOMETRY VS 2-HOP KG                    -->
+        <!-- ======================================================== -->
+        <div id="slide-9" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="font-mono text-xs text-slateBlue font-bold uppercase tracking-wider">MATHEMATICAL X-RAY / 03 ──── GEOMETRY</span>
+                    <h2 class="text-2xl sm:text-3xl font-display font-black text-inkBlack mt-0.5">
+                        數學幾何透視：為什麼向量檢索會「漏掉」葡萄柚？
+                    </h2>
+                </div>
+                <div class="flex gap-2 font-mono">
+                    <button onclick="toggleVectorVisual('vector')" id="btn-vis-vector" class="px-3 py-1 rounded bg-terracotta text-white text-xs font-bold">向量空間幾何</button>
+                    <button onclick="toggleVectorVisual('kg')" id="btn-vis-kg" class="px-3 py-1 rounded bg-white border border-inkBlack text-inkBlack text-xs font-bold">知識圖譜 2-Hop</button>
+                </div>
+            </div>
+
+            <!-- SVG Visual Canvas Container -->
+            <div class="card-2d rounded-2xl bg-white p-4 my-2 flex-1 flex items-center justify-center overflow-hidden relative">
+                <div id="vis-vector-container" class="w-full h-full flex items-center justify-center">
+                    <svg class="w-full max-h-72" viewBox="0 0 500 280">
+                        <line x1="50" y1="230" x2="450" y2="230" stroke="#181b1b" stroke-width="1.5" />
+                        <line x1="50" y1="230" x2="50" y2="30" stroke="#181b1b" stroke-width="1.5" />
+                        <text x="440" y="245" fill="#5d6462" font-size="10" font-family="JetBrains Mono">向量維度 X</text>
+                        <circle cx="120" cy="100" r="70" fill="rgba(59, 110, 140, 0.08)" stroke="#3b6e8c" stroke-dasharray="4 4" />
+                        <circle cx="120" cy="100" r="7" fill="#3b6e8c" />
+                        <text x="120" y="125" fill="#181b1b" font-size="11" font-weight="bold" text-anchor="middle">A: 脈優降血壓藥</text>
+                        <circle cx="155" cy="115" r="6" fill="#4a7c59" />
+                        <text x="180" y="135" fill="#4a7c59" font-size="10">B: 感冒藥 (相似度 0.81 ✓)</text>
+                        <circle cx="390" cy="180" r="7" fill="#d9532f" />
+                        <text x="390" y="205" fill="#d9532f" font-size="11" font-weight="bold" text-anchor="middle">C: 葡萄柚汁 (相似度 0.142 ❌)</text>
+                        <line x1="120" y1="100" x2="390" y2="180" stroke="#d9532f" stroke-dasharray="3 3" stroke-width="1.5" />
+                        <text x="270" y="135" fill="#d9532f" font-size="10" font-family="JetBrains Mono">夾角過大！被直接過濾！</text>
+                    </svg>
+                </div>
+                <div id="vis-kg-container" class="hidden w-full h-full flex items-center justify-center">
+                    <svg class="w-full max-h-72" viewBox="0 0 500 280">
+                        <rect x="30" y="100" width="110" height="45" rx="8" fill="#d8e7ee" stroke="#181b1b" stroke-width="1.5" />
+                        <text x="85" y="127" fill="#181b1b" font-size="11" font-weight="bold" text-anchor="middle">降血壓藥 Amlodipine</text>
+                        <line x1="140" y1="122" x2="220" y2="122" stroke="#d9532f" stroke-width="2" />
+                        <text x="180" y="112" fill="#d9532f" font-size="9" text-anchor="middle" font-family="JetBrains Mono">1-Hop: 受質代謝</text>
+                        <rect x="220" y="95" width="110" height="55" rx="8" fill="#faeed7" stroke="#181b1b" stroke-width="1.5" />
+                        <text x="275" y="118" fill="#181b1b" font-size="11" font-weight="bold" text-anchor="middle">肝臟 CYP3A4</text>
+                        <text x="275" y="135" fill="#5d6462" font-size="10" text-anchor="middle">代謝酵素核心</text>
+                        <line x1="390" y1="122" x2="330" y2="122" stroke="#d9532f" stroke-width="2" />
+                        <text x="360" y="112" fill="#d9532f" font-size="9" text-anchor="middle" font-family="JetBrains Mono">2-Hop: 強烈抑制</text>
+                        <rect x="390" y="100" width="90" height="45" rx="8" fill="#fbeee9" stroke="#181b1b" stroke-width="1.5" />
+                        <text x="435" y="127" fill="#181b1b" font-size="11" font-weight="bold" text-anchor="middle">葡萄柚汁</text>
+                        <rect x="110" y="200" width="280" height="40" rx="8" fill="#faede9" stroke="#d9532f" stroke-width="1.5" />
+                        <text x="250" y="225" fill="#d9532f" font-size="11" font-weight="bold" text-anchor="middle">
+                            🚨 因果推導：CYP3A4 封鎖 ➔ 脈優蓄積過量 ➔ 休克！
+                        </text>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                <div class="card-2d-soft p-3 rounded-xl bg-white">
+                    <span class="text-terracotta font-mono font-bold block">餘弦相似度斷層：sim(u, v) = 0.142</span>
+                    <p class="text-inkMuted text-[11px] mt-0.5">降血壓藥與葡萄柚字面毫不相干，傳統向量檢索直接過濾漏報。</p>
+                </div>
+                <div class="card-2d-soft p-3 rounded-xl bg-white">
+                    <span class="text-slateBlue font-mono font-bold block">知識圖譜 2-Hop 跨越鴻溝</span>
+                    <p class="text-inkMuted text-[11px] mt-0.5">Agentic 藉由酵素受質拓撲因果導航，精準建立關聯防線。</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 09 / 12 — GEOMETRIC PROOF</span>
+                <span class="text-terracotta font-bold">按 [→] 前往 ReAct 思維鏈日誌</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 10: REACT EXECUTION TRACE LOG                      -->
+        <!-- ======================================================== -->
+        <div id="slide-10" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div>
+                <span class="font-mono text-xs text-sageGreen font-bold uppercase tracking-wider">TRACE X-RAY / 04 ──── INTERNAL COGNITION</span>
+                <h2 class="text-2xl sm:text-3xl font-display font-black text-inkBlack mt-0.5">
+                    ReAct 思維鏈日誌：透視 AI 代理人內部大腦思考閉環
+                </h2>
+                <p class="text-inkMuted text-xs mt-0.5">Thought（思維）➔ Action（調用工具）➔ Observation（觀察回傳）➔ Reflection（反思）。</p>
+            </div>
+
+            <!-- Trace Code Console (Crisp 2D Paper Console) -->
+            <div class="card-2d p-4 rounded-2xl bg-white font-mono text-xs text-inkBlack space-y-3 my-2 overflow-y-auto max-h-96 leading-relaxed">
+                <div>
+                    <span class="text-slateBlue font-bold">[Step 1: Thought]</span>
+                    <p class="text-inkMuted pl-4 mt-0.5">使用者詢問 Amlodipine 降血壓藥與感冒藥及葡萄柚汁的配伍安全性。我需要拆解為多個工具調用以驗證藥物相互作用與酵素代謝機制。</p>
+                </div>
+                <div>
+                    <span class="text-terracotta font-bold">[Step 1: Action]</span>
+                    <p class="text-inkBlack font-bold pl-4 mt-0.5">call_rxnorm_api(query="Amlodipine 5mg", get_metabolic_enzymes=True)</p>
+                </div>
+                <div>
+                    <span class="text-inkMuted font-bold">[Step 1: Observation]</span>
+                    <pre class="bg-paperBg p-2 rounded border border-inkBlack/10 text-[11px] text-sageGreen mt-0.5 ml-4"><code>{"substance": "Amlodipine", "primary_enzyme": "CYP3A4", "elimination_half_life": "30-50 hours"}</code></pre>
+                </div>
+                <div>
+                    <span class="text-slateBlue font-bold">[Step 2: Thought]</span>
+                    <p class="text-inkMuted pl-4 mt-0.5">已確認脈優依賴 CYP3A4 代謝。下一步我必須檢索葡萄柚汁對 CYP3A4 的影響，並調用交互反應資料庫。</p>
+                </div>
+                <div>
+                    <span class="text-terracotta font-bold">[Step 2: Action]</span>
+                    <p class="text-inkBlack font-bold pl-4 mt-0.5">check_food_drug_interaction(drug="Amlodipine", food="Grapefruit")</p>
+                </div>
+                <div>
+                    <span class="text-inkMuted font-bold">[Step 2: Observation]</span>
+                    <pre class="bg-paperBg p-2 rounded border border-inkBlack/10 text-[11px] text-terracotta mt-0.5 ml-4"><code>{"severity": "MAJOR_DANGER", "mechanism": "Furanocoumarins irreversibly inhibit intestinal CYP3A4", "clinical_consequence": "Bioavailability increases by 300%-400%, leading to acute profound hypotension, peripheral edema, and syncope."}</code></pre>
+                </div>
+                <div>
+                    <span class="text-terracotta font-bold">[Step 3: Reflection & Verifier Guardrail]</span>
+                    <p class="text-inkBlack font-bold pl-4 mt-0.5">⚠️ 嚴重安全警報觸發！檢驗生成回答前必須強制插入【絕對禁止飲用葡萄柚】紅旗警告，並駁回任何溫和安慰語句！</p>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 10 / 12 — AUDITABLE DECISION LOG</span>
+                <span class="text-terracotta font-bold">按 [→] 前往 11 大產業矩陣</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 11: 11 DOMAIN MATRICES                             -->
+        <!-- ======================================================== -->
+        <div id="slide-11" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div>
+                <span class="font-mono text-xs text-terracotta font-bold uppercase tracking-wider">FIELD GUIDE / 11 ──── INDUSTRY MATRIX</span>
+                <h2 class="text-2xl sm:text-3xl font-display font-black text-inkBlack mt-0.5">
+                    11 大垂直產業落地效益矩陣 (論文表 III 提煉)
+                </h2>
+                <p class="text-inkMuted text-xs mt-0.5">點擊產業標籤，查看 Agentic 系統相較於傳統系統的具體突破。</p>
+            </div>
+
+            <!-- Domain Pills -->
+            <div class="flex flex-wrap gap-2 my-2 font-mono text-xs">
+                <button onclick="showDomainInfo('medical')" id="dom-btn-medical" class="px-3 py-1.5 rounded-lg font-bold bg-terracotta text-white border border-terracotta">醫療健康</button>
+                <button onclick="showDomainInfo('finance')" id="dom-btn-finance" class="px-3 py-1.5 rounded-lg font-bold bg-white border border-inkBlack/20 text-inkBlack hover:border-inkBlack">金融審計</button>
+                <button onclick="showDomainInfo('mfg')" id="dom-btn-mfg" class="px-3 py-1.5 rounded-lg font-bold bg-white border border-inkBlack/20 text-inkBlack hover:border-inkBlack">智慧製造</button>
+                <button onclick="showDomainInfo('city')" id="dom-btn-city" class="px-3 py-1.5 rounded-lg font-bold bg-white border border-inkBlack/20 text-inkBlack hover:border-inkBlack">智慧城市/交通</button>
+                <button onclick="showDomainInfo('legal')" id="dom-btn-legal" class="px-3 py-1.5 rounded-lg font-bold bg-white border border-inkBlack/20 text-inkBlack hover:border-inkBlack">法律合規</button>
+                <button onclick="showDomainInfo('sec')" id="dom-btn-sec" class="px-3 py-1.5 rounded-lg font-bold bg-white border border-inkBlack/20 text-inkBlack hover:border-inkBlack">網路資安</button>
+            </div>
+
+            <!-- Domain Detail Box -->
+            <div id="domain-detail-box" class="card-2d p-5 rounded-2xl bg-white text-xs space-y-3 flex-1 my-2">
+                <!-- Loaded dynamically -->
+            </div>
+
+            <div class="flex items-center justify-between text-[11px] font-mono text-inkMuted pt-2">
+                <span>SLIDE 11 / 12 — QUANTIFIED INDUSTRY VALUE</span>
+                <span class="text-terracotta font-bold">按 [→] 前往考核與結算</span>
+            </div>
+        </div>
+
+        <!-- ======================================================== -->
+        <!-- SLIDE 12: AUDIENCE QUIZ & RECAP                          -->
+        <!-- ======================================================== -->
+        <div id="slide-12" class="slide-frame w-full h-full flex-col justify-between max-w-6xl mx-auto my-auto py-3">
+            <div class="flex items-center justify-between">
+                <div>
+                    <span class="font-mono text-xs text-sageGreen font-bold uppercase tracking-wider">FIELD GUIDE / 12 ──── CERTIFICATION</span>
+                    <h2 class="text-2xl sm:text-3xl font-display font-black text-inkBlack mt-0.5">
+                        現場隨堂快問快答與觀念考核
+                    </h2>
+                </div>
+                <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-xl border border-inkBlack text-xs font-mono">
+                    <span class="text-inkMuted">答對題數：</span>
+                    <span id="quiz-score-display" class="text-terracotta font-bold">0 / 5</span>
+                </div>
+            </div>
+
+            <!-- Quiz Stage Container -->
+            <div id="quiz-question-container" class="card-2d p-6 rounded-2xl bg-white my-3 flex-1 space-y-4">
+                <!-- Loaded dynamically -->
+            </div>
+
+            <!-- Footer Controls -->
+            <div class="flex items-center justify-between text-xs text-inkMuted font-mono">
+                <span id="quiz-step-info">第 1 / 5 題</span>
+                <div class="flex items-center gap-3">
+                    <button onclick="openReportModal('iot')" class="text-terracotta font-bold hover:underline">查閱完整學術報告</button>
+                    <button onclick="resetQuiz()" class="hover:text-inkBlack underline">重設測驗</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ============================================================ -->
+    <!-- BOTTOM MARQUEE TICKER BAR (MATCHES USER IMAGE!)             -->
+    <!-- ============================================================ -->
+    <div class="h-9 bg-terracotta text-white overflow-hidden flex items-center z-40 flex-shrink-0 select-none">
+        <div class="marquee-track font-mono text-[11px] font-black tracking-widest uppercase">
+            <span>PERCEIVE ✱ REASON ✱ PLAN ✱ ACT ✱ REFLECT ✱ RETRIEVE ✱ VERIFY ✱ COLLABORATE ✱ MULTI-AGENT SYSTEMS ✱ EDGE SLM ✱ INTERNET OF AGENTS ✱ </span>
+            <span>PERCEIVE ✱ REASON ✱ PLAN ✱ ACT ✱ REFLECT ✱ RETRIEVE ✱ VERIFY ✱ COLLABORATE ✱ MULTI-AGENT SYSTEMS ✱ EDGE SLM ✱ INTERNET OF AGENTS ✱ </span>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- BOTTOM PRESENTATION REMOTE BAR (CLEAN 2D DECK CONTROLLER)   -->
+    <!-- ============================================================ -->
+    <footer class="h-16 bg-[#f5f0e8] border-t border-inkBlack/15 px-4 sm:px-8 flex items-center justify-between z-40 flex-shrink-0">
+        <!-- Prev Slide Button -->
+        <button onclick="prevSlide()" class="btn-2d-outline px-4 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-2">
+            <span>← 上一張 (Prev)</span>
+        </button>
+
+        <!-- Slide Indicator & Dots -->
+        <div class="flex items-center gap-3">
+            <span class="font-mono text-xs font-bold text-inkBlack">
+                SLIDE <span id="cur-slide-num" class="text-terracotta">01</span> / 12
+            </span>
+            <div class="hidden sm:flex items-center gap-1.5" id="slide-dots-container">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Next Slide Button -->
+        <button onclick="nextSlide()" class="btn-2d px-5 py-2 rounded-xl text-xs font-mono font-bold flex items-center gap-2">
+            <span>下一張 (Next) →</span>
+        </button>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- ACADEMIC REPORT MODAL (CLEAN PAPER STYLE)                    -->
+    <!-- ============================================================ -->
+    <div id="report-modal" class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-6">
+        <div class="bg-[#fbf8f3] w-full max-w-5xl h-[88vh] rounded-2xl border-2 border-inkBlack flex flex-col shadow-[8px_8px_0px_#181b1b] overflow-hidden">
+            <div class="px-6 py-4 bg-[#f5f0e8] border-b border-inkBlack/15 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <span class="w-2 h-5 bg-terracotta inline-block"></span>
+                    <div>
+                        <h3 class="text-inkBlack font-bold text-sm sm:text-base font-display" id="modal-report-title">學術研析報告全文檢視器</h3>
+                        <p class="text-[11px] text-inkMuted font-mono">標準學術格式與完整技術規格對照表</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2 font-mono">
+                    <button onclick="switchReportDoc('iot')" id="btn-rep-iot" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-terracotta text-white">Agentic IoT 報告</button>
+                    <button onclick="switchReportDoc('rag')" id="btn-rep-rag" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-inkBlack/30 text-inkBlack">RAG 對比報告</button>
+                    <button onclick="copyModalMarkdown()" class="btn-2d px-3 py-1.5 rounded-lg text-xs font-bold ml-2">
+                        <span id="copy-text">複製 Markdown</span>
+                    </button>
+                    <button onclick="closeReportModal()" class="w-8 h-8 rounded-lg border border-inkBlack text-inkBlack hover:bg-inkBlack hover:text-white flex items-center justify-center ml-2 text-sm font-bold">
+                        ✕
+                    </button>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 sm:p-8 bg-white font-mono text-xs text-inkBlack leading-relaxed space-y-4" id="modal-markdown-content"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT: KEYNOTE SLIDE DECK ENGINE & SIMULATIONS          -->
+    <!-- ============================================================ -->
+    <script>
+        const state = {
+            currentSlide: 1,
+            totalSlides: 12,
+            isScrollMode: false,
+            iotScenario: 'storm',
+            iotStep: 0,
+            iotAutoTimer: null,
+            ragQuestion: 'med',
+            ragStep: 0,
+            ragAutoTimer: null,
+            quizScore: 0,
+            quizStep: 0,
+            currentReport: 'iot',
+            animIotActive: true,
+            animRagActive: true
+        };
+
+        const sectionTitles = {
+            1: "01 / FIELD GUIDE",
+            2: "02 / PARADIGM SHIFT",
+            3: "03 / CONTINUUM",
+            4: "04 / LIVE DEMO A",
+            5: "05 / DATA X-RAY",
+            6: "06 / BENCHMARK",
+            7: "07 / RAG ARCHITECTURE",
+            8: "08 / RAG ARENA",
+            9: "09 / GEOMETRIC PROOF",
+            10: "10 / TRACE X-RAY",
+            11: "11 / INDUSTRY MATRIX",
+            12: "12 / CERTIFICATION"
+        };
+
+        function updateSlideView() {
+            for (let i = 1; i <= state.totalSlides; i++) {
+                const sl = document.getElementById(`slide-${i}`);
+                if (sl) {
+                    if (state.isScrollMode) {
+                        sl.classList.add('active-slide');
+                        sl.style.display = 'flex';
+                        sl.style.opacity = '1';
+                        sl.style.marginBottom = '48px';
+                    } else {
+                        if (i === state.currentSlide) {
+                            sl.classList.add('active-slide');
+                        } else {
+                            sl.classList.remove('active-slide');
+                        }
+                        sl.style.marginBottom = '0';
+                    }
+                }
+            }
+
+            const padNum = state.currentSlide < 10 ? `0${state.currentSlide}` : `${state.currentSlide}`;
+            document.getElementById('cur-slide-num').innerText = padNum;
+
+            renderSlideDots();
+
+            if (state.currentSlide === 3) setTimeout(resizeIotCanvas, 80);
+            if (state.currentSlide === 7) setTimeout(resizeRagCanvas, 80);
+        }
+
+        function nextSlide() {
+            if (state.currentSlide < state.totalSlides) state.currentSlide++;
+            else state.currentSlide = 1;
+            updateSlideView();
+        }
+
+        function prevSlide() {
+            if (state.currentSlide > 1) state.currentSlide--;
+            else state.currentSlide = state.totalSlides;
+            updateSlideView();
+        }
+
+        function jumpToSlide(num) {
+            state.currentSlide = num;
+            updateSlideView();
+            toggleSlideDrawer(false);
+            if (state.isScrollMode) {
+                const el = document.getElementById(`slide-${num}`);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function renderSlideDots() {
+            const container = document.getElementById('slide-dots-container');
+            if (!container) return;
+            let html = '';
+            for (let i = 1; i <= state.totalSlides; i++) {
+                const isActive = i === state.currentSlide;
+                html += `
+                    <button onclick="jumpToSlide(${i})" title="${sectionTitles[i]}" class="h-2 rounded-full transition-all ${isActive ? 'bg-terracotta w-6' : 'bg-inkBlack/20 hover:bg-inkBlack/40 w-2'}"></button>
+                `;
+            }
+            container.innerHTML = html;
+        }
+
+        function toggleSlideDrawer(forceOpen) {
+            const drawer = document.getElementById('slide-drawer');
+            if (typeof forceOpen === 'boolean') {
+                if (forceOpen) drawer.classList.remove('hidden');
+                else drawer.classList.add('hidden');
+            } else {
+                drawer.classList.toggle('hidden');
+            }
+        }
+
+        function toggleScrollMode() {
+            state.isScrollMode = !state.isScrollMode;
+            const label = document.getElementById('mode-label');
+            const stage = document.getElementById('keynote-stage');
+            if (state.isScrollMode) {
+                label.innerText = '長頁面模式';
+                stage.style.overflowY = 'auto';
+            } else {
+                label.innerText = 'PPT 模式';
+                stage.style.overflowY = 'hidden';
+            }
+            updateSlideView();
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') nextSlide();
+            else if (e.key === 'ArrowLeft' || e.key === 'PageUp') prevSlide();
+            else if (e.key === 'Escape') {
+                toggleSlideDrawer(false);
+                closeReportModal();
+            }
+        });
+
+        /* ------------------------------------------------------------- */
+        /* IOT SCENARIOS                                                 */
+        /* ------------------------------------------------------------- */
+        const iotScenarios = {
+            storm: {
+                title: "【生活情境 1】酷暑午後突發午後暴雨，主人在家進行激烈有氧運動",
+                tradSensor: "感測器回傳：室內 32°C (超標)；未連線氣象預報",
+                tradAction: "IF 溫度 > 30°C THEN 冷氣強冷 18°C 直吹",
+                tradConsequence: "暴雨潑進窗戶淹水，冷氣強風直吹大汗淋漓的主人導致體溫驟降抽筋，電費暴增！",
+                steps: [
+                    {
+                        caption: "階段 1：情境感知 (Perception)",
+                        dialog: [
+                            { role: "智慧手錶代理", text: "感測主人心率 148 bpm，皮膚體溫 37.8°C，判定為「正在跳有氧操」，大量發熱中！", color: "slate" },
+                            { role: "氣象窗戶代理", text: "感測到戶外突降雷暴雨，氣溫驟降至 23°C，風速 8 級！", color: "blue" }
+                        ]
+                    },
+                    {
+                        caption: "階段 2：因果推理 (Reasoning)",
+                        dialog: [
+                            { role: "邊緣 SLM 網關", text: "推理：主人體熱毛孔大開，吹 18°C 強風將引發嚴重痙攣！且暴雨將在 30 秒內灌入客廳！", color: "amber" }
+                        ]
+                    },
+                    {
+                        caption: "階段 3：語意合約協商 (Negotiation)",
+                        dialog: [
+                            { role: "空調代理", text: "發起協商：建議室溫 26.5°C 搭配微風擺動避直吹！", color: "slate" },
+                            { role: "智慧窗戶代理", text: "關閉迎風面外窗，改以防雨微縫引入 23°C 涼爽空氣，降低空調耗電 38%！", color: "terracotta" }
+                        ]
+                    },
+                    {
+                        caption: "階段 4：行動閉環 (Action)",
+                        dialog: [
+                            { role: "致動執行器", text: "外窗 4 秒內密封；空調送出柔和微風；主人心率平穩安全恢復。完美守護！", color: "green" }
+                        ]
+                    }
+                ]
+            },
+            gas: {
+                title: "【生活情境 2】深夜瓦斯微洩漏與獨居老人起夜",
+                tradSensor: "感測器回傳：瓦斯濃度 > 50ppm",
+                tradAction: "蜂鳴器刺耳大叫 110 分貝",
+                tradConsequence: "老人半夜受驚摔倒，摸黑開啟傳統電燈，電氣火花引燃微量瓦斯引發閃燃！",
+                steps: [
+                    {
+                        caption: "階段 1：情境感知 (Perception)",
+                        dialog: [
+                            { role: "瓦斯感測代理", text: "偵測到甲烷濃度 65 ppm（輕微超標），濃度緩慢攀升！", color: "terracotta" },
+                            { role: "智慧床墊代理", text: "78 歲長輩心率 68 bpm，剛下床走向廚房！", color: "slate" }
+                        ]
+                    },
+                    {
+                        caption: "階段 2：危險預測 (Reasoning)",
+                        dialog: [
+                            { role: "邊緣 SLM 網關", text: "預警：長輩即將進廚房！若開機械電燈可能引爆；若大聲警報可能嚇致心肌梗塞！", color: "amber" }
+                        ]
+                    },
+                    {
+                        caption: "階段 3：多代理協同 (Negotiation)",
+                        dialog: [
+                            { role: "瓦斯遮斷閥代理", text: "防爆電磁閥 0.2 秒內切斷瓦斯！", color: "terracotta" },
+                            { role: "廚房排風代理", text: "防爆無刷抽風機以靜音模式排風稀釋！", color: "blue" },
+                            { role: "智慧照明代理", text: "亮起柔和微光指引，溫和語音提醒長輩先在客廳休息。", color: "green" }
+                        ]
+                    },
+                    {
+                        caption: "階段 4：行動閉環 (Action)",
+                        dialog: [
+                            { role: "致動執行器", text: "瓦斯切斷，濃度 2 分鐘內歸零；通報子女手機與瓦斯公司，危機化解！", color: "green" }
+                        ]
+                    }
+                ]
+            },
+            ambulance: {
+                title: "【生活情境 3】救護車載運危急病患與智慧城市多路口連鎖協商",
+                tradSensor: "救護車 GPS 單點座標上報",
+                tradAction: "救護車單純鳴笛，路口紅綠燈依固定秒數倒數",
+                tradConsequence: "路口車流卡死無法避讓，延誤 7 分鐘黃金搶救時間並險些擦撞公車！",
+                steps: [
+                    {
+                        caption: "階段 1：車聯網感知 (Perception)",
+                        dialog: [
+                            { role: "救護車車載代理", text: "病患心室顫動 (VF)，時速 75 km/h，距離醫院 3.2 公里！", color: "terracotta" },
+                            { role: "路側感知單元 (RSU)", text: "路口 A 等候 18 輛車，路口 B 轉彎壅塞。", color: "slate" }
+                        ]
+                    },
+                    {
+                        caption: "階段 2：即時路網推理 (Reasoning)",
+                        dialog: [
+                            { role: "交控 SLM 節點", text: "計算救護車抵達各路口精確 ETA，若直接變紅燈車輛會卡在路中阻擋通行！", color: "amber" }
+                        ]
+                    },
+                    {
+                        caption: "階段 3：綠波語意協商 (Negotiation)",
+                        dialog: [
+                            { role: "救護車代理", text: "發送緊急等級合約 (Priority: Level 1)！請求清空車道！", color: "terracotta" },
+                            { role: "路口 A & B 代理", text: "提前放行前車，全方向切換紅燈，連鎖預留專用綠波通道！", color: "green" }
+                        ]
+                    },
+                    {
+                        caption: "階段 4：零延遲通過 (Action)",
+                        dialog: [
+                            { role: "致動執行器", text: "3 個路口全線無阻通過，搶下黃金救命 10 分鐘！", color: "green" }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        function loadIotScenario(key) {
+            state.iotScenario = key;
+            state.iotStep = 0;
+            clearInterval(state.iotAutoTimer);
+            document.getElementById('btn-iot-autoplay').innerText = "自動播放";
+
+            const sc = iotScenarios[key];
+            document.getElementById('iot-trad-sensor').innerText = sc.tradSensor;
+            document.getElementById('iot-trad-action').innerText = sc.tradAction;
+            document.getElementById('iot-trad-consequence').innerText = sc.tradConsequence;
+
+            ['storm', 'gas', 'ambulance'].forEach(k => {
+                const btn = document.getElementById(`scen-btn-${k}`);
+                if (k === key) btn.className = "px-3 py-1 rounded-lg bg-terracotta text-white border border-terracotta";
+                else btn.className = "px-3 py-1 rounded-lg bg-white border border-inkBlack/30 text-inkBlack hover:border-inkBlack";
+            });
+
+            renderIotStep();
+        }
+
+        function renderIotStep() {
+            const sc = iotScenarios[state.iotScenario];
+            const current = sc.steps[state.iotStep];
+
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById(`iot-step-${i}`);
+                if (i - 1 === state.iotStep) el.className = "py-1 rounded bg-terracotta text-white font-bold";
+                else if (i - 1 < state.iotStep) el.className = "py-1 rounded bg-sageLight text-sageGreen font-bold";
+                else el.className = "py-1 rounded bg-paperBg text-inkMuted";
+            }
+
+            document.getElementById('iot-step-caption').innerText = current.caption;
+
+            const dialogBox = document.getElementById('iot-agent-dialog');
+            let html = '';
+            for (let s = 0; s <= state.iotStep; s++) {
+                const st = sc.steps[s];
+                st.dialog.forEach(d => {
+                    let borderCol = "border-slateBlue/40 bg-slateBlueLight text-inkBlack";
+                    if (d.color === 'green') borderCol = "border-sageGreen/40 bg-sageLight text-inkBlack";
+                    if (d.color === 'terracotta') borderCol = "border-terracotta/40 bg-terracottaLight text-inkBlack";
+                    if (d.color === 'amber') borderCol = "border-sandYellow/40 bg-sandLight text-inkBlack";
+
+                    html += `
+                        <div class="p-2 rounded-lg border ${borderCol} leading-relaxed">
+                            <span class="font-bold text-[11px] block font-mono">${d.role}</span>
+                            <div class="mt-0.5 text-[11px]">${d.text}</div>
+                        </div>
+                    `;
+                });
+            }
+            dialogBox.innerHTML = html;
+            dialogBox.scrollTop = dialogBox.scrollHeight;
+        }
+
+        function nextIotStep() {
+            const sc = iotScenarios[state.iotScenario];
+            if (state.iotStep < sc.steps.length - 1) state.iotStep++;
+            else state.iotStep = 0;
+            renderIotStep();
+        }
+
+        function prevIotStep() {
+            if (state.iotStep > 0) state.iotStep--;
+            renderIotStep();
+        }
+
+        function autoPlayIot() {
+            const btn = document.getElementById('btn-iot-autoplay');
+            if (state.iotAutoTimer) {
+                clearInterval(state.iotAutoTimer);
+                state.iotAutoTimer = null;
+                btn.innerText = "自動播放";
+            } else {
+                btn.innerText = "暫停";
+                state.iotAutoTimer = setInterval(() => { nextIotStep(); }, 2400);
+            }
+        }
+
+        /* ------------------------------------------------------------- */
+        /* RAG QUESTIONS                                                 */
+        /* ------------------------------------------------------------- */
+        const ragQuestions = {
+            med: {
+                query: "「我父親每天服用降血壓藥脈優 (Amlodipine 5mg)，今天喉嚨痛發燒，可以吃市售綜合感冒藥搭配現榨葡萄柚汁潤喉嗎？」",
+                tradChunks: "[段落 1] 感冒藥主成分含乙醯胺酚... [段落 2] 葡萄柚汁富含維生素 C 與多酚...",
+                tradAnswer: "「可以適量飲用！綜合感冒藥能解熱鎮痛，葡萄柚汁能補充電解質與維他命 C...」",
+                tradFlaw: "完全遺漏葡萄柚抑制 CYP3A4 禁忌！導致降血壓藥血中濃度暴增 4 倍引發嚴重休克！",
+                steps: [
+                    {
+                        caption: "階段 1：規劃者拆解子任務",
+                        dialog: [{ role: "規劃者代理", text: "拆解任務樹：1. 查詢脈優代謝途徑 2. 檢索感冒藥交互 3. 葡萄柚酵素相剋檢查", color: "slate" }]
+                    },
+                    {
+                        caption: "階段 2：工具代理與檢索",
+                        dialog: [
+                            { role: "檢索者代理", text: "脈優由肝臟 CYP3A4 酵素代謝。", color: "slate" },
+                            { role: "工具代理 (RxNav API)", text: "警報 ⚠️！葡萄柚呋喃香豆素強效抑制 CYP3A4，藥物暴露量飆升 300%-400%！", color: "terracotta" }
+                        ]
+                    },
+                    {
+                        caption: "階段 3：驗證者反思查核",
+                        dialog: [{ role: "驗證者代理", text: "事實驗證：駁回任何允許飲用葡萄柚汁的生成候選，強制插入【絕對禁止】紅旗警告！", color: "terracotta" }]
+                    },
+                    {
+                        caption: "階段 4：整合產出終極回答",
+                        dialog: [{ role: "問答整合代理", text: "【🚨 嚴正警告：禁止飲用葡萄柚汁！】可能造成急性低血壓昏迷。感冒藥請選單純乙醯胺酚，潤喉改溫開水。", color: "green" }]
+                    }
+                ]
+            },
+            travel: {
+                query: "「5天北海道家族滑雪自由行，成員有 72 歲外婆與 4 歲小孩，要查最新外國人免稅新規、即時日圓匯率與私人溫泉！」",
+                tradChunks: "[段落 1] 二世谷雪質極佳... [段落 2] 日本消費稅 10%，滿 5000 日圓可在藥妝店退稅...",
+                tradAnswer: "「建議去二世谷滑雪，可在藥妝店出示護照退稅，日圓匯率約 0.22 左右...」",
+                tradFlaw: "未注意最新機場退稅制度改革；推薦二世谷陡坡對 72 歲老人與 4 歲小孩極不友善；匯率未調用即時 API！",
+                steps: [
+                    {
+                        caption: "階段 1：規劃者拆解年齡特徵",
+                        dialog: [{ role: "規劃者代理", text: "拆解：1. 老少友善無障礙度假村 2. 即時 Currency API 匯率 3. 最新機場出境退稅制", color: "slate" }]
+                    },
+                    {
+                        caption: "階段 2：調用即時 API 與檢索",
+                        dialog: [
+                            { role: "工具代理 (Forex API)", text: "即時匯率 JPY/TWD = 0.2115，換算 5 天住宿預算。", color: "amber" },
+                            { role: "檢索者代理", text: "檢索觀光廳新規：已改為「機場出境統一退稅制」！推薦具備室內溫泉與雪上樂園的星野 Tomamu。", color: "green" }
+                        ]
+                    },
+                    {
+                        caption: "階段 3：驗證者審核體能限制",
+                        dialog: [{ role: "驗證者代理", text: "外婆心血管顧慮，排除高溫大眾池，鎖定「獨立私人貸切風呂」與直達接駁巴士。", color: "terracotta" }]
+                    },
+                    {
+                        caption: "階段 4：整合完整可執行行程",
+                        dialog: [{ role: "問答整合代理", text: "產出兼顧三代老幼的完整北海道 5 天方案，附最新機場退稅注意事項。", color: "green" }]
+                    }
+                ]
+            },
+            finance: {
+                query: "「某科技公司 Q3 財報獲利年增 45%，但應收帳款飆升 130%、自由現金流轉負，這家公司財務健康嗎？」",
+                tradChunks: "[段落 1] 淨利潤成長 45%，市場需求提升... [段落 2] 應收帳款代表尚未收到的貨款...",
+                tradAnswer: "「這家公司獲利成長 45% 表現亮眼，營收持續擴張，投資前景看好。」",
+                tradFlaw: "被帳面獲利欺騙！忽視應收帳款失控與自由現金流失血，這是典型的假造營收與壞帳前兆！",
+                steps: [
+                    {
+                        caption: "階段 1：規劃者拆解法證審計",
+                        dialog: [{ role: "規劃者代理", text: "拆解：1. 應收帳款週轉天數 2. 調用 Python 沙箱計算 Beneish M-Score 造假評分", color: "slate" }]
+                    },
+                    {
+                        caption: "階段 2：Python 財務沙箱計算",
+                        dialog: [{ role: "工具代理 (Sandbox)", text: "M-Score = -1.45 (高於 -1.78 危險門檻，財務操縱機率 > 75%)！現金流淨流出！", color: "terracotta" }]
+                    },
+                    {
+                        caption: "階段 3：驗證者交叉比對",
+                        dialog: [{ role: "驗證者代理", text: "交叉比對：第四大客戶為新成立關係人企業，存在塞貨 (Channel Stuffing) 嫌疑！", color: "slate" }]
+                    },
+                    {
+                        caption: "階段 4：產出專業風險審計報告",
+                        dialog: [{ role: "問答整合代理", text: "【⚠️ 財務警報：紙上獲利陷阱！】帳面獲利被鎖死在無法回收的應收帳款，存在週轉不靈危機！", color: "green" }]
+                    }
+                ]
+            }
+        };
+
+        function loadRagQuestion(key) {
+            state.ragQuestion = key;
+            state.ragStep = 0;
+            clearInterval(state.ragAutoTimer);
+            document.getElementById('btn-rag-autoplay').innerText = "自動播放";
+
+            const q = ragQuestions[key];
+            document.getElementById('rag-current-query').innerText = q.query;
+            document.getElementById('rag-trad-chunks').innerText = q.tradChunks;
+            document.getElementById('rag-trad-answer').innerText = q.tradAnswer;
+            document.getElementById('rag-trad-flaw').innerText = q.tradFlaw;
+
+            ['med', 'travel', 'finance'].forEach(k => {
+                const btn = document.getElementById(`rag-btn-${k}`);
+                if (k === key) btn.className = "px-3 py-1 rounded-lg bg-terracotta text-white border border-terracotta";
+                else btn.className = "px-3 py-1 rounded-lg bg-white border border-inkBlack/30 text-inkBlack hover:border-inkBlack";
+            });
+
+            renderRagStep();
+        }
+
+        function renderRagStep() {
+            const q = ragQuestions[state.ragQuestion];
+            const current = q.steps[state.ragStep];
+
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById(`rag-step-${i}`);
+                if (i - 1 === state.ragStep) el.className = "py-1 rounded bg-terracotta text-white font-bold";
+                else if (i - 1 < state.ragStep) el.className = "py-1 rounded bg-sageLight text-sageGreen font-bold";
+                else el.className = "py-1 rounded bg-paperBg text-inkMuted";
+            }
+
+            document.getElementById('rag-step-caption').innerText = current.caption;
+
+            const dialogBox = document.getElementById('rag-agent-dialog');
+            let html = '';
+            for (let s = 0; s <= state.ragStep; s++) {
+                const st = q.steps[s];
+                st.dialog.forEach(d => {
+                    let borderCol = "border-slateBlue/40 bg-slateBlueLight text-inkBlack";
+                    if (d.color === 'green') borderCol = "border-sageGreen/40 bg-sageLight text-inkBlack";
+                    if (d.color === 'terracotta') borderCol = "border-terracotta/40 bg-terracottaLight text-inkBlack";
+                    if (d.color === 'amber') borderCol = "border-sandYellow/40 bg-sandLight text-inkBlack";
+
+                    html += `
+                        <div class="p-2 rounded-lg border ${borderCol} leading-relaxed">
+                            <span class="font-bold text-[11px] block font-mono">${d.role}</span>
+                            <div class="mt-0.5 text-[11px]">${d.text}</div>
+                        </div>
+                    `;
+                });
+            }
+            dialogBox.innerHTML = html;
+            dialogBox.scrollTop = dialogBox.scrollHeight;
+        }
+
+        function nextRagStep() {
+            const q = ragQuestions[state.ragQuestion];
+            if (state.ragStep < q.steps.length - 1) state.ragStep++;
+            else state.ragStep = 0;
+            renderRagStep();
+        }
+
+        function prevRagStep() {
+            if (state.ragStep > 0) state.ragStep--;
+            renderRagStep();
+        }
+
+        function autoPlayRag() {
+            const btn = document.getElementById('btn-rag-autoplay');
+            if (state.ragAutoTimer) {
+                clearInterval(state.ragAutoTimer);
+                state.ragAutoTimer = null;
+                btn.innerText = "自動播放";
+            } else {
+                btn.innerText = "暫停";
+                state.ragAutoTimer = setInterval(() => { nextRagStep(); }, 2500);
+            }
+        }
+
+        /* ------------------------------------------------------------- */
+        /* BENCHMARK CALCULATOR                                          */
+        /* ------------------------------------------------------------- */
+        const benchmarkModels = {
+            llama32_1b: { name: "LLaMA-3.2 1B", params: 1.2, weightMB: 780, baseTps: 34.0, kvMBPerTok: 0.12 },
+            qwen25_15b: { name: "Qwen-2.5 1.5B", params: 1.5, weightMB: 980, baseTps: 28.5, kvMBPerTok: 0.15 },
+            phi35_mini: { name: "Phi-3.5 3.8B", params: 3.8, weightMB: 2280, baseTps: 18.5, kvMBPerTok: 0.28 },
+            gemma2_2b:  { name: "Gemma-2 2.6B",  params: 2.6, weightMB: 1650, baseTps: 22.0, kvMBPerTok: 0.22 }
+        };
+
+        const benchmarkDevices = {
+            jetson_orin: { name: "Jetson Orin Nano", speedMul: 2.1, ramGB: 8, basePrefillMs: 14 },
+            rpi5:        { name: "Raspberry Pi 5",   speedMul: 1.0, ramGB: 8, basePrefillMs: 32 },
+            intel_ipc:   { name: "工業 IPC (Core i5)", speedMul: 1.6, ramGB: 16, basePrefillMs: 18 },
+            mcu_esp32:   { name: "ESP32-S3 (MCU)",   speedMul: 0.05, ramGB: 0.016, basePrefillMs: 650 }
+        };
+
+        function runEdgeBenchmark() {
+            const mKey = document.getElementById('calc-model').value;
+            const dKey = document.getElementById('calc-device').value;
+            const m = benchmarkModels[mKey];
+            const d = benchmarkDevices[dKey];
+
+            const ramTotalMB = Math.round(m.weightMB + (m.kvMBPerTok * 512) + 250);
+            const ramTotalGB = (ramTotalMB / 1024).toFixed(2);
+            document.getElementById('res-ram').innerText = `${ramTotalGB} GB`;
+
+            if (dKey === 'mcu_esp32') {
+                document.getElementById('res-ram').innerText = `OOM (記憶體溢位)`;
+                document.getElementById('res-prefill').innerText = `無法執行`;
+                document.getElementById('res-tps').innerText = `0.1 tok/s`;
+                document.getElementById('res-latency').innerText = `> 5,000 ms`;
+                document.getElementById('res-eval').innerText = `❌ MCU 無法運行 1B 模型`;
+                document.getElementById('res-eval').className = "text-[10px] text-terracotta mt-0.5 block font-bold font-mono";
+                return;
+            }
+
+            let tps = (m.baseTps * d.speedMul).toFixed(1);
+            let prefill = Math.round(d.basePrefillMs * (m.params / 2.0));
+            document.getElementById('res-prefill').innerText = `${prefill} ms`;
+            document.getElementById('res-tps').innerText = `${tps} tok/s`;
+
+            const decisionTime = Math.round(prefill + (15 / parseFloat(tps)) * 1000);
+            document.getElementById('res-latency').innerText = `${decisionTime} ms`;
+
+            const evalEl = document.getElementById('res-eval');
+            if (decisionTime <= 50) {
+                evalEl.innerText = `✓ 極致硬即時：滿足 50ms 工業急停要求`;
+                evalEl.className = "text-[10px] text-sageGreen mt-0.5 block font-bold font-mono";
+            } else if (decisionTime <= 150) {
+                evalEl.innerText = `✓ 準即時：滿足智慧家居與車聯網協商`;
+                evalEl.className = "text-[10px] text-slateBlue mt-0.5 block font-bold font-mono";
+            } else {
+                evalEl.innerText = `⚠️ 稍高：適合非緊急環境監測`;
+                evalEl.className = "text-[10px] text-sandYellow mt-0.5 block font-bold font-mono";
+            }
+        }
+
+        function toggleVectorVisual(mode) {
+            const vBox = document.getElementById('vis-vector-container');
+            const kgBox = document.getElementById('vis-kg-container');
+            const btnV = document.getElementById('btn-vis-vector');
+            const btnKg = document.getElementById('btn-vis-kg');
+
+            if (mode === 'vector') {
+                vBox.classList.remove('hidden');
+                kgBox.classList.add('hidden');
+                btnV.className = "px-3 py-1 rounded bg-terracotta text-white text-xs font-bold";
+                btnKg.className = "px-3 py-1 rounded bg-white border border-inkBlack text-inkBlack text-xs font-bold";
+            } else {
+                vBox.classList.add('hidden');
+                kgBox.classList.remove('hidden');
+                btnV.className = "px-3 py-1 rounded bg-white border border-inkBlack text-inkBlack text-xs font-bold";
+                btnKg.className = "px-3 py-1 rounded bg-terracotta text-white text-xs font-bold";
+            }
+        }
+
+        /* ------------------------------------------------------------- */
+        /* DOMAIN INFO SWITCHER                                          */
+        /* ------------------------------------------------------------- */
+        const domainData = {
+            medical: {
+                title: "智慧醫療與臨床輔助 (Healthcare & Clinical)",
+                tradDesc: "傳統 RAG 比對靜態關鍵字，易忽略藥物 CYP3A4 酵素代謝衝突；傳統 IoT 假警報引發護理疲勞。",
+                agenticDesc: "整合穿戴 ECG、血糖 (CGM) 與病歷；多代理調用藥理 API 檢查交互；遇心室顫動即刻啟動急救流程！",
+                gain: "降低誤診與用藥不良事件 70% 以上，假警報過濾率達 85%"
+            },
+            finance: {
+                title: "金融合規與智慧審計 (Finance & Audit)",
+                tradDesc: "傳統 RAG 僅擷取財報公關正面文字，無法動態計算複雜財務比率與壞帳風險。",
+                agenticDesc: "由規劃者自動拆解資產負債表，調用 Python 執行 M-Score 詐欺檢測，對比海關進出口數據 cross-check 虛假交易！",
+                gain: "財報造假風險早期辨識率提升 3 倍，審計取證時間縮短 80%"
+            },
+            mfg: {
+                title: "智慧製造與預測性維護 (Smart Manufacturing)",
+                tradDesc: "傳統 IoT 設定加速度 > 5G 停機，常因瞬態振動誤停機或因微磨損漏報導致整批晶圓報廢。",
+                agenticDesc: "邊緣 SLM 結合溫度、聲學頻譜與切削扭矩進行因果推理；IoA 專家公會自動檢索維修手冊並向技師派工！",
+                gain: "平均修復時間 (MTTR) 縮短 60%，非預期停機損失降低 45%"
+            },
+            city: {
+                title: "智慧城市與緊急交通 (Smart Cities & V2X)",
+                tradDesc: "紅綠燈固定倒數，各自為政；緊急救護車硬闖易肇事。",
+                agenticDesc: "救護車車載代理向即將通過之 5 個路口發起「動態綠波合約」；微波雷達預先清空車流，實現全線無阻通行！",
+                gain: "緊急救援到院時間縮短 35%，十字路口事故率降低 90%"
+            },
+            legal: {
+                title: "法律推理與判決檢索 (Legal Reasoning)",
+                tradDesc: "關鍵字查詢易檢索出過期法條或不適用管轄權判例，甚至捏造判決字號（引文幻覺）。",
+                agenticDesc: "規劃者拆解構成要件；專屬 Verifier 檢核判決確定狀態與最新最高法院見解，杜絕虛假引文！",
+                gain: "法律爭點檢索準確率達 98%，徹底消除引用幻覺"
+            },
+            sec: {
+                title: "網路資安防禦 (Cybersecurity)",
+                tradDesc: "靜態匹配 CVE 漏洞庫特徵，無法應對多階段滲透或 0-day 攻擊。",
+                agenticDesc: "邊緣安全代理監控記憶體異常；雲端資安智囊調用沙箱 API，自主在防火牆生成動態阻斷規則！",
+                gain: "威脅平均遏止時間 (MTTC) 從小時級壓制至秒級"
+            }
+        };
+
+        function showDomainInfo(dom) {
+            const d = domainData[dom];
+            const box = document.getElementById('domain-detail-box');
+            box.innerHTML = `
+                <div class="flex items-center justify-between border-b border-inkBlack/10 pb-2">
+                    <h4 class="text-inkBlack font-bold text-sm font-display">${d.title}</h4>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-sageLight text-sageGreen border border-sageGreen/30 font-mono font-bold">效益升級：${d.gain}</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+                    <div class="bg-paperBg p-3 rounded-lg border border-inkBlack/10">
+                        <strong class="text-terracotta block mb-1 font-mono">❌ 傳統系統之侷限與痛點：</strong>
+                        <p class="text-inkMuted leading-relaxed">${d.tradDesc}</p>
+                    </div>
+                    <div class="bg-paperBg p-3 rounded-lg border border-inkBlack/10">
+                        <strong class="text-sageGreen block mb-1 font-mono">✅ Agentic 系統之破局創新：</strong>
+                        <p class="text-inkMuted leading-relaxed">${d.agenticDesc}</p>
+                    </div>
+                </div>
+            `;
+
+            ['medical', 'finance', 'mfg', 'city', 'legal', 'sec'].forEach(k => {
+                const btn = document.getElementById(`dom-btn-${k}`);
+                if (k === dom) btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-terracotta text-white border border-terracotta";
+                else btn.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-inkBlack/20 text-inkBlack hover:border-inkBlack";
+            });
+        }
+
+        /* ------------------------------------------------------------- */
+        /* QUIZ ENGINE                                                   */
+        /* ------------------------------------------------------------- */
+        const quizQuestions = [
+            {
+                q: "傳統 IoT 與 Agentic IoT 最根本的區別是什麼？",
+                options: [
+                    "傳統 IoT 只用 WiFi，Agentic IoT 只用 5G",
+                    "傳統 IoT 是單純被動回報數值與固定規則；Agentic IoT 具備自主感知-推理-規劃-行動閉環",
+                    "傳統 IoT 不需要任何感測器，全部靠人工輸入",
+                    "傳統 IoT 運算速度比 Agentic IoT 快一萬倍"
+                ],
+                correct: 1,
+                explain: "傳統 IoT 是靜態閾值反應式（If-Else），而 Agentic IoT 將物聯網設備升級為具有認知決策、記憶與協商能力的自主代理人！"
+            },
+            {
+                q: "在 Agentic RAG 架構中，負責檢查答案是否存在幻覺、確認引用真偽的角色是？",
+                options: [
+                    "規劃者代理 (Planner Agent)",
+                    "檢索者代理 (Retriever Agent)",
+                    "驗證者代理 (Verifier / Critic Agent)",
+                    "記憶代理 (Memory Agent)"
+                ],
+                correct: 2,
+                explain: "驗證者 (Verifier) 專門負責檢驗生成內容與檢索證據的一致性，防範引文幻覺與邏輯漏洞。"
+            },
+            {
+                q: "為什麼在邊緣物聯網設備上，通常優先部署輕量化小語言模型 (Edge SLM) 而不是雲端百億級大模型？",
+                options: [
+                    "因為小語言模型生成的文字比大模型更優美",
+                    "因為邊緣環境要求 10~50ms 超低延遲、無網路也能離線自癒，且硬體記憶體有限",
+                    "因為小語言模型完全不需要任何電力",
+                    "因為雲端伺服器在晚上會關機"
+                ],
+                correct: 1,
+                explain: "邊緣場景需要即時反應（如機台過熱防護、車聯網煞車），且受限於功耗、記憶體（1~2GB RAM）及隱私留存考量，輕量化 SLM 是最佳首選。"
+            },
+            {
+                q: "傳統 RAG 面對複雜多跳查詢容易失敗的主因是？",
+                options: [
+                    "它不具備多步驟規劃拆解與迭代反思機制，單次檢索噪音干擾大",
+                    "它的資料庫只存儲英文，看不懂中文",
+                    "它沒有裝滑鼠跟螢幕",
+                    "它每次檢索都必須經過人類簽名同意"
+                ],
+                correct: 0,
+                explain: "傳統 RAG 是單次線性管線（Query → Retrieve → Generate），無法自主將複雜問題拆成多個子目標進行連鎖檢索與交叉驗證。"
+            },
+            {
+                q: "在醫療或金融等高風險領域，Agentic 系統為什麼強烈提倡「人類在環 (Human-in-the-loop, HITL)」？",
+                options: [
+                    "為了節省伺服器電費",
+                    "讓 AI 代理人可以跟人類聊天解悶",
+                    "確保關鍵致動與重大決策有專業人類複核授權，落實安全與倫理問責",
+                    "因為 AI 完全不會算數學"
+                ],
+                correct: 2,
+                explain: "高風險決策（用藥調整、大額資金轉移、工廠重大停機）若完全由自主代理執行存在潛在風險，引入人類在環能兼顧效率與安全責任。"
+            }
+        ];
+
+        function renderQuizQuestion() {
+            const container = document.getElementById('quiz-question-container');
+            const q = quizQuestions[state.quizStep];
+
+            let html = `
+                <div class="space-y-3">
+                    <div class="text-inkBlack font-bold text-sm sm:text-base leading-relaxed font-display">
+                        <span class="text-terracotta font-mono mr-2">Q${state.quizStep + 1}.</span>
+                        ${q.q}
+                    </div>
+                    <div class="space-y-2">
+            `;
+
+            q.options.forEach((opt, idx) => {
+                html += `
+                    <button onclick="handleQuizAnswer(${idx})" id="quiz-opt-${idx}" class="w-full text-left p-3 rounded-xl bg-paperBg hover:bg-white border border-inkBlack/20 text-inkBlack text-xs font-medium transition-all flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-lg bg-white border border-inkBlack/20 text-inkBlack flex items-center justify-center font-mono text-xs font-bold">
+                                ${['A', 'B', 'C', 'D'][idx]}
+                            </span>
+                            <span>${opt}</span>
+                        </div>
+                        <i class="fa-solid fa-circle-check text-sageGreen hidden" id="quiz-icon-${idx}"></i>
+                    </button>
+                `;
+            });
+
+            html += `
+                    </div>
+                    <div id="quiz-feedback-box" class="hidden mt-3 p-3.5 rounded-xl text-xs leading-relaxed"></div>
+                </div>
+            `;
+
+            container.innerHTML = html;
+            document.getElementById('quiz-step-info').innerText = `第 ${state.quizStep + 1} / ${quizQuestions.length} 題`;
+            document.getElementById('quiz-score-display').innerText = `${state.quizScore} / ${quizQuestions.length}`;
+        }
+
+        function handleQuizAnswer(selectedIdx) {
+            const q = quizQuestions[state.quizStep];
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+
+            q.options.forEach((_, idx) => {
+                const btn = document.getElementById(`quiz-opt-${idx}`);
+                btn.disabled = true;
+                if (idx === q.correct) {
+                    btn.classList.add('border-sageGreen', 'bg-sageLight', 'text-inkBlack');
+                    document.getElementById(`quiz-icon-${idx}`).classList.remove('hidden');
+                } else if (idx === selectedIdx) {
+                    btn.classList.add('border-terracotta', 'bg-terracottaLight', 'text-inkBlack');
+                }
+            });
+
+            if (selectedIdx === q.correct) {
+                state.quizScore++;
+                feedbackBox.className = "mt-3 p-3.5 rounded-xl text-xs leading-relaxed bg-sageLight border border-sageGreen/30 text-inkBlack";
+                feedbackBox.innerHTML = `<strong>🎉 恭喜回答正確！</strong><br>${q.explain}`;
+            } else {
+                feedbackBox.className = "mt-3 p-3.5 rounded-xl text-xs leading-relaxed bg-terracottaLight border border-terracotta/30 text-inkBlack";
+                feedbackBox.innerHTML = `<strong>💡 正確答案是 ${['A', 'B', 'C', 'D'][q.correct]}。</strong><br>${q.explain}`;
+            }
+            feedbackBox.classList.remove('hidden');
+
+            document.getElementById('quiz-score-display').innerText = `${state.quizScore} / ${quizQuestions.length}`;
+
+            const nextBtn = document.createElement('button');
+            if (state.quizStep < quizQuestions.length - 1) {
+                nextBtn.className = "mt-2.5 btn-2d px-3 py-1.5 rounded-lg text-xs font-mono font-bold flex items-center gap-1";
+                nextBtn.innerHTML = '下一題 →';
+                nextBtn.onclick = () => {
+                    state.quizStep++;
+                    renderQuizQuestion();
+                };
+            } else {
+                nextBtn.className = "mt-2.5 btn-2d px-4 py-2 rounded-lg text-xs font-mono font-bold flex items-center gap-1";
+                nextBtn.innerHTML = '查看榮譽結算 🏆';
+                nextBtn.onclick = showQuizFinalResult;
+            }
+            feedbackBox.appendChild(nextBtn);
+        }
+
+        function showQuizFinalResult() {
+            const container = document.getElementById('quiz-question-container');
+            const pct = Math.round((state.quizScore / quizQuestions.length) * 100);
+            container.innerHTML = `
+                <div class="text-center py-6 space-y-3">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-terracotta text-white flex items-center justify-center text-2xl font-bold shadow-md">
+                        🏆
+                    </div>
+                    <div>
+                        <h4 class="text-xl font-bold text-inkBlack font-display">代理人架構專家 (Agentic Grandmaster)</h4>
+                        <p class="text-inkMuted text-xs mt-1">您已精通 Agentic IoT 與 Agentic RAG 的本質規格與生活化實踐！</p>
+                    </div>
+                    <div class="text-2xl font-mono font-black text-terracotta">
+                        考核總分：${state.quizScore} / ${quizQuestions.length} (${pct}分)
+                    </div>
+                    <button onclick="resetQuiz()" class="btn-2d px-4 py-2 rounded-xl text-xs font-mono font-bold">
+                        重新考核 ⟳
+                    </button>
+                </div>
+            `;
+        }
+
+        function resetQuiz() {
+            state.quizScore = 0;
+            state.quizStep = 0;
+            renderQuizQuestion();
+        }
+
+        /* ------------------------------------------------------------- */
+        /* CANVAS ANIMATIONS: BRIGHT 2D CLEAN INK STYLE                  */
+        /* ------------------------------------------------------------- */
+        let iotCanvas, iotCtx, iotParticles = [];
+        let ragCanvas, ragCtx, ragParticles = [];
+
+        function initIotCanvas() {
+            iotCanvas = document.getElementById('canvas-iot-flow');
+            if (!iotCanvas) return;
+            iotCtx = iotCanvas.getContext('2d');
+            resizeIotCanvas();
+
+            iotParticles = [];
+            for (let i = 0; i < 35; i++) {
+                iotParticles.push({
+                    x: Math.random() * iotCanvas.width,
+                    tier: Math.floor(Math.random() * 3),
+                    speed: 1 + Math.random() * 1.5,
+                    size: 2.5 + Math.random() * 2,
+                    pulse: Math.random() * Math.PI
+                });
+            }
+            requestAnimationFrame(renderIotCanvas);
+        }
+
+        function resizeIotCanvas() {
+            if (!iotCanvas || !iotCanvas.parentElement) return;
+            iotCanvas.width = iotCanvas.parentElement.clientWidth;
+            iotCanvas.height = iotCanvas.parentElement.clientHeight;
+        }
+
+        function renderIotCanvas() {
+            if (!iotCtx) return;
+            iotCtx.clearRect(0, 0, iotCanvas.width, iotCanvas.height);
+
+            const w = iotCanvas.width;
+            const h = iotCanvas.height;
+
+            const t1Y = h * 0.78;
+            const t2Y = h * 0.48;
+            const t3Y = h * 0.18;
+
+            iotCtx.strokeStyle = 'rgba(24, 27, 27, 0.12)';
+            iotCtx.lineWidth = 1;
+            [t1Y, t2Y, t3Y].forEach(y => {
+                iotCtx.beginPath();
+                iotCtx.moveTo(0, y);
+                iotCtx.lineTo(w, y);
+                iotCtx.stroke();
+            });
+
+            iotCtx.font = 'bold 11px JetBrains Mono';
+            iotCtx.fillStyle = '#3b6e8c';
+            iotCtx.fillText("TIER 1: 物理設備層 (SENSE & ACT · MQTT)", 16, t1Y - 10);
+            iotCtx.fillStyle = '#d9532f';
+            iotCtx.fillText("TIER 2: 邊緣 / 霧層 (LOCAL REASONING · AGENT LOOP)", 16, t2Y - 10);
+            iotCtx.fillStyle = '#4a7c59';
+            iotCtx.fillText("TIER 3: 雲端智能層 (INTERNET OF AGENTS · LLM)", 16, t3Y - 10);
+
+            // Connective Dashed Flow Lines
+            iotCtx.strokeStyle = 'rgba(24, 27, 27, 0.15)';
+            iotCtx.setLineDash([4, 4]);
+            for (let x = 80; x < w; x += 140) {
+                iotCtx.beginPath();
+                iotCtx.moveTo(x, t1Y);
+                iotCtx.lineTo(x, t2Y);
+                iotCtx.lineTo(x + 20, t3Y);
+                iotCtx.stroke();
+            }
+            iotCtx.setLineDash([]);
+
+            if (state.animIotActive) {
+                iotParticles.forEach(p => {
+                    p.pulse += 0.05;
+                    p.x += p.speed;
+                    if (p.x > w) {
+                        p.x = 0;
+                        p.tier = (p.tier + 1) % 3;
+                    }
+
+                    let py = t1Y;
+                    let color = '#3b6e8c';
+                    if (p.tier === 1) {
+                        py = t2Y;
+                        color = '#d9532f';
+                    } else if (p.tier === 2) {
+                        py = t3Y;
+                        color = '#4a7c59';
+                    }
+
+                    iotCtx.fillStyle = color;
+                    iotCtx.beginPath();
+                    iotCtx.arc(p.x, py + Math.sin(p.pulse) * 4, p.size, 0, Math.PI * 2);
+                    iotCtx.fill();
+                });
+            }
+
+            requestAnimationFrame(renderIotCanvas);
+        }
+
+        function triggerAnomalyPulse() {
+            for (let i = 0; i < 15; i++) {
+                iotParticles.push({
+                    x: 20 + Math.random() * 40,
+                    tier: 0,
+                    speed: 4 + Math.random() * 3,
+                    size: 4 + Math.random() * 2,
+                    pulse: Math.random() * Math.PI
+                });
+            }
+        }
+
+        function toggleCanvasAnim(type) {
+            if (type === 'iot') {
+                state.animIotActive = !state.animIotActive;
+                document.getElementById('btn-anim-iot').innerText = state.animIotActive ? '暫停' : '播放';
+            } else {
+                state.animRagActive = !state.animRagActive;
+                document.getElementById('btn-anim-rag').innerText = state.animRagActive ? '暫停' : '播放';
+            }
+        }
+
+        function initRagCanvas() {
+            ragCanvas = document.getElementById('canvas-rag-flow');
+            if (!ragCanvas) return;
+            ragCtx = ragCanvas.getContext('2d');
+            resizeRagCanvas();
+
+            ragParticles = [];
+            for (let i = 0; i < 28; i++) {
+                ragParticles.push({
+                    progress: Math.random(),
+                    isAgentic: i % 2 === 0,
+                    speed: 0.003 + Math.random() * 0.003
+                });
+            }
+            requestAnimationFrame(renderRagCanvas);
+        }
+
+        function resizeRagCanvas() {
+            if (!ragCanvas || !ragCanvas.parentElement) return;
+            ragCanvas.width = ragCanvas.parentElement.clientWidth;
+            ragCanvas.height = ragCanvas.parentElement.clientHeight;
+        }
+
+        function renderRagCanvas() {
+            if (!ragCtx) return;
+            ragCtx.clearRect(0, 0, ragCanvas.width, ragCanvas.height);
+
+            const w = ragCanvas.width;
+            const h = ragCanvas.height;
+
+            const midX = w * 0.5;
+
+            // Divider
+            ragCtx.strokeStyle = 'rgba(24, 27, 27, 0.15)';
+            ragCtx.setLineDash([4, 4]);
+            ragCtx.beginPath();
+            ragCtx.moveTo(midX, 0);
+            ragCtx.lineTo(midX, h);
+            ragCtx.stroke();
+            ragCtx.setLineDash([]);
+
+            // Titles
+            ragCtx.font = 'bold 12px JetBrains Mono';
+            ragCtx.fillStyle = '#d4a34b';
+            ragCtx.fillText("【傳統 RAG：單向線性管道 (易斷裂)】", 20, 28);
+
+            ragCtx.fillStyle = '#d9532f';
+            ragCtx.fillText("【Agentic RAG：多代理閉環反思迴路】", midX + 20, 28);
+
+            // Left: Linear Pipeline
+            const leftY = h * 0.55;
+            const qX = w * 0.08, rX = w * 0.23, gX = w * 0.38;
+
+            ragCtx.strokeStyle = '#d4a34b';
+            ragCtx.lineWidth = 1.5;
+            ragCtx.beginPath();
+            ragCtx.moveTo(qX, leftY);
+            ragCtx.lineTo(rX, leftY);
+            ragCtx.lineTo(gX, leftY);
+            ragCtx.stroke();
+
+            [
+                { x: qX, label: "Query", col: "#3b6e8c" },
+                { x: rX, label: "Top-k", col: "#d4a34b" },
+                { x: gX, label: "Output", col: "#d9532f" }
+            ].forEach(n => {
+                ragCtx.fillStyle = '#ffffff';
+                ragCtx.beginPath();
+                ragCtx.arc(n.x, leftY, 18, 0, Math.PI * 2);
+                ragCtx.fill();
+                ragCtx.strokeStyle = n.col;
+                ragCtx.lineWidth = 2;
+                ragCtx.stroke();
+                ragCtx.fillStyle = '#181b1b';
+                ragCtx.font = 'bold 10px JetBrains Mono';
+                ragCtx.textAlign = 'center';
+                ragCtx.fillText(n.label, n.x, leftY + 3.5);
+            });
+
+            // Right: Circular Closed-Loop
+            const cX = midX + (w * 0.5) * 0.5;
+            const cY = h * 0.55;
+            const cR = Math.min(w * 0.16, h * 0.32);
+
+            ragCtx.strokeStyle = '#d9532f';
+            ragCtx.lineWidth = 1.5;
+            ragCtx.beginPath();
+            ragCtx.arc(cX, cY, cR, 0, Math.PI * 2);
+            ragCtx.stroke();
+
+            const roles = [
+                { angle: 0, label: "Planner" },
+                { angle: Math.PI * 0.5, label: "Tool" },
+                { angle: Math.PI, label: "Verifier" },
+                { angle: Math.PI * 1.5, label: "Synthesis" }
+            ];
+
+            roles.forEach(r => {
+                const nx = cX + Math.cos(r.angle) * cR;
+                const ny = cY + Math.sin(r.angle) * cR;
+                ragCtx.fillStyle = '#ffffff';
+                ragCtx.beginPath();
+                ragCtx.arc(nx, ny, 20, 0, Math.PI * 2);
+                ragCtx.fill();
+                ragCtx.strokeStyle = '#d9532f';
+                ragCtx.lineWidth = 2;
+                ragCtx.stroke();
+                ragCtx.fillStyle = '#181b1b';
+                ragCtx.font = 'bold 10px JetBrains Mono';
+                ragCtx.textAlign = 'center';
+                ragCtx.fillText(r.label, nx, ny + 3.5);
+            });
+
+            if (state.animRagActive) {
+                ragParticles.forEach(p => {
+                    p.progress += p.speed;
+                    if (p.progress > 1) p.progress = 0;
+
+                    if (!p.isAgentic) {
+                        const px = qX + p.progress * (gX - qX);
+                        ragCtx.fillStyle = '#d4a34b';
+                        ragCtx.beginPath();
+                        ragCtx.arc(px, leftY, 3, 0, Math.PI * 2);
+                        ragCtx.fill();
+                    } else {
+                        const theta = p.progress * Math.PI * 2;
+                        const px = cX + Math.cos(theta) * cR;
+                        const py = cY + Math.sin(theta) * cR;
+                        ragCtx.fillStyle = '#d9532f';
+                        ragCtx.beginPath();
+                        ragCtx.arc(px, py, 3.5, 0, Math.PI * 2);
+                        ragCtx.fill();
+                    }
+                });
+            }
+
+            requestAnimationFrame(renderRagCanvas);
+        }
+
+        /* ------------------------------------------------------------- */
+        /* ACADEMIC MARKDOWN REPORT MODAL                                */
+        /* ------------------------------------------------------------- */
+        let academicReports = { iot: "", rag: "" };
+
+        async function loadAcademicReportsText() {
+            try {
+                const resIot = await fetch('Agentic_IoT_Academic_Report.md').catch(() => null);
+                if (resIot && resIot.ok) academicReports.iot = await resIot.text();
+                const resRag = await fetch('Traditional_vs_Agentic_RAG_Academic_Report.md').catch(() => null);
+                if (resRag && resRag.ok) academicReports.rag = await resRag.text();
+            } catch(e) {}
+        }
+
+        function openReportModal(docType) {
+            state.currentReport = docType || 'iot';
+            document.getElementById('report-modal').classList.remove('hidden');
+            switchReportDoc(state.currentReport);
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+
+        function switchReportDoc(docType) {
+            state.currentReport = docType;
+            const bIot = document.getElementById('btn-rep-iot');
+            const bRag = document.getElementById('btn-rep-rag');
+            const titleEl = document.getElementById('modal-report-title');
+            const contentEl = document.getElementById('modal-markdown-content');
+
+            if (docType === 'iot') {
+                bIot.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-terracotta text-white";
+                bRag.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-inkBlack/30 text-inkBlack";
+                titleEl.innerText = "學術研析報告：《Agentic IoT: Architectures, Applications, and Challenges》";
+                contentEl.innerHTML = formatMarkdownToHtml(academicReports.iot || fallbackIotMarkdown);
+            } else {
+                bIot.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-white border border-inkBlack/30 text-inkBlack";
+                bRag.className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-terracotta text-white";
+                titleEl.innerText = "學術研析報告：《Traditional RAG vs. Agentic RAG: A Comparative Study》";
+                contentEl.innerHTML = formatMarkdownToHtml(academicReports.rag || fallbackRagMarkdown);
+            }
+        }
+
+        function copyModalMarkdown() {
+            const raw = state.currentReport === 'iot' ? (academicReports.iot || fallbackIotMarkdown) : (academicReports.rag || fallbackRagMarkdown);
+            navigator.clipboard.writeText(raw).then(() => {
+                const btnText = document.getElementById('copy-text');
+                btnText.innerText = "已複製！✓";
+                setTimeout(() => { btnText.innerText = "複製 Markdown"; }, 2000);
+            });
+        }
+
+        function formatMarkdownToHtml(md) {
+            if (!md) return "<p>正在載入報告內容...</p>";
+            return md
+                .replace(/^# (.*$)/gim, '<h1 class="text-xl sm:text-2xl font-bold text-inkBlack border-b border-inkBlack/15 pb-2 mt-4 mb-2 font-display">$1</h1>')
+                .replace(/^## (.*$)/gim, '<h2 class="text-lg sm:text-xl font-bold text-terracotta mt-5 mb-2 font-display">$1</h2>')
+                .replace(/^### (.*$)/gim, '<h3 class="text-base font-bold text-slateBlue mt-4 mb-1 font-display">$1</h3>')
+                .replace(/\*\*(.*?)\*\*/gim, '<strong class="text-inkBlack font-bold">$1</strong>')
+                .replace(/\*(.*?)\*/gim, '<em class="text-inkMuted">$1</em>')
+                .replace(/```([\s\S]*?)```/gim, '<pre class="bg-paperBg p-3 rounded-lg border border-inkBlack/15 overflow-x-auto text-[11px] text-inkBlack my-2"><code>$1</code></pre>')
+                .replace(/^- (.*$)/gim, '<li class="ml-4 list-disc text-inkMuted my-0.5">$1</li>')
+                .replace(/\n\n/gim, '<p class="my-2 leading-relaxed text-inkBlack"></p>');
+        }
+
+        const fallbackIotMarkdown = `# Agentic IoT：架構、應用、協定與挑戰技術研析報告\n物聯網正歷經從「感知互聯」、「邊緣智慧」到「自主認知代理 (Agentic IoT)」的三階段歷史躍升。`;
+        const fallbackRagMarkdown = `# 傳統 RAG 與智能代理 RAG（Agentic RAG）技術比較與系統研析報告\nAgentic RAG 將檢索置於具備規劃、反思、工具調用與錯誤修正的閉環控制迴路中，開啟知識檢索新紀元。`;
+
+        /* ------------------------------------------------------------- */
+        /* INITIALIZATION                                                */
+        /* ------------------------------------------------------------- */
+        window.addEventListener('DOMContentLoaded', () => {
+            updateSlideView();
+            loadIotScenario('storm');
+            loadRagQuestion('med');
+            renderQuizQuestion();
+            showDomainInfo('medical');
+            runEdgeBenchmark();
+            loadAcademicReportsText();
+
+            initIotCanvas();
+            initRagCanvas();
+
+            window.addEventListener('resize', () => {
+                resizeIotCanvas();
+                resizeRagCanvas();
+            });
+        });
+    </script>
+</body>
+</html>
